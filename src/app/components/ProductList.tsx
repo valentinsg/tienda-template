@@ -7,6 +7,7 @@ interface ProductListProps {
 }
 
 export default function ProductList({ products, onSelectProduct }: ProductListProps) {
+
   const handleProductClick = (product: Product) => {
     onSelectProduct(product);
   };

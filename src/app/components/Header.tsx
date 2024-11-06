@@ -20,31 +20,31 @@ const Header = () => {
             <Link href="/" className="text-gray-600 hover:text-gray-900">Home</Link>
 
             {/* Productos Dropdown */}
-            <div 
-              className="relative" 
-              onMouseEnter={() => setDropdownOpen(true)} 
+            <div
+              className="relative"
+              onMouseEnter={() => setDropdownOpen(true)}
               onMouseLeave={() => setDropdownOpen(false)}
             >
               <Link
-              href="/products"
-              className="text-gray-600 hover:text-gray-900 flex items-center"
+                href="/products"
+                className="text-gray-600 hover:text-gray-900 flex items-center"
               >
-              Products
-              <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
-              </svg>
+                Products
+                <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                </svg>
               </Link>
 
               {dropdownOpen && (
-              <div className="absolute z-50  w-48 rounded-md shadow-lg bg-white">
-                <div className="py-1">
-                <Link href="/products/remeras" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Remeras</Link>
-                <Link href="/products/hoodies" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Hoodies</Link>
-                <Link href="/products/pantalones" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Pantalones</Link>
-                <Link href="/products/zapatillas" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Zapatillas</Link>
-                <Link href="/products/ojotas" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Ojotas</Link>
+                <div className="absolute z-50  w-48 rounded-md shadow-lg bg-white">
+                  <div className="py-1">
+                    <Link href="/products/remeras" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Remeras</Link>
+                    <Link href="/products/hoodies" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Hoodies</Link>
+                    <Link href="/products/pantalones" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Pantalones</Link>
+                    <Link href="/products/zapatillas" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Zapatillas</Link>
+                    <Link href="/products/ojotas" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Ojotas</Link>
+                  </div>
                 </div>
-              </div>
               )}
             </div>
 
