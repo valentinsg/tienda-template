@@ -1,9 +1,11 @@
 'use client'
 import React, { useState } from 'react';
 import Link from 'next/link'
+import { useProducts } from '../context/ProductContext';
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const { categories } = useProducts();
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
   return (
@@ -36,14 +38,14 @@ const Header = () => {
               </Link>
 
               {dropdownOpen && (
-                <div className="absolute z-50  w-48 rounded-md shadow-lg bg-white">
-                  <div className="py-1">
-                    <Link href="/products/remeras" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Remeras</Link>
-                    <Link href="/products/hoodies" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Hoodies</Link>
-                    <Link href="/products/pantalones" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Pantalones</Link>
-                    <Link href="/products/zapatillas" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Zapatillas</Link>
-                    <Link href="/products/ojotas" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Ojotas</Link>
-                  </div>
+                <div className="absolute z-50 w-48 rounded-md shadow-lg bg-white">
+                  {categories.map((category, index) => (
+                    <div key={index} className="py-1">
+                      <Link href={`/products/${category.name}`} className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                        {category.name}
+                      </Link>
+                    </div>
+                  ))}
                 </div>
               )}
             </div>

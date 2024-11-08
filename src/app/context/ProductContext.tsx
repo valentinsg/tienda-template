@@ -1,105 +1,73 @@
 'use client';
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { Product } from '../../types/Product';
+import { Category } from '../../types/Category';
 
-//#region Interfaces
-
-// Define the shape of the context state
-interface ProductContextType {
+interface ProductContextProps {
+  categories: Category[];
   products: Product[];
   featuredProducts: Product[];
-  productsByCategory: Record<string, Product[]>;
   isLoading: boolean;
-  error: Error | null;
+  error: string | null;
 }
 
-//#endregion
+const ProductContext = createContext<ProductContextProps | undefined>(undefined);
 
-//#region Context
-
-// Create the ProductContext with an undefined initial value
-const ProductContext = createContext<ProductContextType | undefined>(undefined);
-
-//#endregion
-
-//#region Provider
-
-// Define the ProductProvider component
-export function ProductProvider({ children }: { children: React.ReactNode }) {
-  
-  // State to hold the list of products
+export const ProductProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [products, setProducts] = useState<Product[]>([]);
-  
-  // State to indicate loading status
-  const [isLoading, setIsLoading] = useState(true);
-  
-  // State to hold any error that occurs during fetching
-  const [error, setError] = useState<Error | null>(null);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
-  // Fetch products from the API when the component mounts
   useEffect(() => {
-    const fetchProducts = async () => {
+    const fetchCategories = async () => {
+      setIsLoading(true);
       try {
-        const response = await fetch('http://127.0.0.1:8000/api/products');
-        if (!response.ok) throw new Error('Error fetching products');
+        const response = await fetch('http://127.0.0.1:8000/api/categories/');
+        if (!response.ok) throw new Error('Error fetching categories');
 
-        const data = await response.json();
+        const data: Category[] = await response.json();
+        setCategories(data);
+      } catch (error) {
+        setError((error as Error).message);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    const fetchProducts = async () => {
+      setIsLoading(true);
+      try {
+        const response = await fetch('http://127.0.0.1:8000/api/products/');
+        if (!response.ok) throw new Error('Error fetching products');
+        
+        const data: Product[] = await response.json();
         setProducts(data);
       } catch (error) {
-        setError(error as Error);
-        console.error('Error fetching products:', error);
+        setError((error as Error).message);
       } finally {
         setIsLoading(false);
       }
     };
 
+    fetchCategories();
     fetchProducts();
   }, []);
 
-  //#region Derived State
 
-  // Filter the products to get the featured ones
   const featuredProducts = products.filter(product => product.featured);
 
-  // Group the products by category
-  const productsByCategory = products.reduce((acc, product) => {
-    const category = typeof product.category === 'string' ? product.category.toLowerCase() : 'uncategorized';
-    if (!acc[category]) {
-      acc[category] = [];
-    }
-    acc[category].push(product);
-    return acc;
-  }, {} as Record<string, Product[]>);
-
-  //#endregion
-
-  // Provide the context value to children components
   return (
-    <ProductContext.Provider
-      value={{
-        products,
-        featuredProducts,
-        productsByCategory,
-        isLoading,
-        error
-      }}
-    >
+    <ProductContext.Provider value={{ categories, products, featuredProducts, isLoading, error}}>
       {children}
     </ProductContext.Provider>
   );
-}
+};
 
-//#endregion
-
-//#region Hook
-
-// Custom hook to use the ProductContext
-export function useProducts() {
+export const useProducts = (): ProductContextProps => {
   const context = useContext(ProductContext);
-  if (context === undefined) {
+  if (!context) {
     throw new Error('useProducts must be used within a ProductProvider');
   }
   return context;
-}
-
-//#endregion
+};

@@ -1,11 +1,15 @@
 import React, { useState } from 'react';
 import { Filters } from '../../types/Filters';
+import { Category } from '../../types/Category';
+import { useProducts } from '../context/ProductContext';
 
 interface FilterSidebarProps {
   onFilterChange: (filters: Filters) => void;
 }
 
 export default function FilterSidebar({ onFilterChange }: FilterSidebarProps) {
+  const {categories} = useProducts();
+
   const [filters, setFilters] = useState({
     category: '',
     color: '',
@@ -31,27 +35,19 @@ export default function FilterSidebar({ onFilterChange }: FilterSidebarProps) {
       <h2 className="text-lg font-semibold mb-4">Filtros</h2>
       
       {/* Categoría */}
+
       <label className="block mb-2">
         <span className="text-gray-700">Categoría</span>
         <select name="category" onChange={handleChange} className="mt-1 block w-full">
           <option value="">Todas</option>
-          <option value="Wallets">Wallets</option>
-          <option value="Stationery">Stationery</option>
-          {/* Agrega más opciones según tus categorías */}
+          {categories.map((category: Category) => (
+            <option key={category.id} value={category.id}>
+              {category.name}
+            </option>
+          ))}
         </select>
       </label>
-
-      {/* Color */}
-      <label className="block mb-2">
-        <span className="text-gray-700">Color</span>
-        <select name="color" onChange={handleChange} className="mt-1 block w-full">
-          <option value="">Todos</option>
-          <option value="Black">Negro</option>
-          <option value="Brown">Marrón</option>
-          {/* Agrega más opciones según los colores disponibles */}
-        </select>
-      </label>
-
+      
       {/* Tamaño */}
       <label className="block mb-2">
         <span className="text-gray-700">Tamaño</span>

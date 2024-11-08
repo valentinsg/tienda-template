@@ -1,16 +1,22 @@
 import React from 'react';
 import { Product } from '../../types/Product';
+import { useProducts } from '../context/ProductContext';
+import Image from 'next/image';
 
 interface ProductListProps {
-  products?: Product[] ;
+  products?: Product[];
   onSelectProduct: (product: Product) => void;
 }
 
-export default function ProductList({ products, onSelectProduct }: ProductListProps) {
+export default function ProductList({ onSelectProduct }: ProductListProps) {
+  const { products, isLoading, error } = useProducts();
 
   const handleProductClick = (product: Product) => {
     onSelectProduct(product);
   };
+
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>Error loading products</div>;
 
   return (
     <div className="bg-white">
@@ -24,10 +30,12 @@ export default function ProductList({ products, onSelectProduct }: ProductListPr
               className="group shadow-lg transform transition-all duration-300 hover:scale-105 hover:shadow-2xl"
             >
               <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg bg-gray-200 xl:aspect-h-8 xl:aspect-w-7">
-                <img
-                  alt={product.imageAlt}
-                  src={product.imageSrc}
-                  className="h-full w-full object-cover object-center group-hover:opacity-80 transition-opacity duration-300"
+                <Image
+                  alt={product.name}
+                  src={product.images[0]?.image_url || '/path/to/placeholder.jpg'}
+                  width={300}  // Define el ancho de la imagen
+                  height={300} // Define el alto de la imagen
+                  className="object-cover object-center group-hover:opacity-80 transition-opacity duration-300"
                 />
               </div>
               <h3 className="mt-4 text-sm text-gray-700 font-semibold group-hover:text-blue-600 transition-colors duration-300">{product.name}</h3>

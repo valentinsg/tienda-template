@@ -18,13 +18,12 @@ const Products = () => {
 
   const applyFilters = (filters: Filters) => {
     const filtered = products.filter((product) => {
-      const matchesCategory = filters.category ? product.category === filters.category : true;
-      const matchesSize = filters.size ? product.sizes.includes(filters.size) : true;
+      const matchesCategory = filters.category ? product.category.toString() === filters.category.toString() : true;
+      const matchesSize = filters.size ? product.available_sizes.size.sku === filters.size : true;
       const matchesMinPrice = filters.minPrice ? parseFloat(product.price) >= parseFloat(filters.minPrice) : true;
       const matchesMaxPrice = filters.maxPrice ? parseFloat(product.price) <= parseFloat(filters.maxPrice) : true;
-      const matchesStock = filters.inStock ? product.stock > 0 : true;
 
-      return matchesCategory && matchesSize && matchesMinPrice && matchesMaxPrice && matchesStock;
+      return matchesCategory && matchesSize && matchesMinPrice && matchesMaxPrice;
     });
 
     setFilteredProducts(filtered);
