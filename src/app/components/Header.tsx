@@ -1,96 +1,186 @@
-'use client'
+'use client';
+
 import React, { useState } from 'react';
-import Link from 'next/link'
+import Link from 'next/link';
 import { useProducts } from '../context/ProductContext';
+import {
+  Box,
+  Flex,
+  Text,
+  IconButton,
+  Button,
+  Stack,
+  // Image,
+} from '@chakra-ui/react';
+import {
+  MenuContent,
+  MenuItem,
+  MenuRoot,
+  MenuTrigger,
+} from "../components/ui/menu"
+import { SunIcon, MoonIcon, ChevronDownIcon } from '@chakra-ui/icons';
+import { useColorMode, useColorModeValue } from './ui/color-mode';
+import { FaShoppingCart } from 'react-icons/fa';
+import BusyDarkMode from '../../../public/busy-logo-dark-mode.png';
+import BusyLightMode from '../../../public/busy-logo-light-mode.png';
+import Image from 'next/image';
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const { categories } = useProducts();
-  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const { colorMode, toggleColorMode } = useColorMode();
+  const textColor = useColorModeValue('#555454', "#D0D0D0");
+
+  const navigation = [
+    { name: 'About', href: '/about' },
+    { name: 'Contact', href: '/contact' },
+  ];
 
   return (
-    <nav className="bg-white shadow-lg">
-      <div className="max-w-7xl mx-auto p-4">
-        <div className="flex justify-between items-center h-16">
-          {/* Logo */}
-          <Link href="/" className="flex-shrink-0">
-            <h1 className="text-2xl font-bold text-gray-800">Mi Tienda</h1>
+    <Box as="nav" bg={colorMode === 'dark' ? 'gray.800' : 'white'} shadow="lg" w="100%" p={2} position="sticky" top="0" zIndex="50">
+      <Flex align="center" justify="space-between">
+        {/* Logo */}
+        <Box ml={"2vw"}>
+          <Link href="/" passHref>
+            <Image
+              src={colorMode === 'dark' ? BusyDarkMode : BusyLightMode}
+              alt="Busy logo"
+              width={175}
+              height={175}
+            />
           </Link>
+        </Box>
 
-          {/* Desktop Menu */}
-          <div className="hidden md:flex items-center space-x-8">
-            <Link href="/" className="text-gray-600 hover:text-gray-900">Home</Link>
-
-            {/* Productos Dropdown */}
-            <div
-              className="relative"
-              onMouseEnter={() => setDropdownOpen(true)}
-              onMouseLeave={() => setDropdownOpen(false)}
+        {/* Desktop Menu */}
+        <Flex display={{ base: 'none', md: 'flex' }} align="center">
+          <Flex mr={"5vw"} alignItems={"center"}>
+            {/* Products Dropdown */}
+            <Box
+              position="relative"
+              onMouseEnter={() => setIsDropdownOpen(true)}
+              onMouseLeave={() => setIsDropdownOpen(false)}
             >
-              <Link
-                href="/products"
-                className="text-gray-600 hover:text-gray-900 flex items-center"
+              <Link href={`/products/`}>
+              <Flex
+                align="center"
+                color={textColor}
+                cursor="pointer"
+                mx={4}
+                fontWeight={600}
               >
                 Products
-                <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
-                </svg>
+                <ChevronDownIcon  />
+              </Flex>
               </Link>
 
-              {dropdownOpen && (
-                <div className="absolute z-50 w-48 rounded-md shadow-lg bg-white">
+              {isDropdownOpen && (
+                <Box
+                  position="absolute"
+                  top="100%"
+                  bg={colorMode === 'dark' ? 'gray.700' : 'white'}
+                  borderRadius="md"
+                  boxShadow="lg"
+                  minW="200px"
+                  zIndex={1000}
+                >
                   {categories.map((category, index) => (
-                    <div key={index} className="py-1">
-                      <Link href={`/products/${category.name}`} className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                    <Link
+                      key={index}
+                      href={`/products/${category.name}`}
+                      passHref
+                    >
+                      <Text
+                        p={3}
+                        color={textColor}
+                        _hover={{
+                          bg: colorMode === 'dark' ? 'gray.600' : 'gray.100'
+                        }}
+                        cursor="pointer"
+                        fontWeight={600}
+
+                      >
                         {category.name}
-                      </Link>
-                    </div>
+                      </Text>
+                    </Link>
                   ))}
-                </div>
+                </Box>
               )}
-            </div>
+            </Box>
 
-            <Link href="/about" className="text-gray-600 hover:text-gray-900">About Us</Link>
-            <Link href="/contact" className="text-gray-600 hover:text-gray-900">Contact</Link>
-          </div>
+            {/* Navigation Links */}
+            {navigation.map((item) => (
+              <Link key={item.name} href={item.href} passHref>
+                <Text color={textColor} cursor={"pointer"} mx={6} fontWeight={600}>
+                  {item.name}
+                </Text>
+              </Link>
+            ))}
+          </Flex>
 
-          {/* Mobile menu button */}
-          <div className="md:hidden flex items-center">
-            <button
-              onClick={() => setIsOpen(!isOpen)}
-              className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100"
+          <Box mr={"5vw"}>
+            {/* Right Side Icons */}
+            <IconButton
+              aria-label="Toggle theme"
+              onClick={toggleColorMode}
+              variant="ghost"
+              mx={2}
+              colorScheme="gray"
             >
-              <svg
-                className={`${isOpen ? 'hidden' : 'block'} h-6 w-6`}
-                stroke="currentColor"
-                fill="none"
-                viewBox="0 0 24 24"
-              >
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
-              </svg>
-              <svg
-                className={`${isOpen ? 'block' : 'hidden'} h-6 w-6`}
-                stroke="currentColor"
-                fill="none"
-                viewBox="0 0 24 24"
-              >
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
-          </div>
-        </div>
-      </div>
+              {colorMode === 'dark' ? <SunIcon /> : <MoonIcon />}
+            </IconButton>
+            <IconButton
+              aria-label="Shopping Cart"
+              variant="ghost"
+              mx={2}
+              colorScheme="gray"
+            >
+              <FaShoppingCart />
+            </IconButton>
+          </Box>
+        </Flex>
+
+        {/* Mobile Menu Button */}
+        <Box display={{ base: 'flex', md: 'none' }} alignSelf="center">
+          <IconButton
+            onClick={() => setIsOpen(!isOpen)}
+            aria-label="Open Menu"
+            variant="ghost"
+            colorScheme="gray"
+          >
+            {isOpen ? <SunIcon /> : <MoonIcon />}
+          </IconButton>
+        </Box>
+      </Flex>
 
       {/* Mobile Menu */}
-      <div className={`${isOpen ? 'block' : 'hidden'} md:hidden`}>
-        <div className="px-2 pt-2 pb-3 space-y-1">
-          <Link href="/" className="block px-3 py-2 rounded-md text-gray-700 hover:text-gray-900 hover:bg-gray-50">Home</Link>
-          <Link href="/productos" className="block px-3 py-2 rounded-md text-gray-700 hover:text-gray-900 hover:bg-gray-50">Productos</Link>
-          <Link href="/about" className="block px-3 py-2 rounded-md text-gray-700 hover:text-gray-900 hover:bg-gray-50">About Us</Link>
-          <Link href="/contact" className="block px-3 py-2 rounded-md text-gray-700 hover:text-gray-900 hover:bg-gray-50">Contact</Link>
-        </div>
-      </div>
-    </nav>
+      {isOpen && (
+        <Stack display={{ md: 'none' }} gap={4} mt={4}>
+          <MenuRoot>
+            <MenuTrigger as={Button} >
+              Products
+              <ChevronDownIcon />
+            </MenuTrigger>
+            <MenuContent>
+              {categories.map((category, index) => (
+                <MenuItem key={index} value={category.name}>
+                  <Link href={`/products/${category.name}`} passHref>
+                    <Text>{category.name}</Text>
+                  </Link>
+                </MenuItem>
+              ))}
+            </MenuContent>
+          </MenuRoot>
+          {navigation.map((item) => (
+            <Link key={item.name} href={item.href} passHref>
+              <Button variant="ghost" colorScheme="gray">
+                {item.name}
+              </Button>
+            </Link>
+          ))}
+        </Stack>
+      )}
+    </Box>
   );
 };
 
