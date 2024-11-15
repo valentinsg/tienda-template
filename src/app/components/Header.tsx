@@ -10,7 +10,6 @@ import {
   IconButton,
   Button,
   Stack,
-  // Image,
 } from '@chakra-ui/react';
 import {
   MenuContent,
@@ -38,7 +37,7 @@ const Header = () => {
   ];
 
   return (
-    <Box as="nav" bg={colorMode === 'dark' ? 'gray.800' : 'white'} shadow="lg" w="100%" p={2} position="sticky" top="0" zIndex="50">
+    <Box as="nav" bg={colorMode === 'dark' ? 'gray.800' : '#D0D0D0'} shadow="md" w="100%" p={2} position="sticky" top="0" zIndex="50">
       <Flex align="center" justify="space-between">
         {/* Logo */}
         <Box ml={"2vw"}>
