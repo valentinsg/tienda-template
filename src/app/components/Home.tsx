@@ -54,12 +54,12 @@ const Home = () => {
   const bgColor = useColorModeValue('#D0D0D0', "#555454");
 
   return (
-    <Box position="relative" width="100%" height={"90vh"} bg={bgColor}>
+    <Box position="relative" width="100%" height={"85vh"} bg={bgColor}>
       <BackgroundPattern />
         <Flex
           position="relative"
           direction="column"
-          height="90vh"
+          height="85vh"
           justify="center"
           align="center"
           px={4}
@@ -85,7 +85,7 @@ const Home = () => {
             position="relative"
             width="100%"
             maxW="1500px"
-            height={{ base: "auto", md: "90vh" }}
+            height={{ base: "auto", md: "85vh" }}
             mx="auto"
           >
             {slides.map((slide, index) => (
@@ -107,7 +107,7 @@ const Home = () => {
                   height="100%"
                   objectFit="contain"
                   objectPosition={slide.objectPosition}
-                  pt={10}
+                  pt={12}
                 />
               </Box>
             ))}

@@ -26,7 +26,7 @@ export default function HomePage() {
       <Logo />
       <Home />
       {/* Listado completo de productos */}
-      <Flex my={12}>
+      <Flex mt={12}>
         <ProductList products={products} onSelectProduct={handleSelectProduct} />
       </Flex>
     </Box>

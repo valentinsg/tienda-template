@@ -37,7 +37,7 @@ const Header = () => {
   ];
 
   return (
-    <Box as="nav" bg={colorMode === 'dark' ? 'gray.800' : '#D0D0D0'} shadow="md" w="100%" p={2} position="sticky" top="0" zIndex="50">
+    <Box as="nav" bg={colorMode === 'dark' ? 'gray.800' : '#D0D0D0'} shadow="md" w="100%" p={3} position="sticky" top="0" zIndex="50">
       <Flex align="center" justify="space-between">
         {/* Logo */}
         <Box ml={"2vw"}>
@@ -66,7 +66,6 @@ const Header = () => {
                 color={textColor}
                 cursor="pointer"
                 mx={4}
-                fontWeight={600}
               >
                 Products
                 <ChevronDownIcon  />
@@ -96,8 +95,6 @@ const Header = () => {
                           bg: colorMode === 'dark' ? 'gray.600' : 'gray.100'
                         }}
                         cursor="pointer"
-                        fontWeight={600}
-
                       >
                         {category.name}
                       </Text>
@@ -110,7 +107,7 @@ const Header = () => {
             {/* Navigation Links */}
             {navigation.map((item) => (
               <Link key={item.name} href={item.href} passHref>
-                <Text color={textColor} cursor={"pointer"} mx={6} fontWeight={600}>
+                <Text color={textColor} cursor={"pointer"} mx={6} >
                   {item.name}
                 </Text>
               </Link>

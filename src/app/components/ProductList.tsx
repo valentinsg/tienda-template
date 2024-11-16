@@ -1,48 +1,91 @@
 import React from 'react';
+import { Box, Grid, Heading, Text, VStack, Image, Stack } from '@chakra-ui/react';
 import { Product } from '../../types/Product';
-import { useProducts } from '../context/ProductContext';
-import Image from 'next/image';
 
 interface ProductListProps {
-  products?: Product[];
+  products: Product[]; 
   onSelectProduct: (product: Product) => void;
 }
 
-export default function ProductList({ onSelectProduct }: ProductListProps) {
-  const { products, isLoading, error } = useProducts();
-
+export default function ProductList({ products, onSelectProduct }: ProductListProps) {
   const handleProductClick = (product: Product) => {
     onSelectProduct(product);
   };
 
-  if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>Error loading products</div>;
+  if (!products || products.length === 0) {
+    return (
+      <Box textAlign="center" py={10}>
+        <Text fontSize="lg" color="gray.500">
+          No hay productos disponibles.
+        </Text>
+      </Box>
+    );
+  }
 
   return (
-    <div>
-      <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
-        <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 xl:gap-x-8">
-          {(products ?? []).map((product) => (
-            <button
-              key={product.id}
-              onClick={() => handleProductClick(product)}
-              className="group shadow-lg transform transition-all duration-300 hover:scale-105 hover:shadow-2xl"
+    <Box maxW="7xl" mx="auto" px={4} py={10}>
+      <Heading as="h2" size="lg" textAlign="center" mb={8}>
+        Descubre nuestros productos
+      </Heading>
+      <Grid
+        templateColumns={{
+          base: 'repeat(1, 1fr)',
+          sm: 'repeat(2, 1fr)',
+          lg: 'repeat(3, 1fr)',
+        }}
+        gap={6}
+      >
+        {products.map((product) => (
+          <VStack
+            key={product.id}
+            gap={4}
+            p={4}
+            bg="white"
+            shadow="md"
+            borderRadius="lg"
+            _hover={{
+              shadow: 'lg',
+              transform: 'scale(1.05)',
+            }}
+            transition="all 0.3s"
+            onClick={() => handleProductClick(product)}
+            cursor="pointer"
+          >
+            <Box
+              w="full"
+              h="200px"
+              overflow="hidden"
+              borderRadius="lg"
+              bg="gray.100"
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
             >
-              <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg bg-gray-200 xl:aspect-h-8 xl:aspect-w-7">
+              {product.images && product.images.length > 0 ? ( // Validación de imágenes
                 <Image
+                  src={product.images[0].image_url}
                   alt={product.name}
-                  src={product.images[0]?.image_url || '/path/to/placeholder.jpg'}
-                  width={350}
-                  height={400}
-                  className="object-cover object-center group-hover:opacity-80 transition-opacity duration-300"
+                  objectFit="cover"
+                  h="full"
+                  w="full"
                 />
-              </div>
-              <h3 className="mt-4 text-sm text-gray-700 font-semibold group-hover:text-blue-600 transition-colors duration-300">{product.name}</h3>
-              <p className="mt-1 text-lg font-medium text-gray-900">${product.price}</p>
-            </button>
-          ))}
-        </div>
-      </div>
-    </div>
+              ) : (
+                <Text fontSize="sm" color="gray.500">
+                  Imagen no disponible
+                </Text>
+              )}
+            </Box>
+            <Stack gap={1} textAlign="center" w="full">
+              <Text fontWeight="semibold" fontSize="md" color="gray.700">
+                {product.name}
+              </Text>
+              <Text fontSize="lg" color="gray.900" fontWeight="bold">
+                ${product.price}
+              </Text>
+            </Stack>
+          </VStack>
+        ))}
+      </Grid>
+    </Box>
   );
 }

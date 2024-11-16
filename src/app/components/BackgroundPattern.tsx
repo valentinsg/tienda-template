@@ -1,6 +1,9 @@
 import React from 'react';
 import { Box, Flex } from '@chakra-ui/react';
 import { useColorMode } from './ui/color-mode';
+import BusyDarkMode from '../../../public/busy-logo-dark-mode.png';
+import BusyLightMode from '../../../public/busy-logo-light-mode.png';
+import Image from 'next/image';
 
 const BackgroundPattern = () => {
   const { colorMode } = useColorMode();
@@ -8,7 +11,7 @@ const BackgroundPattern = () => {
   const borderColor = colorMode === 'light' ? '#555454' : 'gray.100';
   const lineColor = colorMode === 'light' ? 'gray.900' : 'gray.100';
   return (
-    <Box  top={0} left={0} right={0} bottom={0} zIndex={1} shadow={"md"}>
+    <Box top={0} left={0} right={0} bottom={0} zIndex={1} shadow={"md"}>
       {/* Gradiente sutil */}
       <Box
         position="absolute"
@@ -18,7 +21,7 @@ const BackgroundPattern = () => {
         bottom={0}
         bgGradient={bgGradient}
       />
-      
+
       {/* Patrón de formas geométricas */}
       <Flex
         position="absolute"
@@ -30,6 +33,15 @@ const BackgroundPattern = () => {
         overflow="hidden"
       >
         {/* Círculos decorativos */}
+        <Box
+          position="absolute"
+          right="30%"
+          top="30%"
+          zIndex={0}
+        >
+          <Image src={colorMode === 'light' ? BusyLightMode : BusyDarkMode} alt={'Busy Since 2024'} width={700} />
+        
+        </Box>
         <Box
           position="absolute"
           top="-10%"
@@ -51,7 +63,7 @@ const BackgroundPattern = () => {
           border="60px solid"
           borderColor={borderColor}
         />
-        
+
         {/* Líneas diagonales sutiles */}
         <Box
           position="absolute"

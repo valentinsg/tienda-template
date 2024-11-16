@@ -14,9 +14,9 @@ export default function Footer() {
   const hoverColor = useColorModeValue("gray.600", "gray.400");
 
   return (
-    <Flex bg={bgColor} flexDir={"column"} w="100%" p={6} shadow="md">
+    <Flex bg={bgColor} flexDir={"column"} w="100%" p={8} shadow="md">
       <Flex flexDir={"row"} justifyContent={"space-between"} p={6} alignItems={"center"}>
-        <Flex flexDir={"column"} w={"45%"} gap={8} >
+        <Flex flexDir={"column"} w={"45%"} gap={12} >
           <Heading fontSize={"2vw"} lineHeight={1.1} color={textColor}>
             Sé el primero en enterarte de todas nuestras novedades
           </Heading>
@@ -60,7 +60,7 @@ export default function Footer() {
         <Text><Link href="#" className={`hover:text-${hoverColor}`}>Contacto</Link></Text>
       </Flex>
       <Flex justifyContent={"space-between"} color={textColor} p={6} alignItems={"center"}>
-        <Flex gap={8}>
+        <Flex gap={10}>
           <Link href="#" className={`hover:text-${hoverColor}`}>
             <Icon
               _hover={{ transform: "scale(1.1)" }}
