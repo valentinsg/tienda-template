@@ -19,10 +19,10 @@ import {
 } from "../components/ui/menu"
 import { SunIcon, MoonIcon, ChevronDownIcon } from '@chakra-ui/icons';
 import { useColorMode, useColorModeValue } from './ui/color-mode';
-import { FaShoppingCart } from 'react-icons/fa';
 import BusyDarkMode from '../../../public/busy-logo-dark-mode.png';
 import BusyLightMode from '../../../public/busy-logo-light-mode.png';
 import Image from 'next/image';
+import CartDialog from './CartModal';
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -37,7 +37,7 @@ const Header = () => {
   ];
 
   return (
-    <Box as="nav" bg={colorMode === 'dark' ? 'gray.800' : '#D0D0D0'} shadow="md" w="100%" p={3} position="sticky" top="0" zIndex="50">
+    <Box as="nav" bg={colorMode === 'dark' ? 'gray.800' : '#D0D0D0'} shadow="md" w="100%" p={2} position="sticky" top="0" zIndex="1000">
       <Flex align="center" justify="space-between">
         {/* Logo */}
         <Box ml={"2vw"}>
@@ -61,15 +61,15 @@ const Header = () => {
               onMouseLeave={() => setIsDropdownOpen(false)}
             >
               <Link href={`/products/`}>
-              <Flex
-                align="center"
-                color={textColor}
-                cursor="pointer"
-                mx={4}
-              >
-                Products
-                <ChevronDownIcon  />
-              </Flex>
+                <Flex
+                  align="center"
+                  color={textColor}
+                  cursor="pointer"
+                  mx={4}
+                >
+                  Products
+                  <ChevronDownIcon />
+                </Flex>
               </Link>
 
               {isDropdownOpen && (
@@ -114,7 +114,7 @@ const Header = () => {
             ))}
           </Flex>
 
-          <Box mr={"5vw"}>
+          <Box mr={"5vw"} display={"flex"} flexDir={"row"}>
             {/* Right Side Icons */}
             <IconButton
               aria-label="Toggle theme"
@@ -125,14 +125,7 @@ const Header = () => {
             >
               {colorMode === 'dark' ? <SunIcon /> : <MoonIcon />}
             </IconButton>
-            <IconButton
-              aria-label="Shopping Cart"
-              variant="ghost"
-              mx={2}
-              colorScheme="gray"
-            >
-              <FaShoppingCart />
-            </IconButton>
+            <CartDialog />
           </Box>
         </Flex>
 
