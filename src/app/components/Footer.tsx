@@ -17,7 +17,7 @@ export default function Footer() {
     <Flex bg={bgColor} flexDir={"column"} w="100%" p={6} shadow="md">
       <Flex flexDir={"row"} justifyContent={"space-between"} p={6} alignItems={"center"}>
         <Flex flexDir={"column"} w={"45%"} gap={8} >
-          <Heading fontSize={"2.5vw"} lineHeight={1.1} color={textColor}>
+          <Heading fontSize={"2vw"} lineHeight={1.1} color={textColor}>
             Sé el primero en enterarte de todas nuestras novedades
           </Heading>
 

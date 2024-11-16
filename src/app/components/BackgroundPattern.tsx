@@ -1,9 +1,14 @@
 import React from 'react';
 import { Box, Flex } from '@chakra-ui/react';
+import { useColorMode } from './ui/color-mode';
 
 const BackgroundPattern = () => {
+  const { colorMode } = useColorMode();
+  const bgGradient = colorMode === 'light' ? 'linear(to-br, gray.50, gray.100)' : 'linear(to-br, gray.800, gray.900)';
+  const borderColor = colorMode === 'light' ? '#555454' : 'gray.100';
+  const lineColor = colorMode === 'light' ? 'gray.900' : 'gray.100';
   return (
-    <Box  top={0} left={0} right={0} bottom={0} zIndex={1}>
+    <Box  top={0} left={0} right={0} bottom={0} zIndex={1} shadow={"md"}>
       {/* Gradiente sutil */}
       <Box
         position="absolute"
@@ -11,7 +16,7 @@ const BackgroundPattern = () => {
         left={0}
         right={0}
         bottom={0}
-        bgGradient="linear(to-br, gray.50, gray.100)"
+        bgGradient={bgGradient}
       />
       
       {/* Patrón de formas geométricas */}
@@ -28,12 +33,12 @@ const BackgroundPattern = () => {
         <Box
           position="absolute"
           top="-10%"
-          left="-5%"
+          left="-8%"
           width="300px"
           height="300px"
           borderRadius="full"
           border="60px solid"
-          borderColor="gray.700"
+          borderColor={borderColor}
 
         />
         <Box
@@ -44,7 +49,7 @@ const BackgroundPattern = () => {
           height="400px"
           borderRadius="full"
           border="60px solid"
-          borderColor="gray.700"
+          borderColor={borderColor}
         />
         
         {/* Líneas diagonales sutiles */}
@@ -52,19 +57,19 @@ const BackgroundPattern = () => {
           position="absolute"
           top="25%"
           left="25%"
-          width="2.5px"
-          height="80%"
+          width="3px"
+          height="90%"
           transform="rotate(45deg)"
-          bg="gray.100"
+          bg={lineColor}
         />
         <Box
           position="absolute"
-          top="20%"
+          top="25%"
           right="25%"
-          width="2.5px"
-          height="80%"
+          width="3px"
+          height="85%"
           transform="rotate(-45deg)"
-          bg="gray.100"
+          bg={lineColor}
         />
       </Flex>
     </Box>

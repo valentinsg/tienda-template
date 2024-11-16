@@ -1,41 +1,47 @@
 'use client';
 import React, { useState, useEffect } from 'react';
-import { Box, Flex, IconButton, Image } from '@chakra-ui/react';
+import { Box, Flex, IconButton, Image, Text } from '@chakra-ui/react';
 import { ChevronLeftIcon, ChevronRightIcon } from '@chakra-ui/icons';
-import Chicos1 from '../../../public/chicos 1.jpg';
+import Chicos1 from '../../../public/chicos 1.png';
 import Chicos2 from '../../../public/chicos 2.png';
+import Chicas2 from '../../../public/chicas 2.png';
 import "../styles/backgroundPattern.css";
-import { useColorMode } from './ui/color-mode';
+import { useColorMode, useColorModeValue } from './ui/color-mode';
 import BackgroundPattern from './BackgroundPattern';
 
 const Home = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
-  const { colorMode } = useColorMode(); // Para manejar modo oscuro/claro
+  const { colorMode } = useColorMode(); 
 
   const slides = [
     {
       id: 1,
       image: Chicos1.src,
-      alt: 'Slide 1'
+      alt: 'Slide 1',
+      objectFit: "contain",
+      objectPosition: "center"
     },
     {
       id: 2,
       image: Chicos2.src,
-      alt: 'Slide 2'
+      alt: 'Slide 2',
+      objectFit: "contain",
+      objectPosition: "center"
     },
     {
       id: 3,
-      image: '/slide3.png',
-      alt: 'Slide 3'
+      image: Chicas2.src,
+      alt: 'Slide 3',
+      objectFit: "cover", 
+      objectPosition: "center 100%" 
     }
   ];
-
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % slides.length);
     }, 5000);
     return () => clearInterval(timer);
-  }, []);
+  }, [slides.length]);
 
   const nextSlide = () => {
     setCurrentSlide((prev) => (prev + 1) % slides.length);
@@ -45,25 +51,41 @@ const Home = () => {
     setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
   };
 
-  const bgColor = colorMode === 'light' ? 'gray.50' : 'gray.900'; // Fondo dinámico
+  const bgColor = useColorModeValue('#D0D0D0', "#555454");
 
   return (
-    <Box position="relative" width="100%" minHeight="100vh" bg={bgColor}>
+    <Box position="relative" width="100%" height={"90vh"} bg={bgColor}>
       <BackgroundPattern />
-      <Box position="relative" zIndex={1}>
         <Flex
           position="relative"
           direction="column"
-          height="100vh"
+          height="90vh"
           justify="center"
           align="center"
           px={4}
         >
+          {/* Texto sobre el carrusel */}
+            <Text
+            position="absolute"
+            bottom={20}
+            width="25%"
+            fontSize="3xl"
+            fontWeight="bold"
+            textAlign="center"
+            color={colorMode === 'light' ? 'gray.700' : 'gray.100'}
+            textShadow={colorMode === 'light' ? '0 0 10px rgba(0, 0, 0, 0.3)' : '0 0 10px rgba(255, 255, 255, 0.3)'}
+            fontFamily={"heading"}
+            lineHeight="1.2"
+            zIndex={3}
+            >
+              
+            </Text>
+
           <Box
             position="relative"
             width="100%"
             maxW="1500px"
-            height={{ base: "auto", md: "95vh" }}
+            height={{ base: "auto", md: "90vh" }}
             mx="auto"
           >
             {slides.map((slide, index) => (
@@ -84,7 +106,8 @@ const Home = () => {
                   width="100%"
                   height="100%"
                   objectFit="contain"
-                  objectPosition="center"
+                  objectPosition={slide.objectPosition}
+                  pt={10}
                 />
               </Box>
             ))}
@@ -119,18 +142,18 @@ const Home = () => {
               <ChevronRightIcon />
             </IconButton>
           </Box>
-          <Flex justify="center" mt={4} zIndex={2}>
+          <Flex position={"absolute"} bottom={0} zIndex={1000}>
             {slides.map((_, index) => (
               <Box
                 key={index}
-                width={3}
-                height={3}
+                width={4}
+                height={4}
                 borderRadius="full"
-                bg={index === currentSlide ? "black" : "blackAlpha.300"}
-                margin={1}
+                bg={index === currentSlide ? "black" : "whiteAlpha.800"}
+                margin={2}
                 cursor="pointer"
                 onClick={() => setCurrentSlide(index)}
-                transition="background-color 0.3s"
+                transition="common 0.3s ease"
                 _hover={{
                   bg:
                     index === currentSlide
@@ -143,7 +166,6 @@ const Home = () => {
             ))}
           </Flex>
         </Flex>
-      </Box>
     </Box>
   );
 };
