@@ -54,6 +54,7 @@ export default function Footer() {
       </Flex>
 
       <Box as="hr" my={4} borderColor={useColorModeValue('gray.400', 'gray.600')} />
+      
       <Flex flexDir={"column"} gap={2} color={textColor} fontWeight={600} p={6}>
         <Text><Link href="#" className={`hover:text-${hoverColor}`}>Productos</Link></Text>
         <Text><Link href="#" className={`hover:text-${hoverColor}`}>Sobre nosotros</Link></Text>

@@ -22,7 +22,7 @@ import { useColorMode, useColorModeValue } from './ui/color-mode';
 import BusyDarkMode from '../../../public/busy-logo-dark-mode.png';
 import BusyLightMode from '../../../public/busy-logo-light-mode.png';
 import Image from 'next/image';
-import CartDialog from './CartModal';
+import CartDialog from './CartDialog';
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);

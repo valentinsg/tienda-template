@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   Box,
   Container,
@@ -14,13 +14,14 @@ import {
   AspectRatio,
   SimpleGrid,
   Badge,
+  Spinner,
 } from '@chakra-ui/react';
 import {
   BreadcrumbCurrentLink,
   BreadcrumbLink,
   BreadcrumbRoot,
 } from "../components/ui/breadcrumb";
-import { useColorModeValue} from '../components/ui/color-mode';
+import { useColorModeValue } from '../components/ui/color-mode';
 import { SelectContent, SelectItem, SelectRoot, SelectTrigger, SelectValueText } from './ui/select';
 import { Product } from '../../types/Product';
 import { addItem } from '../store/slices/cartSlice';
@@ -32,14 +33,17 @@ interface ProductOverviewProps {
   relatedProducts?: Product[];
 }
 
-const ProductOverview: React.FC<ProductOverviewProps> = ({ 
-  product, 
-  relatedProducts = [] 
+const ProductOverview: React.FC<ProductOverviewProps> = ({
+  product,
+  relatedProducts = []
 }) => {
   const dispatch = useDispatch();
   const [selectedSize, setSelectedSize] = useState<string[] | null>(null);
   const [selectedImage, setSelectedImage] = useState(0);
-  
+  const [isLoading, setIsLoading] = useState(false);
+
+  const cartItems = useSelector((state: { cart: { items: { id: string; quantity: number; }[]; }; }) => state.cart.items);
+
   // Color mode values
   const bgColor = useColorModeValue('white', 'gray.800');
   const textColor = useColorModeValue('gray.800', 'white');
@@ -47,18 +51,42 @@ const ProductOverview: React.FC<ProductOverviewProps> = ({
   const borderColor = useColorModeValue('gray.200', 'gray.600');
   const mutedTextColor = useColorModeValue('gray.600', 'gray.400');
 
-  const handleAddToCart = () => {
-    if (selectedSize) {
+  const getCurrentStock = () => {
+    if (!selectedSize) return 0;
+    const size = selectedSize[0];
+    return product.available_sizes[size]?.stock || 0;
+  };
+
+  const getCurrentCartQuantity = () => {
+    if (!selectedSize) return 0;
+    const productId = `${product.id}-${selectedSize[0]}`;
+    const cartItem = cartItems.find(item => item.id === productId);
+    return cartItem?.quantity || 0;
+  };
+
+  const remainingStock = getCurrentStock() - getCurrentCartQuantity();
+
+  const handleAddToCart = async () => {
+    if (!selectedSize || remainingStock <= 0) return;
+
+    setIsLoading(true);
+    try {
+      // Simulamos una carga
+      await new Promise(resolve => setTimeout(resolve, 800));
+
       const cartItem = {
-        id: `${product.id}-${selectedSize}`,
-        name: product.name,
+        id: `${product.id}-${selectedSize[0]}`,
+        name: `${product.name} (${selectedSize[0].toUpperCase()})`,
         price: parseFloat(product.price),
         quantity: 1,
       };
+
       dispatch(addItem(cartItem));
       toast.success('Product added to cart!');
-    } else {
-      toast.error('Please select a size.');
+    } catch {
+      toast.error('Error adding product to cart');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -174,6 +202,7 @@ const ProductOverview: React.FC<ProductOverviewProps> = ({
             </Box>
 
             {/* Size Selector */}
+            {/* Size Selector with Stock Information */}
             <Box>
               <Heading as="h2" size="md" mb={3}>
                 Select Size
@@ -186,26 +215,45 @@ const ProductOverview: React.FC<ProductOverviewProps> = ({
                   <SelectValueText placeholder="Choose a size" />
                 </SelectTrigger>
                 <SelectContent>
-                  {Object.keys(product.available_sizes).map((size) => (
-                    <SelectItem
-                      key={size}
-                      item={{ value: size, label: size.toUpperCase() }}
-                    >
-                      {size.toUpperCase()}
-                    </SelectItem>
-                  ))}
+                  {Object.entries(product.available_sizes).map(([size, data]) => {
+                    const inCart = cartItems.find(item => item.id === `${product.id}-${size}`)?.quantity || 0;
+                    const remaining = data.stock - inCart;
+                    return (
+                      <SelectItem
+                        key={size}
+                        item={{ value: size, label: size.toUpperCase() }}
+                        isDisabled={remaining <= 0}
+                      >
+                        <HStack justify="space-between" width="100%">
+                          <Text>{size.toUpperCase()}</Text>
+                          <Badge colorScheme={remaining > 5 ? 'green' : remaining > 0 ? 'yellow' : 'red'}>
+                            {remaining} left
+                          </Badge>
+                        </HStack>
+                      </SelectItem>
+                    );
+                  })}
                 </SelectContent>
               </SelectRoot>
             </Box>
 
             <Button
-              colorScheme={selectedSize ? 'blue' : 'gray'}
+              colorScheme={selectedSize && remainingStock > 0 ? 'blue' : 'gray'}
               width="100%"
-              disabled={!selectedSize} // Cambiar "isDisabled" a "disabled"
+              disabled={!selectedSize || remainingStock <= 0 || isLoading}
               onClick={handleAddToCart}
               size="lg"
             >
-              Add to Cart
+              {isLoading ? (
+                <HStack gap={2}>
+                  <Spinner size="sm" />
+                  <Text>Adding to Cart...</Text>
+                </HStack>
+              ) : remainingStock <= 0 ? (
+                'Out of Stock'
+              ) : (
+                'Add to Cart'
+              )}
             </Button>
           </VStack>
         </Grid>
