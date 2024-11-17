@@ -42,6 +42,8 @@ const ProductOverview: React.FC<ProductOverviewProps> = ({
   const [selectedImage, setSelectedImage] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
 
+  const isSizeSelected = selectedSize && selectedSize.length > 0;
+
   const cartItems = useSelector((state: { cart: { items: { id: string; quantity: number; }[]; }; }) => state.cart.items);
 
   // Color mode values
@@ -64,9 +66,12 @@ const ProductOverview: React.FC<ProductOverviewProps> = ({
     return cartItem?.quantity || 0;
   };
 
-  const remainingStock = getCurrentStock() - getCurrentCartQuantity();
+  const remainingStock = Math.max(0, getCurrentStock() - getCurrentCartQuantity());
 
   const handleAddToCart = async () => {
+
+    if (!isSizeSelected || remainingStock <= 0) return;
+
     if (!selectedSize || remainingStock <= 0) return;
 
     setIsLoading(true);
@@ -79,6 +84,7 @@ const ProductOverview: React.FC<ProductOverviewProps> = ({
         name: `${product.name} (${selectedSize[0].toUpperCase()})`,
         price: parseFloat(product.price),
         quantity: 1,
+        imageUrl: product.images?.[0]?.image_url || '/placeholder.jpg',
       };
 
       dispatch(addItem(cartItem));
@@ -222,7 +228,7 @@ const ProductOverview: React.FC<ProductOverviewProps> = ({
                       <SelectItem
                         key={size}
                         item={{ value: size, label: size.toUpperCase() }}
-                        isDisabled={remaining <= 0}
+                        disabled={remaining <= 0}
                       >
                         <HStack justify="space-between" width="100%">
                           <Text>{size.toUpperCase()}</Text>
@@ -238,9 +244,9 @@ const ProductOverview: React.FC<ProductOverviewProps> = ({
             </Box>
 
             <Button
-              colorScheme={selectedSize && remainingStock > 0 ? 'blue' : 'gray'}
+              colorScheme={isSizeSelected && remainingStock > 0 ? 'blue' : 'gray'}
               width="100%"
-              disabled={!selectedSize || remainingStock <= 0 || isLoading}
+              disabled={!isSizeSelected || remainingStock <= 0 || isLoading}
               onClick={handleAddToCart}
               size="lg"
             >
@@ -249,6 +255,8 @@ const ProductOverview: React.FC<ProductOverviewProps> = ({
                   <Spinner size="sm" />
                   <Text>Adding to Cart...</Text>
                 </HStack>
+              ) : !isSizeSelected ? (
+                'Select a Size'
               ) : remainingStock <= 0 ? (
                 'Out of Stock'
               ) : (

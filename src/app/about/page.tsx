@@ -3,10 +3,10 @@ import { Box, Container, Grid, Heading, Text, VStack, Button } from '@chakra-ui/
 import { useColorModeValue } from '../components/ui/color-mode';
 
 const AboutUs = () => {
-  const bgColor = useColorModeValue('bg.muted', '#555454'); // Fondo principal
-  const textColor = useColorModeValue('#555454', '#D0D0D0'); // Texto
-  const buttonColor = useColorModeValue('black', 'white'); // Texto del botón
-  const buttonBg = useColorModeValue('#D0D0D0', '#555454'); // Fondo del botón
+  const bgColor = useColorModeValue('bg.muted', '#555454'); 
+  const textColor = useColorModeValue('#555454', '#D0D0D0');
+  const buttonColor = useColorModeValue('black', 'white');
+  const buttonBg = useColorModeValue('#D0D0D0', '#555454'); 
 
   return (
     <Box bg={bgColor} py={12} color={textColor}>

@@ -25,7 +25,7 @@ export default function ProductList({ products, onSelectProduct }: ProductListPr
   return (
     <Box maxW="7xl" mx="auto" px={4} py={10}>
       <Heading as="h2" size="lg" textAlign="center" mb={8}>
-        Descubre nuestros productos
+        Productos
       </Heading>
       <Grid
         templateColumns={{

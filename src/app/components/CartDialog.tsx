@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { removeItem, clearCart } from '../store/slices/cartSlice';
+import { decrementItem, incrementItem, clearCart } from '../store/slices/cartSlice';
 import Link from 'next/link';
 import {
   Box,
@@ -10,6 +10,8 @@ import {
   VStack,
   IconButton,
   HStack,
+  chakra,
+  Image,
 } from '@chakra-ui/react';
 import {
   DialogRoot,
@@ -21,35 +23,39 @@ import {
   DialogCloseTrigger,
   DialogDescription,
 } from '../components/ui/dialog';
-import { FaShoppingCart, FaTrash } from 'react-icons/fa';
+import { FaShoppingCart, FaPlus, FaMinus } from 'react-icons/fa';
 import { useColorModeValue } from '../components/ui/color-mode';
 import { motion } from 'framer-motion';
 
-const MotionBox = motion(Box);
+// Create a motion component with Chakra UI
+const MotionBox = chakra(motion.div);
 
 const CartDialog = () => {
+  // Redux hooks
   const dispatch = useDispatch();
-  const cartItems = useSelector((state: { cart: { items: { id: string; name: string; price: number; quantity: number; }[]; }; }) => state.cart.items);
+  const cartItems = useSelector(
+    (state: { cart: { items: { id: string; name: string; price: number; quantity: number; imageUrl: string; }[] } }) =>
+      state.cart.items
+  );
 
+  // Calculate total amount
   const totalAmount = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
-  // Theme colors
+  // Color mode values for theming
   const textColor = useColorModeValue('gray.800', 'white');
   const mutedTextColor = useColorModeValue('gray.600', 'gray.400');
   const borderColor = useColorModeValue('gray.200', 'gray.700');
   const hoverBg = useColorModeValue('gray.50', 'gray.700');
 
-  const handleRemoveItem = (id: string) => {
-    dispatch(removeItem(id));
-  };
-
-  const handleClearCart = () => {
-    dispatch(clearCart());
-  };
+  // Cart actions handlers
+  const handleDecrement = (id: string) => dispatch(decrementItem(id));
+  const handleIncrement = (id: string) => dispatch(incrementItem(id));
+  const handleClearCart = () => dispatch(clearCart());
 
   return (
     <DialogRoot>
-      <DialogTrigger asChild>
+      {/* Cart Icon with Item Count Badge */}
+      <DialogTrigger>
         <Box position="relative">
           <IconButton
             aria-label="Shopping Cart"
@@ -95,6 +101,7 @@ const CartDialog = () => {
 
         <DialogBody className="pb-8">
           {cartItems.length === 0 ? (
+            // Empty cart state
             <VStack gap={4} py={8}>
               <Box fontSize="6xl">🛒</Box>
               <Text color={mutedTextColor}>
@@ -102,6 +109,7 @@ const CartDialog = () => {
               </Text>
             </VStack>
           ) : (
+            // Cart items list
             <VStack gap={4}>
               {cartItems.map((item) => (
                 <MotionBox
@@ -117,35 +125,58 @@ const CartDialog = () => {
                   _hover={{ bg: hoverBg }}
                   transition="all 0.2s"
                 >
-                  <HStack justify="space-between">
-                    <VStack align="start" gap={1}>
+                  <HStack justify="space-between" gap={4}>
+                    {/* Product Image */}
+                    <Image
+                      src={item.imageUrl || '/placeholder.jpg'}
+                      alt={item.name}
+                      boxSize="60px"
+                      objectFit="cover"
+                      borderRadius="md"
+                    />
+                    
+                    {/* Product Details */}
+                    <VStack align="start" flex={1} gap={1}>
                       <Text fontWeight="medium" color={textColor}>
                         {item.name}
                       </Text>
-                      <HStack gap={4}>
-                        <Text color={mutedTextColor} fontSize="sm">
-                          Qty: {item.quantity}
-                        </Text>
-                        <Text fontWeight="bold" color={textColor}>
-                          ${(item.price * item.quantity).toFixed(2)}
-                        </Text>
-                      </HStack>
+                      <Text fontWeight="bold" color={textColor}>
+                        ${(item.price * item.quantity).toFixed(2)}
+                      </Text>
                     </VStack>
-                    <IconButton
-                      aria-label="Remove item"
-                      size="sm"
-                      variant="ghost"
-                      colorScheme="red"
-                      onClick={() => handleRemoveItem(item.id)}
-                    >
-                      <FaTrash />
-                    </IconButton>
+
+                    {/* Quantity Controls */}
+                    <HStack>
+                      <IconButton
+                        aria-label="Decrease quantity"
+                        size="sm"
+                        variant="ghost"
+                        colorScheme="blue"
+                        onClick={() => handleDecrement(item.id)}
+                      >
+                        <FaMinus />
+                      </IconButton>
+                      
+                      <Text color={mutedTextColor} fontSize="sm" minW="20px" textAlign="center">
+                        {item.quantity}
+                      </Text>
+
+                      <IconButton
+                        aria-label="Increase quantity"
+                        size="sm"
+                        variant="ghost"
+                        colorScheme="blue"
+                        onClick={() => handleIncrement(item.id)}
+                      >
+                        <FaPlus />
+                      </IconButton>
+                    </HStack>
                   </HStack>
                 </MotionBox>
               ))}
 
+              {/* Total and Actions */}
               <Box as="hr" my={4} borderColor={borderColor} />
-
 
               <Flex justify="space-between" align="center" w="100%" py={2}>
                 <Text fontWeight="semibold" color={textColor}>Total:</Text>
