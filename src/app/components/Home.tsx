@@ -5,7 +5,6 @@ import { ChevronLeftIcon, ChevronRightIcon } from '@chakra-ui/icons';
 import Chicos1 from '../../../public/chicos 1.png';
 import Chicos2 from '../../../public/chicos 2.png';
 import Chicas2 from '../../../public/chicas 2.png';
-import "../styles/backgroundPattern.css";
 import { useColorMode, useColorModeValue } from './ui/color-mode';
 import BackgroundPattern from './BackgroundPattern';
 

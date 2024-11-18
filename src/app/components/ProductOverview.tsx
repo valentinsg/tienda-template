@@ -43,7 +43,6 @@ const ProductOverview: React.FC<ProductOverviewProps> = ({
   const [isLoading, setIsLoading] = useState(false);
 
   const isSizeSelected = selectedSize && selectedSize.length > 0;
-
   const cartItems = useSelector((state: { cart: { items: { id: string; quantity: number; }[]; }; }) => state.cart.items);
 
   // Color mode values
@@ -97,7 +96,7 @@ const ProductOverview: React.FC<ProductOverviewProps> = ({
   };
 
   const mainImage = product.images?.[selectedImage]?.image_url || '/placeholder.jpg';
-
+  
   return (
     <Box bg={useColorModeValue('gray.50', 'gray.900')} minH="100vh">
       <Container maxW="7xl" py={8}>

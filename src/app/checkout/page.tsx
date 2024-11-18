@@ -1,28 +1,56 @@
 'use client';
-import React from 'react';
-import { useSelector } from 'react-redux';
-import { Box, Button, Flex, Input, Text, VStack, HStack, Select, RadioGroup } from '@chakra-ui/react';
-import { useForm } from 'react-hook-form';
-import GooglePlacesAutocomplete from "react-places-autocomplete";
-import { useColorModeValue } from '../components/ui/color-mode';
 
+import React, { useMemo } from 'react';
+import { useSelector } from 'react-redux';
+import { selectCartItems } from '../store/slices/cartSlice';
+import { Box, Button, Flex, Input, Text, VStack, HStack } from '@chakra-ui/react';
+import { useForm } from 'react-hook-form';
+import { useColorModeValue } from '../components/ui/color-mode';
+import AddressAutocomplete from '../components/AddressAutocomplete';
+import { Radio, RadioGroup } from "../components/ui/radio"
+import { SelectLabel, SelectItem, SelectRoot, SelectContent } from '../components/ui/select';
+import { ClientData } from '../../types/ClientData';
+
+//#region Constantes
 const FREE_SHIPPING_THRESHOLD = 120000;
+const SHIPPING_COST = 12500;
+
+const paymentMethods = {
+  methods: [
+    { label: "Tarjeta de Crédito", value: "creditCard" },
+    { label: "Tarjeta de Débito", value: "debitCard" },
+    { label: "Transferencia", value: "transfer" },
+  ],
+};
+//#endregion
 
 const Checkout = () => {
-  const { control, handleSubmit, formState: { errors } } = useForm();
-  const cartItems = useSelector((state) => state.cart.items);
+  const { control, handleSubmit, setValue, formState: { errors } } = useForm<ClientData>();
 
-  const totalAmount = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
-  const shippingCost = totalAmount >= FREE_SHIPPING_THRESHOLD ? 0 : 1500; // Envío gratis si aplica
-  const finalTotal = totalAmount + shippingCost;
+  //#region Redux: Selección del carrito
+  const cartItems = useSelector(selectCartItems);
 
-  const onSubmit = (data) => {
+  // Calcular totales
+  const { totalAmount, shippingCost, finalTotal } = useMemo(() => {
+    const total = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+    const shipping = total >= FREE_SHIPPING_THRESHOLD ? 0 : SHIPPING_COST;
+    return {
+      totalAmount: total,
+      shippingCost: shipping,
+      finalTotal: total + shipping,
+    };
+  }, [cartItems]);
+  //#endregion
+
+  //#region Submit Handler
+  const onSubmit = (data: ClientData) => {
     console.log('Datos del Cliente:', data);
-    // Lógica para procesar el pago (se desarrollará después)
   };
+  //#endregion
 
   return (
     <Flex maxW="6xl" mx="auto" mt={8} p={4} gap={8}>
+
       {/* Columna Izquierda */}
       <Box flex="1" p={4} borderWidth="1px" borderRadius="md">
         <Text fontSize="2xl" fontWeight="bold" mb={4}>Información del Cliente</Text>
@@ -63,13 +91,11 @@ const Checkout = () => {
             {/* Dirección de Envío */}
             <Box>
               <Text>Dirección de Envío</Text>
-              <GooglePlacesAutocomplete
-                selectProps={{
-                  onChange: (value) => console.log(value.label), // Aquí guardas la dirección seleccionada
-                  placeholder: "1234 Main Street",
-                }}
+              <AddressAutocomplete
+                onSelect={(address) => setValue('address', address)}
               />
             </Box>
+
 
             {/* Método de Entrega */}
             <Box>
@@ -85,11 +111,16 @@ const Checkout = () => {
             {/* Método de Pago */}
             <Box>
               <Text>Método de Pago</Text>
-              <Select {...control.register("paymentMethod", { required: "Este campo es obligatorio" })}>
-                <option value="creditCard">Tarjeta de Crédito</option>
-                <option value="debitCard">Tarjeta de Débito</option>
-                <option value="transfer">Transferencia</option>
-              </Select>
+              <SelectRoot {...control.register("paymentMethod", { required: "Este campo es obligatorio" })}>
+                <SelectLabel>Método de Pago</SelectLabel>
+                <SelectContent>
+                  {paymentMethods.methods.map((method) => (
+                    <SelectItem item={method} key={method.value}>
+                      {method.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </SelectRoot>
               {errors.paymentMethod && <Text color="red.500">{errors.paymentMethod.message}</Text>}
             </Box>
 
@@ -104,6 +135,7 @@ const Checkout = () => {
       <Box flex="1" p={4} borderWidth="1px" borderRadius="md">
         <Text fontSize="2xl" fontWeight="bold" mb={4}>Resumen de Compra</Text>
         <VStack gap={4} align="stretch">
+
           {/* Lista de Productos */}
           {cartItems.map((item) => (
             <Flex key={item.id} justify="space-between">
@@ -113,7 +145,7 @@ const Checkout = () => {
           ))}
 
           <Box as="hr" my={4} borderColor={useColorModeValue('gray.400', 'gray.600')} />
-          
+
           {/* Costos */}
           <Flex justify="space-between">
             <Text>Subtotal</Text>
@@ -124,7 +156,7 @@ const Checkout = () => {
             <Text>{shippingCost === 0 ? "Gratis" : `$${shippingCost}`}</Text>
           </Flex>
           <Box as="hr" my={4} borderColor={useColorModeValue('gray.400', 'gray.600')} />
-          
+
           {/* Total */}
           <Flex justify="space-between" fontWeight="bold">
             <Text>Total</Text>
