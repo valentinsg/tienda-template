@@ -228,7 +228,11 @@ const ProductOverview: React.FC<ProductOverviewProps> = ({
                       <SelectItem
                         key={size}
                         item={{ value: size, label: size.toUpperCase() }}
-                        disabled={remaining <= 0}
+                        _disabled={{
+                          opacity: remaining <= 0 ? 0.5 : 1,
+                          cursor: remaining <= 0 ? 'not-allowed' : 'pointer',
+                          pointerEvents: remaining <= 0 ? 'none' : 'auto'
+                        }}
                       >
                         <HStack justify="space-between" width="100%">
                           <Text>{size.toUpperCase()}</Text>

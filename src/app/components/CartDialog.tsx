@@ -21,202 +21,284 @@ import {
   DialogTitle,
   DialogBody,
   DialogCloseTrigger,
-  DialogDescription,
 } from '../components/ui/dialog';
-import { FaShoppingCart, FaPlus, FaMinus } from 'react-icons/fa';
+import { CloseButton } from './ui/close-button';
+import { FaShoppingCart, FaPlus, FaMinus, FaTruck } from 'react-icons/fa';
 import { useColorModeValue } from '../components/ui/color-mode';
 import { motion } from 'framer-motion';
+import {
+  ProgressBar,
+  ProgressLabel,
+  ProgressRoot,
+  ProgressValueText,
+} from "./ui/progress";
 
-// Create a motion component with Chakra UI
+// #region Types & Constants
+type CartItem = {
+  id: string;
+  name: string;
+  price: number;
+  quantity: number;
+  imageUrl: string;
+};
+
+const FREE_SHIPPING_THRESHOLD = 120000;
 const MotionBox = chakra(motion.div);
+const MotionFlex = chakra(motion.div);
+// #endregion
 
 const CartDialog = () => {
-  // Redux hooks
+  // #region Hooks & State
   const dispatch = useDispatch();
   const cartItems = useSelector(
-    (state: { cart: { items: { id: string; name: string; price: number; quantity: number; imageUrl: string; }[] } }) =>
-      state.cart.items
+    (state: { cart: { items: CartItem[] } }) => state.cart.items
   );
+  // #endregion
 
-  // Calculate total amount
+  // #region Theme
+  const theme = {
+    text: useColorModeValue('#555454', '#D0D0D0'),
+    mutedText: useColorModeValue('gray.600', 'gray.400'),
+    border: useColorModeValue('gray.200', 'gray.700'),
+    hover: useColorModeValue('gray.50', 'gray.700'),
+    card: useColorModeValue('white', 'gray.800'),
+    progress: {
+      bg: useColorModeValue('gray.100', 'gray.700'),
+      filled: useColorModeValue('#555454', '#D0D0D0'),
+    }
+  };
+  // #endregion
+
+  // #region Calculations
   const totalAmount = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const shippingProgress = Math.min((totalAmount / FREE_SHIPPING_THRESHOLD) * 100, 100);
+  const freeShippingQualified = totalAmount >= FREE_SHIPPING_THRESHOLD;
+  // #endregion
 
-  // Color mode values for theming
-  const textColor = useColorModeValue('gray.800', 'white');
-  const mutedTextColor = useColorModeValue('gray.600', 'gray.400');
-  const borderColor = useColorModeValue('gray.200', 'gray.700');
-  const hoverBg = useColorModeValue('gray.50', 'gray.700');
-
-  // Cart actions handlers
+  // #region Handlers
   const handleDecrement = (id: string) => dispatch(decrementItem(id));
   const handleIncrement = (id: string) => dispatch(incrementItem(id));
   const handleClearCart = () => dispatch(clearCart());
+  // #endregion
+
+  // #region Render Helpers
+  const renderCartIcon = () => (
+    <Box position="relative">
+      <IconButton
+        aria-label="Shopping Cart"
+        variant="ghost"
+        colorScheme="gray"
+        _hover={{ bg: theme.hover }}
+        h="48px"
+        w="48px"
+      >
+        <Box as={FaShoppingCart} w="24px" h="24px" color={theme.text} />
+      </IconButton>
+      {cartItems.length > 0 && (
+        <MotionBox
+          initial={{ scale: 0.5 }}
+          animate={{ scale: 1 }}
+          position="absolute"
+          top="-2"
+          right="-2"
+          bg={theme.text}
+          color="white"
+          borderRadius="full"
+          w="6"
+          h="6"
+          display="flex"
+          alignItems="center"
+          justifyContent="center"
+          fontSize="sm"
+          fontWeight="bold"
+        >
+          {cartItems.length}
+        </MotionBox>
+      )}
+    </Box>
+  );
+
+  const renderShippingProgress = () => (
+    <Box mb="8" p="4" bg={theme.hover} borderRadius="lg">
+      <Flex align="center" gap="3" mb="3">
+        <Box as={FaTruck} color={freeShippingQualified ? 'green.500' : theme.text} />
+        <Text fontSize="sm" fontWeight="medium">
+          {freeShippingQualified
+            ? "🎉 You've qualified for free shipping!"
+            : `$${(FREE_SHIPPING_THRESHOLD - totalAmount).toLocaleString()} away from free shipping`}
+        </Text>
+      </Flex>
+      <ProgressRoot 
+        value={shippingProgress}
+        size="sm"
+        borderRadius="full"
+        bg={theme.progress.bg}
+      >
+        <HStack gap="5">
+          <ProgressLabel>Free Shipping</ProgressLabel>
+          <ProgressBar flex="1" />
+          <ProgressValueText>{`${Math.round(shippingProgress)}%`}</ProgressValueText>
+        </HStack>
+      </ProgressRoot>
+    </Box>
+  );
+
+  const renderCartItem = (item: CartItem) => (
+    <MotionFlex
+      key={item.id}
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -20 }}
+      w="100%"
+      p="5"
+      bg={theme.card}
+      borderWidth="1px"
+      borderColor={theme.border}
+      borderRadius="lg"
+      transition="all 0.2s"
+      _hover={{ shadow: 'md', transform: 'translateY(-2px)' }}
+    >
+      <HStack gap="6" width="100%">
+        <Box overflow="hidden" borderRadius="lg" w="80px" h="80px">
+          <Image
+            src={item.imageUrl || '/placeholder.jpg'}
+            alt={item.name}
+            w="full"
+            h="full"
+            objectFit="cover"
+            transition="transform 0.2s"
+            _hover={{ transform: 'scale(1.05)' }}
+          />
+        </Box>
+
+        <VStack align="start" flex="1" gap="2">
+          <Text fontWeight="medium" color={theme.text} fontSize="lg">
+            {item.name}
+          </Text>
+          <Text fontWeight="bold" color={theme.text} fontSize="xl">
+            ${(item.price * item.quantity).toLocaleString()}
+          </Text>
+        </VStack>
+
+        <HStack bg={theme.hover} p="2" borderRadius="lg" gap="3">
+          <IconButton
+            aria-label="Decrease quantity"
+            size="sm"
+            variant="ghost"
+            onClick={() => handleDecrement(item.id)}
+          >
+            <FaMinus />
+          </IconButton>
+
+          <Text color={theme.text} fontSize="md" minW="8" textAlign="center" fontWeight="medium">
+            {item.quantity}
+          </Text>
+
+          <IconButton
+            aria-label="Increase quantity"
+            size="sm"
+            variant="ghost"
+            onClick={() => handleIncrement(item.id)}
+          >
+            <FaPlus />
+          </IconButton>
+        </HStack>
+      </HStack>
+    </MotionFlex>
+  );
+  // #endregion
 
   return (
     <DialogRoot>
-      {/* Cart Icon with Item Count Badge */}
       <DialogTrigger>
-        <Box position="relative">
-          <IconButton
-            aria-label="Shopping Cart"
-            variant="ghost"
-            colorScheme="gray"
-            _hover={{ bg: hoverBg }}
-          >
-            <FaShoppingCart />
-          </IconButton>
-          {cartItems.length > 0 && (
-            <MotionBox
-              initial={{ scale: 0.5 }}
-              animate={{ scale: 1 }}
-              position="absolute"
-              top="-2"
-              right="-2"
-              bg="red.500"
-              color="white"
-              borderRadius="full"
-              w="5"
-              h="5"
-              display="flex"
-              alignItems="center"
-              justifyContent="center"
-              fontSize="xs"
-            >
-              {cartItems.length}
-            </MotionBox>
-          )}
-        </Box>
+        {renderCartIcon()}
       </DialogTrigger>
 
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[550px]">
         <DialogHeader>
-          <DialogTitle>Your Shopping Cart</DialogTitle>
-          <DialogDescription>
-            {cartItems.length === 0 ?
-              'Your cart is empty' :
-              `You have ${cartItems.length} item${cartItems.length === 1 ? '' : 's'} in your cart`
-            }
-          </DialogDescription>
+          <Flex justify="space-between" align="center" w="100%" pb="4" borderBottom="1px" borderColor={theme.border}>
+            <DialogTitle>
+              <Text fontSize="2xl" fontWeight="bold" color={theme.text}>
+                Your Cart
+              </Text>
+            </DialogTitle>
+            <DialogCloseTrigger asChild>
+              <CloseButton size="lg" />
+            </DialogCloseTrigger>
+          </Flex>
         </DialogHeader>
 
-        <DialogBody className="pb-8">
+        <DialogBody>
           {cartItems.length === 0 ? (
-            // Empty cart state
-            <VStack gap={4} py={8}>
-              <Box fontSize="6xl">🛒</Box>
-              <Text color={mutedTextColor}>
-                Start shopping to add items to your cart
+            <VStack gap="6" py="12" align="center">
+              <MotionBox
+                initial={{ scale: 0.5 }}
+                animate={{ scale: 1 }}
+                fontSize="6xl"
+              >
+                🛒
+              </MotionBox>
+              <Text color={theme.mutedText}>
+                Your cart is looking empty
               </Text>
+              <DialogCloseTrigger asChild>
+                <Button
+                  bg={theme.text}
+                  color="white"
+                  size="lg"
+                  _hover={{ opacity: 0.9 }}
+                >
+                  Start Shopping
+                </Button>
+              </DialogCloseTrigger>
             </VStack>
           ) : (
-            // Cart items list
-            <VStack gap={4}>
-              {cartItems.map((item) => (
-                <MotionBox
-                  key={item.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -20 }}
-                  w="100%"
-                  p={3}
-                  borderWidth="1px"
-                  borderColor={borderColor}
-                  borderRadius="md"
-                  _hover={{ bg: hoverBg }}
-                  transition="all 0.2s"
-                >
-                  <HStack justify="space-between" gap={4}>
-                    {/* Product Image */}
-                    <Image
-                      src={item.imageUrl || '/placeholder.jpg'}
-                      alt={item.name}
-                      boxSize="60px"
-                      objectFit="cover"
-                      borderRadius="md"
-                    />
-                    
-                    {/* Product Details */}
-                    <VStack align="start" flex={1} gap={1}>
-                      <Text fontWeight="medium" color={textColor}>
-                        {item.name}
-                      </Text>
-                      <Text fontWeight="bold" color={textColor}>
-                        ${(item.price * item.quantity).toFixed(2)}
-                      </Text>
-                    </VStack>
+            <VStack gap="6">
+              {renderShippingProgress()}
+              {cartItems.map(renderCartItem)}
 
-                    {/* Quantity Controls */}
-                    <HStack>
-                      <IconButton
-                        aria-label="Decrease quantity"
-                        size="sm"
-                        variant="ghost"
-                        colorScheme="blue"
-                        onClick={() => handleDecrement(item.id)}
-                      >
-                        <FaMinus />
-                      </IconButton>
-                      
-                      <Text color={mutedTextColor} fontSize="sm" minW="20px" textAlign="center">
-                        {item.quantity}
-                      </Text>
+              <Box w="100%" pt="6" borderTop="1px" borderColor={theme.border}>
+                <Flex justify="space-between" align="center" mb="6">
+                  <Text fontSize="lg" color={theme.text}>
+                    Total
+                  </Text>
+                  <Text fontSize="2xl" fontWeight="bold" color={theme.text}>
+                    ${totalAmount.toLocaleString()}
+                  </Text>
+                </Flex>
 
-                      <IconButton
-                        aria-label="Increase quantity"
-                        size="sm"
-                        variant="ghost"
-                        colorScheme="blue"
-                        onClick={() => handleIncrement(item.id)}
-                      >
-                        <FaPlus />
-                      </IconButton>
-                    </HStack>
-                  </HStack>
-                </MotionBox>
-              ))}
+                <VStack gap="4">
+                  <Link href="/checkout" passHref style={{ width: '100%' }}>
+                    <Button
+                      w="100%"
+                      bg={theme.text}
+                      color="white"
+                      size="lg"
+                      h="16"
+                      fontSize="lg"
+                      _hover={{ opacity: 0.9 }}
+                    >
+                      Proceed to Checkout
+                    </Button>
+                  </Link>
 
-              {/* Total and Actions */}
-              <Box as="hr" my={4} borderColor={borderColor} />
-
-              <Flex justify="space-between" align="center" w="100%" py={2}>
-                <Text fontWeight="semibold" color={textColor}>Total:</Text>
-                <Text fontWeight="bold" fontSize="xl" color={textColor}>
-                  ${totalAmount.toFixed(2)}
-                </Text>
-              </Flex>
-
-              <VStack gap={3} w="100%" pt={4}>
-                <Link href="/checkout" passHref style={{ width: '100%' }}>
-                  <Button
-                    w="100%"
-                    colorScheme="blue"
-                    size="lg"
-                  >
-                    Checkout
-                  </Button>
-                </Link>
-
-                <HStack w="100%" gap={2}>
-                  <Button
-                    variant="outline"
-                    colorScheme="red"
-                    size="sm"
-                    onClick={handleClearCart}
-                    flex={1}
-                  >
-                    Clear Cart
-                  </Button>
-                  <DialogCloseTrigger asChild>
+                  <HStack w="100%" gap="4">
                     <Button
                       variant="outline"
-                      size="sm"
-                      flex={1}
+                      colorScheme="red"
+                      onClick={handleClearCart}
+                      flex="1"
                     >
-                      Continue Shopping
+                      Clear Cart
                     </Button>
-                  </DialogCloseTrigger>
-                </HStack>
-              </VStack>
+                    <DialogCloseTrigger asChild>
+                      <Button variant="outline" flex="1">
+                        Continue Shopping
+                      </Button>
+                    </DialogCloseTrigger>
+                  </HStack>
+                </VStack>
+              </Box>
             </VStack>
           )}
         </DialogBody>
