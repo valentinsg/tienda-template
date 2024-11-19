@@ -3,13 +3,18 @@
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { selectCartItems } from '../store/slices/cartSlice';
-import { Box, Button, Flex, Input, Text, VStack, HStack } from '@chakra-ui/react';
+import {
+  Box,
+  Button,
+  Flex,
+  Input,
+  Text,
+  VStack,
+} from '@chakra-ui/react';
 import { useForm } from 'react-hook-form';
-import { useColorModeValue } from '../components/ui/color-mode';
-import AddressAutocomplete from '../components/AddressAutocomplete';
-import { Radio, RadioGroup } from "../components/ui/radio"
-import { SelectLabel, SelectItem, SelectRoot, SelectContent } from '../components/ui/select';
 import { ClientData } from '../../types/ClientData';
+import { useColorModeValue } from '../components/ui/color-mode';
+import { SelectContent, SelectItem, SelectLabel, SelectRoot } from '../components/ui/select';
 
 //#region Constantes
 const FREE_SHIPPING_THRESHOLD = 120000;
@@ -25,7 +30,12 @@ const paymentMethods = {
 //#endregion
 
 const Checkout = () => {
-  const { control, handleSubmit, setValue, formState: { errors } } = useForm<ClientData>();
+  const {
+    register,
+    handleSubmit,
+    control,
+    formState: { errors },
+  } = useForm<ClientData>();
 
   //#region Redux: Selección del carrito
   const cartItems = useSelector(selectCartItems);
@@ -49,11 +59,12 @@ const Checkout = () => {
   //#endregion
 
   return (
-    <Flex maxW="6xl" mx="auto" mt={8} p={4} gap={8}>
-
+    <Flex maxW="6xl" mx="auto" mt={8} p={4} gap={8} direction={{ base: 'column', md: 'row' }}>
       {/* Columna Izquierda */}
       <Box flex="1" p={4} borderWidth="1px" borderRadius="md">
-        <Text fontSize="2xl" fontWeight="bold" mb={4}>Información del Cliente</Text>
+        <Text fontSize="2xl" fontWeight="bold" mb={4}>
+          Información del Cliente
+        </Text>
         <form onSubmit={handleSubmit(onSubmit)}>
           <VStack gap={4} align="stretch">
             {/* Nombre Completo */}
@@ -61,20 +72,9 @@ const Checkout = () => {
               <Text>Nombre Completo</Text>
               <Input
                 placeholder="John Doe"
-                {...control.register("fullName", { required: "Este campo es obligatorio" })}
+                {...register("fullName", { required: "Este campo es obligatorio" })}
               />
               {errors.fullName && <Text color="red.500">{errors.fullName.message}</Text>}
-            </Box>
-
-            {/* Edad */}
-            <Box>
-              <Text>Edad</Text>
-              <Input
-                type="number"
-                placeholder="30"
-                {...control.register("age", { required: "Este campo es obligatorio" })}
-              />
-              {errors.age && <Text color="red.500">{errors.age.message}</Text>}
             </Box>
 
             {/* Teléfono */}
@@ -83,7 +83,7 @@ const Checkout = () => {
               <Input
                 type="tel"
                 placeholder="+54 223 1234567"
-                {...control.register("phone", { required: "Este campo es obligatorio" })}
+                {...register("phone", { required: "Este campo es obligatorio" })}
               />
               {errors.phone && <Text color="red.500">{errors.phone.message}</Text>}
             </Box>
@@ -91,21 +91,12 @@ const Checkout = () => {
             {/* Dirección de Envío */}
             <Box>
               <Text>Dirección de Envío</Text>
-              <AddressAutocomplete
-                onSelect={(address) => setValue('address', address)}
+              <Input
+                type="text"
+                placeholder="Calle Falsa 1234"
+                {...register("address", { required: "Este campo es obligatorio" })}
               />
-            </Box>
-
-
-            {/* Método de Entrega */}
-            <Box>
-              <Text>Método de Entrega</Text>
-              <RadioGroup defaultValue="homeDelivery">
-                <HStack gap={4}>
-                  <Radio value="homeDelivery">Domicilio</Radio>
-                  <Radio value="pickupPoint">Punto de Entrega</Radio>
-                </HStack>
-              </RadioGroup>
+              {errors.address && <Text color="red.500">{errors.address.message}</Text>}
             </Box>
 
             {/* Método de Pago */}
@@ -123,7 +114,6 @@ const Checkout = () => {
               </SelectRoot>
               {errors.paymentMethod && <Text color="red.500">{errors.paymentMethod.message}</Text>}
             </Box>
-
             <Button type="submit" colorScheme="blue" size="lg" w="full">
               Proceder al Pago
             </Button>
@@ -133,9 +123,10 @@ const Checkout = () => {
 
       {/* Columna Derecha */}
       <Box flex="1" p={4} borderWidth="1px" borderRadius="md">
-        <Text fontSize="2xl" fontWeight="bold" mb={4}>Resumen de Compra</Text>
+        <Text fontSize="2xl" fontWeight="bold" mb={4}>
+          Resumen de Compra
+        </Text>
         <VStack gap={4} align="stretch">
-
           {/* Lista de Productos */}
           {cartItems.map((item) => (
             <Flex key={item.id} justify="space-between">
