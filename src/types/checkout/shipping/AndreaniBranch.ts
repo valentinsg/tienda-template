@@ -20,6 +20,8 @@ import { Province } from "./Province";
  */
 
 export interface AndreaniBranch {
+  
+  id: string;
   /**
    * The name of the branch.
    */

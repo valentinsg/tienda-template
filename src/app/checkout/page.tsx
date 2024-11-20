@@ -1,229 +1,282 @@
 'use client';
 
-import React, { useEffect, useMemo, useState } from 'react';
-import { useSelector } from 'react-redux';
-import { selectCartItems } from '../store/slices/cartSlice';
+import React, { useState } from 'react';
 import {
   Box,
-  Button,
-  Flex,
-  Input,
+  Stack,
   Text,
-  VStack,
+  Fieldset,
+  Input,
+  Button,
+  SelectRoot,
 } from '@chakra-ui/react';
-import { useForm } from 'react-hook-form';
-import { ClientData } from '../../types/client/ClientData';
-import { AndreaniBranch } from "../../types/checkout/shipping/AndreaniBranch";
-import { useColorModeValue } from '../components/ui/color-mode';
-import { SelectRoot, SelectItem, SelectTrigger, SelectValueText, SelectContent } from '../components/ui/select';
+import { Field } from "../components/ui/field"
+import { useSelector } from 'react-redux';
+import { selectCartItems } from '../store/slices/cartSlice';
+import { Radio, RadioGroup } from '../components/ui/radio';
+import { SelectContent, SelectItem, SelectLabel, SelectTrigger, SelectValueText } from '../components/ui/select';
+import { createListCollection } from "@chakra-ui/react"
+import { PaymentMethod } from '@/types/checkout/payment/PaymentMethod';
 
-const FREE_SHIPPING_THRESHOLD = 120000;
-
-const HOME_SHIPPING_COST = 9500;
-const BRANCH_SHIPPING_COST = 8000;
-
-const PROVINCES = [
-  "Buenos Aires",
-  "Ciudad Autónoma de Buenos Aires",
-  "Catamarca",
-  "Chaco",
-  "Chubut",
-  "Córdoba",
-  "Corrientes",
-  "Entre Ríos",
-  "Formosa",
-  "Jujuy",
-  "La Pampa",
-  "La Rioja",
-  "Mendoza",
-  "Misiones",
-  "Neuquén",
-  "Río Negro",
-  "Salta",
-  "San Juan",
-  "San Luis",
-  "Santa Cruz",
-  "Santa Fe",
-  "Santiago del Estero",
-  "Tierra del Fuego",
-  "Tucumán",
-];
-
-const paymentMethods = [
-  { label: "Tarjeta de Crédito", value: "creditCard" },
-  { label: "Tarjeta de Débito", value: "debitCard" },
-  { label: "Transferencia", value: "transfer" },
-];
+const provinces = createListCollection({
+  items: [
+    "Buenos Aires", "Ciudad Autónoma de Buenos Aires", "Catamarca", "Chaco",
+    "Chubut", "Córdoba", "Corrientes", "Entre Ríos", "Formosa", "Jujuy",
+    "La Pampa", "La Rioja", "Mendoza", "Misiones", "Neuquén", "Río Negro",
+    "Salta", "San Juan", "San Luis", "Santa Cruz", "Santa Fe",
+    "Santiago del Estero", "Tierra del Fuego", "Tucumán"
+  ]
+})
 
 const Checkout = () => {
-  const { register, handleSubmit, setValue, watch, formState: { errors } } = useForm<ClientData>();
   const cartItems = useSelector(selectCartItems);
-  const [, setBranches] = useState<AndreaniBranch[]>([]);
-  const [, setLoadingBranches] = useState(false);
+  const [step, setStep] = useState(1);
+  const [personalInfo, setPersonalInfo] = useState({
+    name: '',
+    lastName: '',
+    email: '',
+    phone: '',
+    age: '',
+  });
 
-  const [selectedProvince, setSelectedProvince] = useState<string[] | null>(null);
-  const [selectedShippingMethod, setSelectedShippingMethod] = useState<'home' | 'branch'>('home');
+  const [shippingMethod, setShippingMethod] = useState<'home' | 'branch'>('home');
 
-  const postalCode = watch('postal_code');
+  const handleShippingMethodChange = (value: string) => {
+    if (value === 'home' || value === 'branch') {
+      setShippingMethod(value);
 
-  // Calcular totales
-  const { totalAmount, shippingCost, finalTotal } = useMemo(() => {
-    const total = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
-    const shipping = selectedShippingMethod === 'home' ? HOME_SHIPPING_COST : BRANCH_SHIPPING_COST;
-    return {
-      totalAmount: total,
-      shippingCost: total >= FREE_SHIPPING_THRESHOLD ? 0 : shipping,
-      finalTotal: total + (total >= FREE_SHIPPING_THRESHOLD ? 0 : shipping),
+      if (value === 'home') {
+        setBranchShippingDetails({ province: '', postalCode: '', branchId: '' });
+      } else {
+        setHomeShippingDetails({ address: '', province: '', postalCode: '', city: '' });
+      }
+    }
+  };
+  const [homeShippingDetails, setHomeShippingDetails] = useState({
+    address: '',
+    province: '',
+    postalCode: '',
+    city: '',
+  });
+  const [branchShippingDetails, setBranchShippingDetails] = useState({
+    province: '',
+    postalCode: '',
+    branchId: '',
+  });
+
+  const [paymentMethod, setPaymentMethod] = useState<'creditCard' | 'debitCard' | 'transfer'>('creditCard');
+
+  const handleNext = () => setStep((prev) => prev + 1);
+  const handleBack = () => setStep((prev) => Math.max(prev - 1, 1));
+
+  const handleSubmit = () => {
+    const checkoutData = {
+      personalInfo,
+      shippingDetails: shippingMethod === 'home' ? homeShippingDetails : branchShippingDetails,
+      paymentMethod,
+      cartItems,
+      shippingCost: shippingMethod === 'home' ? 9500 : 8000,
     };
-  }, [cartItems, selectedShippingMethod]);
-
-  // Fetch branches when shipping method is "branch"
-  const fetchBranches = async () => {
-    if (!selectedProvince || !postalCode) return;
-    setLoadingBranches(true);
-    try {
-      const response = await fetch(`/api/andreani-branches?province=${selectedProvince}&postalCode=${postalCode}`);
-      const data = await response.json();
-      setBranches(data);
-    } catch (error) {
-      console.error("Error fetching branches:", error);
-      setBranches([]);
-    } finally {
-      setLoadingBranches(false);
-    }
+    console.log('Checkout Data:', checkoutData);
   };
 
-  useEffect(() => {
-    if (shippingMethod === 'branch') {
-      fetchBranches();
-    }
-  }, [selectedProvince, postalCode, shippingMethod]);
-
-  // Handle form submission
-  const onSubmit = (data: ClientData) => {
-    console.log('Datos del Cliente:', data);
-    // Aquí puedes enviar los datos a un backend o manejarlos como desees
-  };
+  const totalPrice = cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
 
   return (
-    <Flex maxW="6xl" mx="auto" mt={8} p={4} gap={8} direction={{ base: 'column', md: 'row' }}>
-      {/* Columna Izquierda */}
-      <Box flex="1" p={4} borderWidth="1px" borderRadius="md">
-        <Text fontSize="2xl" fontWeight="bold" mb={4}>
-          Información del Cliente
-        </Text>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <VStack gap={4} align="stretch">
-            {/* Nombre Completo */}
-            <Box>
-              <Text>Nombre Completo</Text>
-              <Input
-                placeholder="John Doe"
-                {...register("fullName", { required: "Este campo es obligatorio" })}
-              />
-              {errors.fullName && <Text color="red.500">{errors.fullName.message}</Text>}
-            </Box>
-
-            {/* Teléfono */}
-            <Box>
-              <Text>Número de Teléfono</Text>
-              <Input
-                type="tel"
-                placeholder="+54 223 1234567"
-                {...register("phone", { required: "Este campo es obligatorio" })}
-              />
-              {errors.phone && <Text color="red.500">{errors.phone.message}</Text>}
-            </Box>
-
-            {/* Provincia */}
-            <Box>
-              <Text>Provincia</Text>
-              <SelectRoot
-                value={selectedProvince || []}
-                onValueChange={(e) => setSelectedProvince(e.value)}
-              >
-                <SelectTrigger>
-                  <SelectValueText placeholder="Seleccione una provincia" />
-                </SelectTrigger>
-                <SelectContent>
-                  {PROVINCES.map((province) => (
-                    <SelectItem key={province} value={province}>
-                      {province}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </SelectRoot>
-              {errors.province && <Text color="red.500">{errors.province.message}</Text>}
-            </Box>
-
-            {/* Código Postal */}
-            <Box>
-              <Text>Código Postal</Text>
-              <Input
-                placeholder="7600"
-                {...register("postal_code", { required: "Este campo es obligatorio" })}
-              />
-              {errors.postal_code && <Text color="red.500">{errors.postal_code.message}</Text>}
-            </Box>
-
-            {/* Método de Pago */}
-            <Box>
-              <Text>Método de Pago</Text>
-              <SelectRoot
-                onValueChange={(value) => setValue('paymentMethod', value, { shouldValidate: true })}
-              >
-                <SelectTrigger>
-                  <SelectValueText placeholder="Seleccione un método de pago" />
-                </SelectTrigger>
-                <SelectContent>
-                  {paymentMethods.map((method) => (
-                    <SelectItem key={method.value} value={method.value}>
-                      {method.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </SelectRoot>
-              {errors.paymentMethod && <Text color="red.500">{errors.paymentMethod.message}</Text>}
-            </Box>
-
-            {/* Botón de Envío */}
-            <Button type="submit" colorScheme="blue" size="lg" w="full">
-              Proceder al Pago
-            </Button>
-          </VStack>
-        </form>
+    <Stack direction={{ base: 'column', md: 'row' }} gap={6} p={6}>
+      {/* Resumen del carrito */}
+      <Box flex={1} borderWidth={1} borderRadius="md" p={4}>
+        <Text fontWeight="bold" fontSize="lg">Resumen de Compra</Text>
+        {cartItems.map((item) => (
+          <Box key={item.id} mt={3}>
+            <Text>{item.name} x{item.quantity}</Text>
+            <Text>${item.price * item.quantity}</Text>
+          </Box>
+        ))}
+        <Box my={4} />
+        <Text>Total Productos: ${totalPrice}</Text>
+        <Box height="1px" bg="gray.200" my={4} />
+        <Text>Envío: ${shippingMethod === 'home' ? 9500 : 8000}</Text>
+        <Text fontWeight="bold" mt={2}>Total: ${totalPrice + (shippingMethod === 'home' ? 9500 : 8000)}</Text>
       </Box>
 
-      {/* Columna Derecha */}
-      <Box flex="1" p={4} borderWidth="1px" borderRadius="md">
-        <Text fontSize="2xl" fontWeight="bold" mb={4}>
-          Resumen de Compra
-        </Text>
-        <VStack gap={4} align="stretch">
-          {/* Lista de Productos */}
-          {cartItems.map((item) => (
-            <Flex key={item.id} justify="space-between">
-              <Text>{item.name}</Text>
-              <Text>${(item.price * item.quantity).toLocaleString()}</Text>
-            </Flex>
-          ))}
-          <Box as="hr" my={4} borderColor={useColorModeValue('gray.400', 'gray.600')} />
-          <Flex justify="space-between">
-            <Text>Subtotal</Text>
-            <Text>${totalAmount.toLocaleString()}</Text>
-          </Flex>
-          <Flex justify="space-between">
-            <Text>Envío</Text>
-            <Text>{shippingCost === 0 ? "Gratis" : `$${shippingCost}`}</Text>
-          </Flex>
-          <Box as="hr" my={4} borderColor={useColorModeValue('gray.400', 'gray.600')} />
-          <Flex justify="space-between" fontWeight="bold">
-            <Text>Total</Text>
-            <Text>${finalTotal.toLocaleString()}</Text>
-          </Flex>
-        </VStack>
+      {/* Formulario */}
+      <Box flex={2} borderWidth={1} borderRadius="md" p={4}>
+        {step === 1 && (
+          <Fieldset.Root>
+            <Stack gap={4}>
+              <Fieldset.Content>
+                <Text fontWeight="bold" fontSize="lg">Datos Personales</Text>
+
+                <Field label="Nombre">
+                  <Input
+                    value={personalInfo.name}
+                    onChange={(e) => setPersonalInfo({ ...personalInfo, name: e.target.value })}
+                  />
+                </Field>
+
+                <Field label="Apellido">
+                  <Input
+                    value={personalInfo.lastName}
+                    onChange={(e) => setPersonalInfo({ ...personalInfo, lastName: e.target.value })}
+                  />
+                </Field>
+
+                <Field label="Email">
+                  <Input
+                    value={personalInfo.email}
+                    onChange={(e) => setPersonalInfo({ ...personalInfo, email: e.target.value })}
+                  />
+                </Field>
+                <Field label="Telefono">
+                  <Input
+                    value={personalInfo.phone}
+                    onChange={(e) => setPersonalInfo({ ...personalInfo, phone: e.target.value })}
+                  />
+                </Field>
+
+                <Field label="Edad">
+                  <Input
+                    value={personalInfo.age}
+                    onChange={(e) => setPersonalInfo({ ...personalInfo, age: e.target.value })}
+                  />
+                </Field>
+                <Button colorScheme="blue" onClick={handleNext}>Siguiente</Button>
+              </Fieldset.Content>
+            </Stack>
+          </Fieldset.Root>
+        )}
+
+        {step === 2 && (
+          <Stack gap={4}>
+            <Text fontWeight="bold" fontSize="lg">Método de Envío</Text>
+            <RadioGroup
+              onChange={(event) => handleShippingMethodChange((event.target as HTMLInputElement).value as 'home' | 'branch')}
+              value={shippingMethod}
+            >
+              <Stack direction="row">
+                <Radio value="home">Envío a Domicilio</Radio>
+                <Radio value="branch">Retiro en Sucursal</Radio>
+              </Stack>
+            </RadioGroup>
+            {shippingMethod === 'home' && (
+              <Fieldset.Root>
+                <Stack>
+                  <Fieldset.Content>
+                    <SelectRoot
+                      value={[homeShippingDetails.province]}
+                      onChange={(e) => setHomeShippingDetails({ ...homeShippingDetails, province: (e.target as HTMLSelectElement).value })}
+                    >
+                      <SelectLabel>Selecciona provincia</SelectLabel>
+                      <SelectTrigger>
+                        <SelectValueText placeholder="Selecciona tu provincia" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {provinces.items.map((province) => (
+                          <SelectItem item={province} key={province}>
+                            {province}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </SelectRoot>
+
+                    <Field label="Código Postal">
+                      <Input
+                        value={homeShippingDetails.postalCode}
+                        onChange={(e) => setHomeShippingDetails({ ...homeShippingDetails, postalCode: e.target.value })}
+                      />
+                    </Field>
+
+                    <Fieldset.Legend>Ciudad</Fieldset.Legend>
+                    <Field label="Ciudad">
+                      <Input
+                        value={homeShippingDetails.city}
+                        onChange={(e) => setHomeShippingDetails({ ...homeShippingDetails, city: e.target.value })}
+                      />
+                    </Field>
+
+                    <Fieldset.Legend>Dirección</Fieldset.Legend>
+                    <Field label="Dirección">
+                      <Input
+                        value={homeShippingDetails.address}
+                        onChange={(e) => setHomeShippingDetails({ ...homeShippingDetails, address: e.target.value })}
+                      />
+                    </Field>
+
+                  </Fieldset.Content>
+                </Stack>
+              </Fieldset.Root>
+            )}
+            {shippingMethod === 'branch' && (
+              <Fieldset.Root>
+                <Stack>
+                  <SelectRoot
+                    value={[homeShippingDetails.province]}
+                    onChange={(e) => setHomeShippingDetails({ ...homeShippingDetails, province: (e.target as HTMLSelectElement).value })}
+                  >
+                    <SelectLabel>Selecciona provincia</SelectLabel>
+                    <SelectTrigger>
+                      <SelectValueText placeholder="Select movie" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {provinces.items.map((province) => (
+                        <SelectItem item={province} key={province}>
+                          {province}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </SelectRoot>
+                  <Field label="Código Postal">
+                    <Input
+                      value={homeShippingDetails.postalCode}
+                      onChange={(e) => setHomeShippingDetails({ ...homeShippingDetails, postalCode: e.target.value })}
+                    />
+                  </Field>
+                  <SelectRoot
+                    value={[branchShippingDetails.branchId]}
+                    onChange={(e) => setBranchShippingDetails({ ...branchShippingDetails, branchId: (e.target as HTMLSelectElement).value })}
+                  >
+                    <SelectLabel>Selecciona una sucursal</SelectLabel>
+                    <SelectTrigger>
+                      <SelectValueText placeholder="Selecciona la sucursal mas cercana" />
+                    </SelectTrigger>
+                    {/* Aquí harías un fetch a tu backend para las sucursales */}
+                    <SelectContent>
+                      {provinces.items.map((province) => (
+                        <SelectItem item={province} key={province}>
+                          {province}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </SelectRoot>
+                </Stack>
+              </Fieldset.Root>
+            )}
+            <Stack direction="row" justifyContent="space-between">
+              <Button onClick={handleBack}>Volver</Button>
+              <Button colorScheme="blue" onClick={handleNext}>Siguiente</Button>
+            </Stack>
+          </Stack>
+        )}
+
+        {step === 3 && (
+          <Stack gap={4}>
+            <Text fontWeight="bold" fontSize="lg">Método de Pago</Text>
+            <RadioGroup onChange={(value) => setPaymentMethod(value as unknown as PaymentMethod)} value={paymentMethod}>
+              <Stack direction="row">
+                <Radio value="creditCard">Tarjeta de Crédito</Radio>
+                <Radio value="debitCard">Tarjeta de Débito</Radio>
+                <Radio value="transfer">Transferencia Bancaria</Radio>
+              </Stack>
+            </RadioGroup>
+            <Stack direction="row" justifyContent="space-between">
+              <Button onClick={handleBack}>Volver</Button>
+              <Button colorScheme="green" onClick={handleSubmit}>Finalizar</Button>
+            </Stack>
+          </Stack>
+        )}
       </Box>
-    </Flex>
+    </Stack >
   );
 };
 

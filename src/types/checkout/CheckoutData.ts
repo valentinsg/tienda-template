@@ -1,7 +1,7 @@
 import { ClientPersonalInfo } from '../client/ClientData';
 import { ShippingDetails } from './shipping/ShippingDetails';
 import { PaymentMethod } from './payment/PaymentMethod';
-import { Product } from '../Product';
+import { CartItem } from '../CartItem'; 
 
 /**
  * Represents the data required for a checkout process.
@@ -57,5 +57,5 @@ export interface CheckoutData {
   /**
    * The products included in the order.
    */
-  products: Product[];
+  products: CartItem[];
 }

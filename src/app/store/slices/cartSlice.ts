@@ -1,14 +1,7 @@
 // Importaciones necesarias de Redux Toolkit
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { RootState } from '../store'; // Asegúrate de que el tipo `RootState` apunta a tu estado global
-
-// Interfaz para representar un producto en el carrito
-interface CartItem {
-  id: string;
-  name: string;
-  price: number;
-  quantity: number;
-}
+import { RootState } from '../store';
+import { CartItem } from '@/types/CartItem';
 
 // Estado inicial del carrito
 interface CartState {
