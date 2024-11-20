@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { selectCartItems } from '../store/slices/cartSlice';
 import {
@@ -12,51 +12,98 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import { useForm } from 'react-hook-form';
-import { ClientData } from '../../types/ClientData';
+import { ClientData } from '../../types/client/ClientData';
+import { AndreaniBranch } from "../../types/checkout/shipping/AndreaniBranch";
 import { useColorModeValue } from '../components/ui/color-mode';
-import { SelectContent, SelectItem, SelectLabel, SelectRoot } from '../components/ui/select';
+import { SelectRoot, SelectItem, SelectTrigger, SelectValueText, SelectContent } from '../components/ui/select';
 
-//#region Constantes
 const FREE_SHIPPING_THRESHOLD = 120000;
-const SHIPPING_COST = 12500;
 
-const paymentMethods = {
-  methods: [
-    { label: "Tarjeta de Crédito", value: "creditCard" },
-    { label: "Tarjeta de Débito", value: "debitCard" },
-    { label: "Transferencia", value: "transfer" },
-  ],
-};
-//#endregion
+const HOME_SHIPPING_COST = 9500;
+const BRANCH_SHIPPING_COST = 8000;
+
+const PROVINCES = [
+  "Buenos Aires",
+  "Ciudad Autónoma de Buenos Aires",
+  "Catamarca",
+  "Chaco",
+  "Chubut",
+  "Córdoba",
+  "Corrientes",
+  "Entre Ríos",
+  "Formosa",
+  "Jujuy",
+  "La Pampa",
+  "La Rioja",
+  "Mendoza",
+  "Misiones",
+  "Neuquén",
+  "Río Negro",
+  "Salta",
+  "San Juan",
+  "San Luis",
+  "Santa Cruz",
+  "Santa Fe",
+  "Santiago del Estero",
+  "Tierra del Fuego",
+  "Tucumán",
+];
+
+const paymentMethods = [
+  { label: "Tarjeta de Crédito", value: "creditCard" },
+  { label: "Tarjeta de Débito", value: "debitCard" },
+  { label: "Transferencia", value: "transfer" },
+];
 
 const Checkout = () => {
-  const {
-    register,
-    handleSubmit,
-    control,
-    formState: { errors },
-  } = useForm<ClientData>();
-
-  //#region Redux: Selección del carrito
+  const { register, handleSubmit, setValue, watch, formState: { errors } } = useForm<ClientData>();
   const cartItems = useSelector(selectCartItems);
+  const [, setBranches] = useState<AndreaniBranch[]>([]);
+  const [, setLoadingBranches] = useState(false);
+
+  const [selectedProvince, setSelectedProvince] = useState<string[] | null>(null);
+  const [selectedShippingMethod, setSelectedShippingMethod] = useState<'home' | 'branch'>('home');
+
+  const postalCode = watch('postal_code');
 
   // Calcular totales
   const { totalAmount, shippingCost, finalTotal } = useMemo(() => {
     const total = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
-    const shipping = total >= FREE_SHIPPING_THRESHOLD ? 0 : SHIPPING_COST;
+    const shipping = selectedShippingMethod === 'home' ? HOME_SHIPPING_COST : BRANCH_SHIPPING_COST;
     return {
       totalAmount: total,
-      shippingCost: shipping,
-      finalTotal: total + shipping,
+      shippingCost: total >= FREE_SHIPPING_THRESHOLD ? 0 : shipping,
+      finalTotal: total + (total >= FREE_SHIPPING_THRESHOLD ? 0 : shipping),
     };
-  }, [cartItems]);
-  //#endregion
+  }, [cartItems, selectedShippingMethod]);
 
-  //#region Submit Handler
+  // Fetch branches when shipping method is "branch"
+  const fetchBranches = async () => {
+    if (!selectedProvince || !postalCode) return;
+    setLoadingBranches(true);
+    try {
+      const response = await fetch(`/api/andreani-branches?province=${selectedProvince}&postalCode=${postalCode}`);
+      const data = await response.json();
+      setBranches(data);
+    } catch (error) {
+      console.error("Error fetching branches:", error);
+      setBranches([]);
+    } finally {
+      setLoadingBranches(false);
+    }
+  };
+
+  useEffect(() => {
+    if (shippingMethod === 'branch') {
+      fetchBranches();
+    }
+  }, [selectedProvince, postalCode, shippingMethod]);
+
+  // Handle form submission
   const onSubmit = (data: ClientData) => {
     console.log('Datos del Cliente:', data);
+    // Aquí puedes enviar los datos a un backend o manejarlos como desees
   };
-  //#endregion
 
   return (
     <Flex maxW="6xl" mx="auto" mt={8} p={4} gap={8} direction={{ base: 'column', md: 'row' }}>
@@ -88,25 +135,49 @@ const Checkout = () => {
               {errors.phone && <Text color="red.500">{errors.phone.message}</Text>}
             </Box>
 
-            {/* Dirección de Envío */}
+            {/* Provincia */}
             <Box>
-              <Text>Dirección de Envío</Text>
+              <Text>Provincia</Text>
+              <SelectRoot
+                value={selectedProvince || []}
+                onValueChange={(e) => setSelectedProvince(e.value)}
+              >
+                <SelectTrigger>
+                  <SelectValueText placeholder="Seleccione una provincia" />
+                </SelectTrigger>
+                <SelectContent>
+                  {PROVINCES.map((province) => (
+                    <SelectItem key={province} value={province}>
+                      {province}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </SelectRoot>
+              {errors.province && <Text color="red.500">{errors.province.message}</Text>}
+            </Box>
+
+            {/* Código Postal */}
+            <Box>
+              <Text>Código Postal</Text>
               <Input
-                type="text"
-                placeholder="Calle Falsa 1234"
-                {...register("address", { required: "Este campo es obligatorio" })}
+                placeholder="7600"
+                {...register("postal_code", { required: "Este campo es obligatorio" })}
               />
-              {errors.address && <Text color="red.500">{errors.address.message}</Text>}
+              {errors.postal_code && <Text color="red.500">{errors.postal_code.message}</Text>}
             </Box>
 
             {/* Método de Pago */}
             <Box>
               <Text>Método de Pago</Text>
-              <SelectRoot {...control.register("paymentMethod", { required: "Este campo es obligatorio" })}>
-                <SelectLabel>Método de Pago</SelectLabel>
+              <SelectRoot
+                onValueChange={(value) => setValue('paymentMethod', value, { shouldValidate: true })}
+              >
+                <SelectTrigger>
+                  <SelectValueText placeholder="Seleccione un método de pago" />
+                </SelectTrigger>
                 <SelectContent>
-                  {paymentMethods.methods.map((method) => (
-                    <SelectItem item={method} key={method.value}>
+                  {paymentMethods.map((method) => (
+                    <SelectItem key={method.value} value={method.value}>
                       {method.label}
                     </SelectItem>
                   ))}
@@ -114,6 +185,8 @@ const Checkout = () => {
               </SelectRoot>
               {errors.paymentMethod && <Text color="red.500">{errors.paymentMethod.message}</Text>}
             </Box>
+
+            {/* Botón de Envío */}
             <Button type="submit" colorScheme="blue" size="lg" w="full">
               Proceder al Pago
             </Button>
@@ -134,10 +207,7 @@ const Checkout = () => {
               <Text>${(item.price * item.quantity).toLocaleString()}</Text>
             </Flex>
           ))}
-
           <Box as="hr" my={4} borderColor={useColorModeValue('gray.400', 'gray.600')} />
-
-          {/* Costos */}
           <Flex justify="space-between">
             <Text>Subtotal</Text>
             <Text>${totalAmount.toLocaleString()}</Text>
@@ -147,8 +217,6 @@ const Checkout = () => {
             <Text>{shippingCost === 0 ? "Gratis" : `$${shippingCost}`}</Text>
           </Flex>
           <Box as="hr" my={4} borderColor={useColorModeValue('gray.400', 'gray.600')} />
-
-          {/* Total */}
           <Flex justify="space-between" fontWeight="bold">
             <Text>Total</Text>
             <Text>${finalTotal.toLocaleString()}</Text>
