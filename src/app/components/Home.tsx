@@ -35,6 +35,7 @@ const Home = () => {
       objectPosition: "center 100%" 
     }
   ];
+  
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % slides.length);
@@ -53,7 +54,7 @@ const Home = () => {
   const bgColor = useColorModeValue('#D0D0D0', "#555454");
 
   return (
-    <Box position="relative" width="100%" height={"85vh"} bg={bgColor}>
+    <Box  position="relative" width="100%" height={"85vh"} bg={bgColor}>
       <BackgroundPattern />
         <Flex
           position="relative"
