@@ -12,4 +12,4 @@
  * This type can be used to ensure that only valid payment methods are assigned to variables or passed to functions.
 */
 
-export type PaymentMethod = "creditCard" | "debitCard" | "transfer";
+export type PaymentMethod = "creditCard" | "debitCard";

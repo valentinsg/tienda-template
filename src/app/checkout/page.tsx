@@ -8,9 +8,7 @@ import {
   Fieldset,
   Input,
   Button,
-  Group,
   Flex,
-  Heading,
   Card,
 } from '@chakra-ui/react';
 import { Field } from "../components/ui/field"
@@ -19,13 +17,33 @@ import { useSelector } from 'react-redux';
 import { selectCartItems } from '../store/slices/cartSlice';
 import { Radio, RadioGroup } from '../components/ui/radio';
 import { createListCollection } from "@chakra-ui/react"
-import { PaymentMethod } from '@/types/checkout/payment/PaymentMethod';
-import { LuCalendar, LuUser, LuWallet, LuBuilding2 } from "react-icons/lu"
-import { StepsCompletedContent, StepsContent, StepsItem, StepsList, StepsNextTrigger, StepsPrevTrigger, StepsRoot } from '../components/ui/steps';
 import { FaHome } from 'react-icons/fa';
-import { AndreaniBranch } from '../../types/checkout/shipping/AndreaniBranch';
+import { LuBuilding2 } from "react-icons/lu"
 import axios from 'axios';
 
+// Types
+interface PersonalInfo {
+  name: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  age: string;
+  gender?: string;
+}
+
+interface HomeShippingDetails {
+  address: string;
+  province: string;
+  postalCode: string;
+  city: string;
+}
+
+interface AndreaniBranch {
+  id: string;
+  address: string;
+}
+
+// Constants
 const provinces = createListCollection({
   items: [
     "Buenos Aires", "Ciudad Autónoma de Buenos Aires", "Catamarca", "Chaco",
@@ -36,19 +54,31 @@ const provinces = createListCollection({
   ]
 })
 
-const Checkout = () => {
-  const [andreaniBranches, setAndreaniBranches] = useState<AndreaniBranch[]>([]);
+const Checkout: React.FC = () => {
+  // State Management
   const cartItems = useSelector(selectCartItems);
-  const [personalInfo, setPersonalInfo] = useState({
+  const [andreaniBranches, setAndreaniBranches] = useState<AndreaniBranch[]>([]);
+
+  const [personalInfo, setPersonalInfo] = useState<PersonalInfo>({
     name: '',
     lastName: '',
     email: '',
     phone: '',
     age: '',
+    gender: ''
   });
 
   const [shippingMethod, setShippingMethod] = useState<'home' | 'branch'>('home');
+  const [paymentMethod, setPaymentMethod] = useState<'creditCard' | 'debitCard'>('creditCard');
 
+  const [homeShippingDetails, setHomeShippingDetails] = useState<HomeShippingDetails>({
+    address: '',
+    province: '',
+    postalCode: '',
+    city: '',
+  });
+
+  // Fetch Branches
   useEffect(() => {
     const fetchBranches = async () => {
       try {
@@ -64,51 +94,49 @@ const Checkout = () => {
     }
   }, [shippingMethod]);
 
-  const handleShippingMethodChange = (value: string) => {
-    if (value === 'home' || value === 'branch') {
-      setShippingMethod(value);
-
-      if (value === 'home') {
-        setBranchShippingDetails({ province: '', postalCode: '', branchId: '' });
-      } else {
-        setHomeShippingDetails({ address: '', province: '', postalCode: '', city: '' });
-      }
-    }
-  };
-
-  const [homeShippingDetails, setHomeShippingDetails] = useState({
-    address: '',
-    province: '',
-    postalCode: '',
-    city: '',
-  });
-
-  const [branchShippingDetails, setBranchShippingDetails] = useState({
-    province: '',
-    postalCode: '',
-    branchId: '',
-  });
-
-  const [paymentMethod, setPaymentMethod] = useState<'creditCard' | 'debitCard' | 'transfer'>('creditCard');
-
-
+  // Validation and Submit
   const handleSubmit = () => {
+    // Basic Validation
+    const errors: string[] = [];
+
+    if (!personalInfo.name) errors.push('Nombre es requerido');
+    if (!personalInfo.lastName) errors.push('Apellido es requerido');
+    if (!personalInfo.email) errors.push('Email es requerido');
+
+    if (shippingMethod === 'home') {
+      if (!homeShippingDetails.province) errors.push('Provincia es requerida');
+      if (!homeShippingDetails.address) errors.push('Dirección es requerida');
+    }
+
+    if (errors.length > 0) {
+      alert(errors.join('\n'));
+      return;
+    }
+
+    // Prepare Checkout Data
     const checkoutData = {
       personalInfo,
-      shippingDetails: shippingMethod === 'home' ? homeShippingDetails : branchShippingDetails,
+      shippingMethod,
+      shippingDetails: shippingMethod === 'home' ? homeShippingDetails : null,
       paymentMethod,
       cartItems,
-      shippingCost: shippingMethod === 'home' ? 9500 : 8000,
+      totalPrice: calculateTotalPrice()
     };
+
     console.log('Checkout Data:', checkoutData);
+    // TODO: Implement actual checkout process
   };
 
-  const totalPrice = cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
+  // Price Calculation
+  const calculateTotalPrice = () => {
+    const productTotal = cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
+    const shippingCost = shippingMethod === 'home' ? 9500 : 8000;
+    return productTotal + shippingCost;
+  };
 
   return (
-    <Stack h={"90vh"} justify={"center"} direction={{ base: 'column', md: 'row' }} gap={12} p={8} m={4}>
-
-      {/* Resumen del carrito */}
+    <Stack h={"auto"} justify={"center"} direction={{ base: 'column', md: 'row' }} gap={12} p={8} m={4}>
+      {/* Cart Summary */}
       <Box w={"25%"} borderWidth={1} borderRadius="md" p={8} boxShadow={"md"}>
         <Text fontWeight="bold" textAlign="center" fontSize="3xl">Resumen de Compra</Text>
         {cartItems.map((item) => (
@@ -118,242 +146,234 @@ const Checkout = () => {
           </Box>
         ))}
         <Box my={4} />
-        <Text>Productos: ${totalPrice}</Text>
+        <Text>Productos: ${calculateTotalPrice() - (shippingMethod === 'home' ? 9500 : 8000)}</Text>
         <Text>Envío: ${shippingMethod === 'home' ? 9500 : 8000}</Text>
         <Box height="1px" bg="gray.200" my={4} />
-        <Text fontWeight="bold" mt={2}>Total: ${totalPrice + (shippingMethod === 'home' ? 9500 : 8000)}</Text>
+        <Text fontWeight="bold" mt={2}>Total: ${calculateTotalPrice()}</Text>
       </Box>
 
-      {/* Formulario */}
-      <Box w={"55%"} borderWidth={1} borderRadius="md" p={8} boxShadow={"md"}>
-
-        <StepsRoot defaultValue={1} count={3}>
-
-          <StepsList mx={10} mt={4}>
-            <StepsItem index={0} icon={<LuUser />} />
-            <StepsItem index={1} icon={<LuWallet />} />
-            <StepsItem index={2} icon={<LuCalendar />} />
-          </StepsList>
-
-          <StepsContent index={0}>
-
-            <Fieldset.Root>
-
-              <Stack w={"75%"} m={"auto"}>
-                <Text fontWeight="bold" fontSize="3xl" textAlign="center" mt={6} mb={2}>Datos Personales</Text>
-
-                <Fieldset.Content>
-                  <Field label="Nombre">
-                    <Input
-                      value={personalInfo.name}
-                      onChange={(e) => setPersonalInfo({ ...personalInfo, name: e.target.value })}
-                    />
-                  </Field>
-
-                  <Field label="Apellido">
-                    <Input
-                      value={personalInfo.lastName}
-                      onChange={(e) => setPersonalInfo({ ...personalInfo, lastName: e.target.value })}
-                    />
-                  </Field>
-
-                  <Field label="Email">
-                    <Input
-                      value={personalInfo.email}
-                      onChange={(e) => setPersonalInfo({ ...personalInfo, email: e.target.value })}
-                    />
-                  </Field>
-                  <Field label="Telefono">
-                    <Input
-                      value={personalInfo.phone}
-                      onChange={(e) => setPersonalInfo({ ...personalInfo, phone: e.target.value })}
-                    />
-                  </Field>
-
-                  <Field label="Edad">
-                    <Input
-                      value={personalInfo.age}
-                      onChange={(e) => setPersonalInfo({ ...personalInfo, age: e.target.value })}
-                    />
-                  </Field>
-                </Fieldset.Content>
-              </Stack>
-            </Fieldset.Root>
-          </StepsContent>
-          <StepsContent index={1}>
-
-            <Flex justifyContent="space-between" alignItems="center" mb={6}>
-              <Flex justifyContent="space-between" alignItems="center" mb={6}>
-                <Heading size="lg">Método de Envío</Heading>
-              </Flex>
-
-              <Flex gap={6} direction={{ base: 'column', md: 'row' }}>
-                {/* Home Delivery Card */}
-                <Card.Root>
-                  <Card.Header>
-                    <Flex alignItems="center" gap={3}>
-                      <FaHome />
-                      <Heading size="md">Envío a Domicilio</Heading>
-                    </Flex>
-                  </Card.Header>
+      {/* Checkout Form */}
+      <Box w={"65%"} borderWidth={1} borderRadius="md" p={8} boxShadow={"md"}>
+        <Fieldset.Root>
+          <Stack w={"75%"} m={"auto"}>
+            {/* Personal Info Section */}
+            <Text fontWeight="bold" fontSize="3xl" textAlign="center" mt={6} mb={2}>Datos Personales</Text>
+            <Field label="Nombre">
+              <Input
+                value={personalInfo.name}
+                onChange={(e) => setPersonalInfo({ ...personalInfo, name: e.target.value })}
+              />
+            </Field>
+            <Field label="Apellido">
+              <Input
+                value={personalInfo.lastName}
+                onChange={(e) => setPersonalInfo({ ...personalInfo, lastName: e.target.value })}
+              />
+            </Field>
+            <Field label="Email">
+              <Input
+                value={personalInfo.email}
+                onChange={(e) => setPersonalInfo({ ...personalInfo, email: e.target.value })}
+              />
+            </Field>
+            <Field label="Teléfono">
+              <Input
+                type="tel"
+                value={personalInfo.phone}
+                onChange={(e) => setPersonalInfo({ ...personalInfo, phone: e.target.value })}
+                placeholder="Ej: +54 9 11 1234-5678"
+              />
+            </Field>
+            <Field label="Fecha de Nacimiento">
+              <Input
+                type="date"
+                value={personalInfo.age}
+                onChange={(e) => setPersonalInfo({ ...personalInfo, age: e.target.value })}
+              />
+            </Field>
+            <Field label="Género">
+              <SelectRoot>
+                <SelectTrigger>
+                  <SelectValueText>
+                    {() => personalInfo.gender || 'Selecciona género'}
+                  </SelectValueText>
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem item="masculino">Masculino</SelectItem>
+                  <SelectItem item="femenino">Femenino</SelectItem>
+                  <SelectItem item="otro">Otro</SelectItem>
+                  <SelectItem item="prefiero-no-decir">Prefiero no decir</SelectItem>
+                </SelectContent>
+              </SelectRoot>
+            </Field>
+            {/* Shipping Method Section */}
+            <Text fontWeight="bold" fontSize="3xl" textAlign="center" mt={6} mb={2}>Método de Envío</Text>
+            <Flex gap={12} direction={{ base: 'column', md: 'row' }} w={"100%"} justify={"center"}>
+              {/* Home Delivery */}
+              <Card.Root
+                border={shippingMethod === 'home' ? 'filled' : 'outline'}
+                onClick={() => setShippingMethod('home')}
+                w={"45%"}
+              >
+                <Card.Header>
+                  <Flex alignItems="center" gap={3}>
+                    <FaHome />
+                    <Text>Envío a Domicilio</Text>
+                  </Flex>
+                </Card.Header>
+                {shippingMethod === 'home' && (
                   <Card.Body>
-                    <Stack
-                      gap={4}
-                      flex={1}
-                      border={shippingMethod === 'home' ? 'filled' : 'outline'}
-                      cursor="pointer"
-                      onClick={() => handleShippingMethodChange('home')}
-                      _hover={{ shadow: 'lg' }}
-                      transition="all 0.2s"
-                    >
-                      <Fieldset.Root>
-                        <Fieldset.Legend>Provincia</Fieldset.Legend>
-                        <SelectRoot
-                          value={[homeShippingDetails.province]}
-                          onChange={(e) => setHomeShippingDetails({ ...homeShippingDetails, province: (e.target as HTMLSelectElement).value })}
-                        >
-                          <SelectTrigger>
-                            <SelectValueText>{() => homeShippingDetails.province || 'Selecciona provincia'}</SelectValueText>
-                          </SelectTrigger>
-                          <SelectContent>
-                            {provinces.items.map((province) => (
-                              <SelectItem key={province} item={province}>
-                                {province}
-                              </SelectItem>
-                            ))}
-
-                          </SelectContent>
-                        </SelectRoot>
-                      </Fieldset.Root>
-
-                      <Fieldset.Root>
-                        <Fieldset.Legend>Código Postal</Fieldset.Legend>
-                        <Input
-                          value={homeShippingDetails.postalCode}
-                          onChange={(e) => setHomeShippingDetails({ ...homeShippingDetails, postalCode: e.target.value })}
-                        />
-                      </Fieldset.Root>
-
-                      <Fieldset.Root>
-                        <Fieldset.Legend>Ciudad</Fieldset.Legend>
-                        <Input
-                          value={homeShippingDetails.city}
-                          onChange={(e) => setHomeShippingDetails({ ...homeShippingDetails, city: e.target.value })}
-                        />
-                      </Fieldset.Root>
-
-                      <Fieldset.Root>
-                        <Fieldset.Legend>Dirección</Fieldset.Legend>
-                        <Input
-                          value={homeShippingDetails.address}
-                          onChange={(e) => setHomeShippingDetails({ ...homeShippingDetails, address: e.target.value })}
-                        />
-                      </Fieldset.Root>
-                    </Stack>
+                    <Field label="Provincia">
+                      <SelectRoot
+                        value={[homeShippingDetails.province]}
+                        onChange={(e) => setHomeShippingDetails({
+                          ...homeShippingDetails,
+                          province: (e.target as HTMLSelectElement).value
+                        })}
+                      >
+                        <SelectTrigger>
+                          <SelectValueText>
+                            {() => homeShippingDetails.province || 'Selecciona provincia'}
+                          </SelectValueText>
+                        </SelectTrigger>
+                        <SelectContent>
+                          {provinces.items.map((province) => (
+                            <SelectItem key={province} item={province}>
+                              {province}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </SelectRoot>
+                    </Field>
+                    <Field label="Dirección">
+                      <Input
+                        value={homeShippingDetails.address}
+                        onChange={(e) => setHomeShippingDetails({
+                          ...homeShippingDetails,
+                          address: e.target.value
+                        })}
+                      />
+                    </Field>
+                    <Field label="Ciudad">
+                      <Input
+                        value={homeShippingDetails.city}
+                        onChange={(e) => setHomeShippingDetails({
+                          ...homeShippingDetails,
+                          city: e.target.value
+                        })}
+                      />
+                    </Field>
+                    <Field label="Código Postal">
+                      <Input
+                        value={homeShippingDetails.postalCode}
+                        onChange={(e) => setHomeShippingDetails({
+                          ...homeShippingDetails,
+                          postalCode: e.target.value
+                        })}
+                      />
+                    </Field>
                   </Card.Body>
-                </Card.Root>
+                )}
+              </Card.Root>
 
-                {/* Branch Pickup Card */}
-                <Card.Root>
-                  <Card.Header>
-                    <Flex alignItems="center" gap={3}>
-                      <LuBuilding2 />
-                      <Heading size="md">Retiro en Sucursal</Heading>
-                    </Flex>
-                  </Card.Header>
+              {/* Branch Pickup */}
+              <Card.Root
+                border={shippingMethod === 'branch' ? 'filled' : 'outline'}
+                onClick={() => setShippingMethod('branch')}
+                w={"45%"}
+              >
+                <Card.Header>
+                  <Flex alignItems="center" gap={3}>
+                    <LuBuilding2 />
+                    <Text>Retiro en Sucursal</Text>
+                  </Flex>
+                </Card.Header>
+                {shippingMethod === 'branch' && (
                   <Card.Body>
-                    <Stack
-                      gap={4}
-                      flex={1}
-                      border={shippingMethod === 'branch' ? 'filled' : 'outline'}
-                      cursor="pointer"
-                      onClick={() => handleShippingMethodChange('branch')}
-                      _hover={{ shadow: 'lg' }}
-                      transition="all 0.2s"
-                    >
-                      <Fieldset.Root>
-                        <Fieldset.Legend>Provincia</Fieldset.Legend>
-                        <SelectRoot
-                          value={[branchShippingDetails.province]}
-                          onChange={(e) => setBranchShippingDetails({ ...branchShippingDetails, province: (e.target as HTMLSelectElement).value })}
-                        >
-                          <SelectTrigger>
-                            <SelectValueText>{() => branchShippingDetails.province || 'Selecciona provincia'}</SelectValueText>
-                          </SelectTrigger>
-                          <SelectContent>
-                            {provinces.items.map((province) => (
-                              <SelectItem key={province} item={province}>
-                                {province}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </SelectRoot>
-                      </Fieldset.Root>
-
-                      <Fieldset.Root>
-                        <Fieldset.Legend>Código Postal</Fieldset.Legend>
-                        <Input
-                          value={branchShippingDetails.postalCode}
-                          onChange={(e) => setBranchShippingDetails({ ...branchShippingDetails, postalCode: e.target.value })}
-                        />
-                      </Fieldset.Root>
-
-                      <Fieldset.Root>
-                        <Fieldset.Legend>Sucursal</Fieldset.Legend>
-                        <SelectRoot
-                          value={[branchShippingDetails.branchId]}
-                          onChange={(e) => setBranchShippingDetails({ ...branchShippingDetails, branchId: (e.target as HTMLSelectElement).value })}
-                        >
-                          <SelectTrigger>
-                            <SelectValueText>{() => branchShippingDetails.branchId || 'Selecciona la sucursal más cercana'}</SelectValueText>
-                          </SelectTrigger>
-                          <SelectContent>
-                            {andreaniBranches.map((branch: AndreaniBranch) => (
-                              <SelectItem key={branch.id} item={branch.id}>
-                                {`Sucursal ${branch.address}`}                             
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </SelectRoot>
-                      </Fieldset.Root>
-                    </Stack>
+                    <Field label="Provincia">
+                      <SelectRoot
+                        value={[homeShippingDetails.province]}
+                        onChange={(e) => setHomeShippingDetails({
+                          ...homeShippingDetails,
+                          province: (e.target as HTMLSelectElement).value
+                        })}
+                      >
+                        <SelectTrigger>
+                          <SelectValueText>
+                            {() => homeShippingDetails.province || 'Selecciona provincia'}
+                          </SelectValueText>
+                        </SelectTrigger>
+                        <SelectContent>
+                          {provinces.items.map((province) => (
+                            <SelectItem key={province} item={province}>
+                              {province}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </SelectRoot>
+                    </Field>
+                    <Field label="Código Postal">
+                      <Input
+                        value={homeShippingDetails.postalCode}
+                        onChange={(e) => setHomeShippingDetails({
+                          ...homeShippingDetails,
+                          postalCode: e.target.value
+                        })}
+                      />
+                    </Field>
+                    <Field label="Sucursal">
+                      <SelectRoot>
+                        <SelectTrigger>
+                          <SelectValueText>
+                            {() => 'Selecciona sucursal'}
+                          </SelectValueText>
+                        </SelectTrigger>
+                        <SelectContent>
+                          {andreaniBranches.map((branch) => (
+                            <SelectItem key={branch.id} item={branch.id}>
+                              {branch.address}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </SelectRoot>
+                    </Field>
                   </Card.Body>
-                </Card.Root>
-              </Flex>
+                )}
+              </Card.Root>
             </Flex>
-          </StepsContent>
-          <StepsContent index={2}>
-            <Stack gap={4}>
-              <Text fontWeight="bold" fontSize="lg">Método de Pago</Text>
-              <RadioGroup onChange={(value) => setPaymentMethod(value as unknown as PaymentMethod)} value={paymentMethod}>
-                <Stack direction="row">
-                  <Radio value="creditCard">Tarjeta de Crédito</Radio>
-                  <Radio value="debitCard">Tarjeta de Débito</Radio>
-                  <Radio value="transfer">Transferencia Bancaria</Radio>
-                </Stack>
-              </RadioGroup>
-              <Button colorScheme="green" onClick={handleSubmit}>Finalizar</Button>
-            </Stack>
-          </StepsContent>
-          <StepsCompletedContent>All steps are complete!</StepsCompletedContent>
 
-          <Group justifyContent="center">
-            <StepsPrevTrigger asChild>
-              <Button variant="outline" size="sm">
-                Prev
-              </Button>
-            </StepsPrevTrigger>
-            <StepsNextTrigger asChild>
-              <Button variant="outline" size="sm">
-                Next
-              </Button>
-            </StepsNextTrigger>
-          </Group>
-        </StepsRoot>
+            {/* Payment Method Section */}
+            <Text fontWeight="bold" fontSize="3xl" textAlign="center" mt={6} mb={2}>Método de Pago</Text>
+            <RadioGroup
+              value={paymentMethod}
+              onChange={(e) => {
+                const value = (e.target as HTMLInputElement).value as 'creditCard' | 'debitCard';
+                setPaymentMethod(value);
+              }}
 
+            >
+              <Flex
+                gap={4}
+                justifyContent={"center"}
+                alignItems={"center"}
+              >
+                <Radio value="creditCard">Tarjeta de Crédito</Radio>
+                <Radio value="debitCard">Tarjeta de Débito</Radio>
+              </Flex>
+            </RadioGroup>
 
+            {/* Submit Button */}
+            <Button
+              mt={6}
+              colorScheme="green"
+              onClick={handleSubmit}
+            >
+              Finalizar Compra
+            </Button>
+          </Stack>
+        </Fieldset.Root>
       </Box>
-    </Stack >
+    </Stack>
   );
 };
 

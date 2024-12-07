@@ -1,4 +1,3 @@
-import { Province } from "./Province";
 
 /**
  * @interface HomeShippingDetails
@@ -23,7 +22,7 @@ export interface HomeShippingDetails {
   /**
    * The shipping method, which is always 'home' for home shipping.
    */
-  method: 'home';
+  city: string;
 
   /**
    * The address where the shipment will be delivered.
@@ -33,7 +32,7 @@ export interface HomeShippingDetails {
   /**
    * The province where the shipment will be delivered.
    */
-  province: Province;
+  province: string;
 
   /**
    * The postal code of the delivery address.
