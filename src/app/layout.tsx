@@ -20,8 +20,8 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "E-Commerce",
-  description: "Template de e-commerce con Next.js y Tailwind CSS",
+  title: "Busy Streetwear",
+  description: "Página oficial de Busy Streetwear",
 };
 
 export default function RootLayout({

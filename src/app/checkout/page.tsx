@@ -222,7 +222,11 @@ const Checkout: React.FC = () => {
                   />
                 </Field>
                 <Field label="Género">
-                  <SelectRoot>
+                  <SelectRoot
+                    collection={createListCollection({
+                      items: ['masculino', 'femenino', 'otro', 'prefiero-no-decir']
+                    })}
+                  >
                     <SelectTrigger>
                       <SelectValueText>
                         {() => personalInfo.gender || 'Selecciona género'}
@@ -271,6 +275,7 @@ const Checkout: React.FC = () => {
                   <Card.Body gap={4}>
                     <Field label="Provincia">
                       <SelectRoot
+                      collection={provinces}
                       value={homeShippingDetails.province ? [homeShippingDetails.province] : []}
                       onChange={(e) => setHomeShippingDetails({
                         ...homeShippingDetails, 
@@ -338,6 +343,7 @@ const Checkout: React.FC = () => {
                   <Card.Body gap={4}>
                     <Field label="Provincia">
                       <SelectRoot
+                        collection={provinces}
                         value={[homeShippingDetails.province]}
                         onChange={(e) => setHomeShippingDetails({
                           ...homeShippingDetails,
@@ -377,7 +383,9 @@ const Checkout: React.FC = () => {
                       />
                     </Field>
                     <Field label="Sucursal">
-                      <SelectRoot>
+                      <SelectRoot collection={createListCollection({
+                        items: andreaniBranches.map(branch => branch.id)
+                      })}>
                         <SelectTrigger>
                           <SelectValueText>
                             {() => 'Selecciona sucursal'}

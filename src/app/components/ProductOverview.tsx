@@ -15,6 +15,7 @@ import {
   SimpleGrid,
   Badge,
   Spinner,
+  createListCollection,
 } from '@chakra-ui/react';
 import {
   BreadcrumbCurrentLink,
@@ -215,6 +216,9 @@ const ProductOverview: React.FC<ProductOverviewProps> = ({
               <SelectRoot
                 value={selectedSize || []}
                 onValueChange={(e) => setSelectedSize(e.value)}
+                collection={createListCollection(
+                  { items: Object.keys(product.available_sizes).map(size => ({ value: size, label: size.toUpperCase() })) }
+                )}
               >
                 <SelectTrigger>
                   <SelectValueText placeholder="Choose a size" />

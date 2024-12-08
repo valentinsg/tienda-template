@@ -1,7 +1,7 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import { Box, Flex, IconButton, Image, Text } from '@chakra-ui/react';
-import { ChevronLeftIcon, ChevronRightIcon } from '@chakra-ui/icons';
+import { FaArrowLeft, FaArrowRight } from 'react-icons/fa';
 import Chicos1 from '../../../public/chicos 1.png';
 import Chicos2 from '../../../public/chicos 2.png';
 import Chicas2 from '../../../public/chicas 2.png';
@@ -124,7 +124,7 @@ const Home = () => {
               zIndex={2}
               colorScheme={colorMode === 'light' ? 'blackAlpha' : 'whiteAlpha'}
             >
-              <ChevronLeftIcon />
+              <FaArrowLeft />
             </IconButton>
 
             {/* Botón para el siguiente slide */}
@@ -139,7 +139,7 @@ const Home = () => {
               zIndex={2}
               colorScheme={colorMode === 'light' ? 'blackAlpha' : 'whiteAlpha'}
             >
-              <ChevronRightIcon />
+              <FaArrowRight />
             </IconButton>
           </Box>
           <Flex position={"absolute"} bottom={0} zIndex={1000}>

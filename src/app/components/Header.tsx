@@ -17,7 +17,7 @@ import {
   MenuRoot,
   MenuTrigger,
 } from "../components/ui/menu"
-import { SunIcon, MoonIcon, ChevronDownIcon } from '@chakra-ui/icons';
+import { Sun, Moon, ChevronDown } from 'lucide-react';
 import { useColorMode, useColorModeValue } from './ui/color-mode';
 import BusyDarkMode from '../../../public/busy-logo-dark-mode.png';
 import BusyLightMode from '../../../public/busy-logo-light-mode.png';
@@ -68,7 +68,7 @@ const Header = () => {
                   mx={4}
                 >
                   Products
-                  <ChevronDownIcon />
+                  <ChevronDown />
                 </Flex>
               </Link>
 
@@ -123,7 +123,7 @@ const Header = () => {
               mx={2}
               colorScheme="gray"
             >
-              {colorMode === 'dark' ? <SunIcon /> : <MoonIcon />}
+              {colorMode === 'dark' ? <Sun /> : <Moon />}
             </IconButton>
             <CartDialog />
           </Box>
@@ -137,7 +137,7 @@ const Header = () => {
             variant="ghost"
             colorScheme="gray"
           >
-            {isOpen ? <SunIcon /> : <MoonIcon />}
+            {isOpen ? <Sun /> : <Moon />}
           </IconButton>
         </Box>
       </Flex>
@@ -148,7 +148,7 @@ const Header = () => {
           <MenuRoot>
             <MenuTrigger as={Button} >
               Products
-              <ChevronDownIcon />
+              <ChevronDown />
             </MenuTrigger>
             <MenuContent>
               {categories.map((category, index) => (
