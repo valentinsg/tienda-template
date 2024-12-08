@@ -70,6 +70,7 @@ const Checkout: React.FC = () => {
 
   const [shippingMethod, setShippingMethod] = useState<'home' | 'branch'>('home');
   const [paymentMethod, setPaymentMethod] = useState<'creditCard' | 'debitCard'>('creditCard');
+  const [text, setText] = useState<string>('');
 
   const [homeShippingDetails, setHomeShippingDetails] = useState<HomeShippingDetails>({
     address: '',
@@ -127,6 +128,31 @@ const Checkout: React.FC = () => {
     // TODO: Implement actual checkout process
   };
 
+  const handleCheckout = async () => {
+    try {
+      const response = await fetch('/api/payments', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ text }),
+      });
+  
+      const data = await response.json();
+      
+      if (data.initPoint) {
+        // Redirect to Mercado Pago payment page
+        window.location.href = data.initPoint;
+      } else {
+        console.error('Failed to create payment preference:', data);
+        alert(data.error || 'Failed to submit message');
+      }
+    } catch (error) {
+      console.error('Submission error:', error);
+      alert('There was a problem submitting your message');
+    }
+  };
+  
   // Price Calculation
   const calculateTotalPrice = () => {
     const productTotal = cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
@@ -137,8 +163,8 @@ const Checkout: React.FC = () => {
   return (
     <Stack h={"auto"} justify={"center"} direction={{ base: 'column', md: 'row' }} gap={12} p={8} m={4}>
       {/* Cart Summary */}
-      <Box w={"25%"} borderWidth={1} borderRadius="md" p={8} boxShadow={"md"}>
-        <Text fontWeight="bold" textAlign="center" fontSize="3xl">Resumen de Compra</Text>
+      <Box w={"27%"} borderWidth={1} borderRadius="md" p={6} boxShadow={"md"}>
+        <Text fontWeight="bold" textAlign="center" fontSize="3xl"  m={6}>Resumen de Compra</Text>
         {cartItems.map((item) => (
           <Box key={item.id} mt={3}>
             <Text>{item.name} x{item.quantity}</Text>
@@ -153,67 +179,87 @@ const Checkout: React.FC = () => {
       </Box>
 
       {/* Checkout Form */}
-      <Box w={"65%"} borderWidth={1} borderRadius="md" p={8} boxShadow={"md"}>
+      <Box w={"63%"} borderWidth={1} borderRadius="md" p={6} boxShadow={"md"}>
         <Fieldset.Root>
-          <Stack w={"75%"} m={"auto"}>
+          <Stack w={"85%"} m={"auto"}>
             {/* Personal Info Section */}
-            <Text fontWeight="bold" fontSize="3xl" textAlign="center" mt={6} mb={2}>Datos Personales</Text>
-            <Field label="Nombre">
-              <Input
-                value={personalInfo.name}
-                onChange={(e) => setPersonalInfo({ ...personalInfo, name: e.target.value })}
-              />
-            </Field>
-            <Field label="Apellido">
-              <Input
-                value={personalInfo.lastName}
-                onChange={(e) => setPersonalInfo({ ...personalInfo, lastName: e.target.value })}
-              />
-            </Field>
-            <Field label="Email">
-              <Input
-                value={personalInfo.email}
-                onChange={(e) => setPersonalInfo({ ...personalInfo, email: e.target.value })}
-              />
-            </Field>
-            <Field label="Teléfono">
-              <Input
-                type="tel"
-                value={personalInfo.phone}
-                onChange={(e) => setPersonalInfo({ ...personalInfo, phone: e.target.value })}
-                placeholder="Ej: +54 9 11 1234-5678"
-              />
-            </Field>
-            <Field label="Fecha de Nacimiento">
-              <Input
-                type="date"
-                value={personalInfo.age}
-                onChange={(e) => setPersonalInfo({ ...personalInfo, age: e.target.value })}
-              />
-            </Field>
-            <Field label="Género">
-              <SelectRoot>
-                <SelectTrigger>
-                  <SelectValueText>
-                    {() => personalInfo.gender || 'Selecciona género'}
-                  </SelectValueText>
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem item="masculino">Masculino</SelectItem>
-                  <SelectItem item="femenino">Femenino</SelectItem>
-                  <SelectItem item="otro">Otro</SelectItem>
-                  <SelectItem item="prefiero-no-decir">Prefiero no decir</SelectItem>
-                </SelectContent>
-              </SelectRoot>
-            </Field>
+            <Text fontWeight="bold" fontSize="3xl" textAlign="center" m={10}>Datos Personales</Text>
+            <Flex gap={12} direction={{ base: 'column', md: 'row' }} >
+              <Stack flex={1}>
+                <Field label="Nombre">
+                  <Input
+                    value={personalInfo.name}
+                    onChange={(e) => setPersonalInfo({ ...personalInfo, name: e.target.value })}
+                  />
+                </Field>
+                <Field label="Apellido">
+                  <Input
+                    value={personalInfo.lastName}
+                    onChange={(e) => setPersonalInfo({ ...personalInfo, lastName: e.target.value })}
+                  />
+                </Field>
+                <Field label="Email">
+                  <Input
+                    value={personalInfo.email}
+                    onChange={(e) => setPersonalInfo({ ...personalInfo, email: e.target.value })}
+                  />
+                </Field>
+              </Stack>
+              <Stack flex={1}>
+                <Field label="Teléfono">
+                  <Input
+                    type="tel"
+                    value={personalInfo.phone}
+                    onChange={(e) => setPersonalInfo({ ...personalInfo, phone: e.target.value })}
+                    placeholder="Ej: +54 9 11 1234-5678"
+                  />
+                </Field>
+                <Field label="Fecha de Nacimiento">
+                  <Input
+                    type="date"
+                    value={personalInfo.age}
+                    onChange={(e) => setPersonalInfo({ ...personalInfo, age: e.target.value })}
+                  />
+                </Field>
+                <Field label="Género">
+                  <SelectRoot>
+                    <SelectTrigger>
+                      <SelectValueText>
+                        {() => personalInfo.gender || 'Selecciona género'}
+                      </SelectValueText>
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem item="masculino">Masculino</SelectItem>
+                      <SelectItem item="femenino">Femenino</SelectItem>
+                      <SelectItem item="otro">Otro</SelectItem>
+                      <SelectItem item="prefiero-no-decir">Prefiero no decir</SelectItem>
+                    </SelectContent>
+                  </SelectRoot>
+                </Field>
+                <Field label="Mensaje">
+                  <Input
+                    type="text"
+                    value={text}
+                    onChange={(e) => setText(e.target.value)}
+                  />
+                </Field>
+                <Button
+                  colorScheme="blue"
+                  onClick={handleCheckout}
+                >
+                  pagar
+                </Button>
+              </Stack>
+
+            </Flex>
             {/* Shipping Method Section */}
-            <Text fontWeight="bold" fontSize="3xl" textAlign="center" mt={6} mb={2}>Método de Envío</Text>
+            <Text fontWeight="bold" fontSize="3xl" textAlign="center" m={10}>Método de Envío</Text>
             <Flex gap={12} direction={{ base: 'column', md: 'row' }} w={"100%"} justify={"center"}>
               {/* Home Delivery */}
               <Card.Root
                 border={shippingMethod === 'home' ? 'filled' : 'outline'}
                 onClick={() => setShippingMethod('home')}
-                w={"45%"}
+                w={"50%"}
               >
                 <Card.Header>
                   <Flex alignItems="center" gap={3}>
@@ -222,37 +268,28 @@ const Checkout: React.FC = () => {
                   </Flex>
                 </Card.Header>
                 {shippingMethod === 'home' && (
-                  <Card.Body>
+                  <Card.Body gap={4}>
                     <Field label="Provincia">
                       <SelectRoot
-                        value={[homeShippingDetails.province]}
-                        onChange={(e) => setHomeShippingDetails({
-                          ...homeShippingDetails,
-                          province: (e.target as HTMLSelectElement).value
-                        })}
+                      value={homeShippingDetails.province ? [homeShippingDetails.province] : []}
+                      onChange={(e) => setHomeShippingDetails({
+                        ...homeShippingDetails, 
+                        province: (e.target as HTMLSelectElement).value
+                      })}
                       >
-                        <SelectTrigger>
-                          <SelectValueText>
-                            {() => homeShippingDetails.province || 'Selecciona provincia'}
-                          </SelectValueText>
-                        </SelectTrigger>
-                        <SelectContent>
-                          {provinces.items.map((province) => (
-                            <SelectItem key={province} item={province}>
-                              {province}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
+                      <SelectTrigger>
+                        <SelectValueText>
+                          {() => homeShippingDetails.province || "Selecciona tu provincia"}
+                        </SelectValueText>
+                      </SelectTrigger>
+                      <SelectContent>
+                        {provinces.items.map((province) => (
+                        <SelectItem key={province} item={province}>
+                          {province}
+                        </SelectItem>
+                        ))}
+                      </SelectContent>
                       </SelectRoot>
-                    </Field>
-                    <Field label="Dirección">
-                      <Input
-                        value={homeShippingDetails.address}
-                        onChange={(e) => setHomeShippingDetails({
-                          ...homeShippingDetails,
-                          address: e.target.value
-                        })}
-                      />
                     </Field>
                     <Field label="Ciudad">
                       <Input
@@ -272,6 +309,15 @@ const Checkout: React.FC = () => {
                         })}
                       />
                     </Field>
+                    <Field label="Dirección">
+                      <Input
+                        value={homeShippingDetails.address}
+                        onChange={(e) => setHomeShippingDetails({
+                          ...homeShippingDetails,
+                          address: e.target.value
+                        })}
+                      />
+                    </Field>
                   </Card.Body>
                 )}
               </Card.Root>
@@ -280,7 +326,7 @@ const Checkout: React.FC = () => {
               <Card.Root
                 border={shippingMethod === 'branch' ? 'filled' : 'outline'}
                 onClick={() => setShippingMethod('branch')}
-                w={"45%"}
+                w={"50%"}
               >
                 <Card.Header>
                   <Flex alignItems="center" gap={3}>
@@ -289,7 +335,7 @@ const Checkout: React.FC = () => {
                   </Flex>
                 </Card.Header>
                 {shippingMethod === 'branch' && (
-                  <Card.Body>
+                  <Card.Body gap={4}>
                     <Field label="Provincia">
                       <SelectRoot
                         value={[homeShippingDetails.province]}
@@ -311,6 +357,15 @@ const Checkout: React.FC = () => {
                           ))}
                         </SelectContent>
                       </SelectRoot>
+                    </Field>
+                    <Field label="Ciudad">
+                      <Input
+                        value={homeShippingDetails.city}
+                        onChange={(e) => setHomeShippingDetails({
+                          ...homeShippingDetails,
+                          city: e.target.value
+                        })}
+                      />
                     </Field>
                     <Field label="Código Postal">
                       <Input
@@ -343,7 +398,7 @@ const Checkout: React.FC = () => {
             </Flex>
 
             {/* Payment Method Section */}
-            <Text fontWeight="bold" fontSize="3xl" textAlign="center" mt={6} mb={2}>Método de Pago</Text>
+            <Text fontWeight="bold" fontSize="3xl" textAlign="center" m={10}>Método de Pago</Text>
             <RadioGroup
               value={paymentMethod}
               onChange={(e) => {
