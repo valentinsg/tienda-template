@@ -8,7 +8,7 @@ import Chicas2 from '../../../public/chicas 2.png';
 import { useColorMode, useColorModeValue } from './ui/color-mode';
 import BackgroundPattern from './BackgroundPattern';
 
-const Home = () => {
+const Carrousell = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const { colorMode } = useColorMode(); 
 
@@ -170,4 +170,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default Carrousell;

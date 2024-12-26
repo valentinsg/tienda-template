@@ -1,7 +1,7 @@
 'use client';
 import { useParams } from 'next/navigation';
-import ProductOverview from '../../components/ProductOverview';
-import { useProducts } from '../../context/ProductContext';
+import ProductOverview from '../components/ProductOverview';
+import { useProducts } from '../context/ProductContext';
 
 export default function ProductPage() {
   const params = useParams();

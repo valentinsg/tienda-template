@@ -2,6 +2,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { Product } from '../../types/Product';
 import { Category } from '../../types/Category';
+import { supabase } from '../supabase';
 
 interface ProductContextProps {
   categories: Category[];
@@ -23,11 +24,14 @@ export const ProductProvider: React.FC<{ children: React.ReactNode }> = ({ child
     const fetchCategories = async () => {
       setIsLoading(true);
       try {
-        const response = await fetch('http://127.0.0.1:8000/api/categories/');
-        if (!response.ok) throw new Error('Error fetching categories');
+        const { data: categoryData, error } = await supabase.from('categories').select('*');
+        if (error) console.error(error);
 
-        const data: Category[] = await response.json();
-        setCategories(data);
+        if (categoryData) {
+          setCategories(categoryData);
+        } else {
+          setCategories([]);
+        }
       } catch (error) {
         setError((error as Error).message);
       } finally {
@@ -38,17 +42,20 @@ export const ProductProvider: React.FC<{ children: React.ReactNode }> = ({ child
     const fetchProducts = async () => {
       setIsLoading(true);
       try {
-        const response = await fetch('http://127.0.0.1:8000/api/products/');
-        if (!response.ok) throw new Error('Error fetching products');
-        
-        const data: Product[] = await response.json();
-        setProducts(data);
+        const { data: productsData, error } = await supabase.from('products').select('*');
+        if (error) console.error(error);
+
+        if (productsData) {
+          setProducts(productsData);
+        } else {
+          setProducts([]);
+        }
       } catch (error) {
         setError((error as Error).message);
       } finally {
         setIsLoading(false);
       }
-    };
+    }
 
     fetchCategories();
     fetchProducts();
@@ -58,7 +65,7 @@ export const ProductProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const featuredProducts = products.filter(product => product.featured);
 
   return (
-    <ProductContext.Provider value={{ categories, products, featuredProducts, isLoading, error}}>
+    <ProductContext.Provider value={{ categories, products, featuredProducts, isLoading, error }}>
       {children}
     </ProductContext.Provider>
   );

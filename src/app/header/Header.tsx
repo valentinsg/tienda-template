@@ -18,11 +18,11 @@ import {
   MenuTrigger,
 } from "../components/ui/menu"
 import { Sun, Moon, ChevronDown } from 'lucide-react';
-import { useColorMode, useColorModeValue } from './ui/color-mode';
+import { useColorMode, useColorModeValue } from '../components/ui/color-mode';
 import BusyDarkMode from '../../../public/busy-logo-dark-mode.png';
 import BusyLightMode from '../../../public/busy-logo-light-mode.png';
 import Image from 'next/image';
-import CartDialog from './CartDialog';
+import CartDialog from '../components/CartDialog';
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -32,6 +32,7 @@ const Header = () => {
   const textColor = useColorModeValue('#555454', "#D0D0D0");
 
   const navigation = [
+    { name: 'Home', href: '/' },
     { name: 'About', href: '/about' },
     { name: 'Contact', href: '/contact' },
   ];
