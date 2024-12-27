@@ -7,11 +7,11 @@ import { Box, Flex } from '@chakra-ui/react';
 import Carrousell from './components/Carrousell';
 import { useColorModeValue } from './components/ui/color-mode';
 import Logo from './components/Logo';
-
+import "./styles/globals.css";
 
 export default function Home() {
   const router = useRouter();
-  const { products, isLoading, error } = useProducts();
+  const { products, productImages, isLoading, error } = useProducts();
   const bgColor = useColorModeValue("gray.50", 'bg.muted');
 
   const handleSelectProduct = (product: Product) => {
@@ -28,7 +28,7 @@ export default function Home() {
         <Carrousell />
         {/* Listado completo de productos */}
         <Flex mt={12}>
-          <ProductList products={products} onSelectProduct={handleSelectProduct} />
+          <ProductList products={products} productImages={productImages} onSelectProduct={handleSelectProduct} />
         </Flex>
       </Box>
 

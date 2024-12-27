@@ -23,18 +23,65 @@ import BusyDarkMode from '../../../public/busy-logo-dark-mode.png';
 import BusyLightMode from '../../../public/busy-logo-light-mode.png';
 import Image from 'next/image';
 import CartDialog from '../components/CartDialog';
+import { usePathname } from 'next/navigation';
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const { categories } = useProducts();
   const { colorMode, toggleColorMode } = useColorMode();
+  const pathname = usePathname();
+  const activeColor = useColorModeValue('#000000', '#FFFFFF');
+  const inactiveColor = useColorModeValue('#555454', "#D0D0D0");
   const textColor = useColorModeValue('#555454', "#D0D0D0");
 
+  const isActive = (path: string) => {
+    if (path === '/') {
+      return pathname === path;
+    }
+    return pathname.startsWith(path);
+  };
+
   const navigation = [
-    { name: 'Home', href: '/' },
-    { name: 'About', href: '/about' },
-    { name: 'Contact', href: '/contact' },
+    { name: 'Casita', href: '/' },
+    {
+      name: 'Productos',
+      href: '/products',
+      hasDropdown: true,
+      dropdownContent: (
+        <Box
+          position="absolute"
+          top="100%"
+          bg={colorMode === 'dark' ? 'gray.700' : 'white'}
+          borderRadius="md"
+          boxShadow="lg"
+          minW="200px"
+          zIndex={1000}
+        >
+          {categories.map((category, index) => (
+            <Link
+              key={index}
+              href={`/products/${category.name}`}
+              passHref
+            >
+              <Text
+                p={3}
+                color={textColor}
+                _hover={{
+                  bg: colorMode === 'dark' ? 'gray.600' : 'gray.100'
+                }}
+                cursor="pointer"
+              >
+                {category.name}
+              </Text>
+            </Link>
+          ))}
+        </Box>
+      )
+    },
+    { name: 'Sobre nosotros', href: '/about' },
+    { name: 'Contacto', href: '/contact' },
+    { name: "FAQ's", href: '/faqs' },
   ];
 
   return (
@@ -55,65 +102,30 @@ const Header = () => {
         {/* Desktop Menu */}
         <Flex display={{ base: 'none', md: 'flex' }} align="center">
           <Flex mr={"5vw"} alignItems={"center"}>
-            {/* Products Dropdown */}
-            <Box
-              position="relative"
-              onMouseEnter={() => setIsDropdownOpen(true)}
-              onMouseLeave={() => setIsDropdownOpen(false)}
-            >
-              <Link href={`/products/`}>
-                <Flex
-                  align="center"
-                  color={textColor}
-                  cursor="pointer"
-                  mx={4}
-                >
-                  Products
-                  <ChevronDown />
-                </Flex>
-              </Link>
-
-              {isDropdownOpen && (
-                <Box
-                  position="absolute"
-                  top="100%"
-                  bg={colorMode === 'dark' ? 'gray.700' : 'white'}
-                  borderRadius="md"
-                  boxShadow="lg"
-                  minW="200px"
-                  zIndex={1000}
-                >
-                  {categories.map((category, index) => (
-                    <Link
-                      key={index}
-                      href={`/products/${category.name}`}
-                      passHref
-                    >
-                      <Text
-                        p={3}
-                        color={textColor}
-                        _hover={{
-                          bg: colorMode === 'dark' ? 'gray.600' : 'gray.100'
-                        }}
-                        cursor="pointer"
-                      >
-                        {category.name}
-                      </Text>
-                    </Link>
-                  ))}
-                </Box>
-              )}
-            </Box>
-
-            {/* Navigation Links */}
             {navigation.map((item) => (
-              <Link key={item.name} href={item.href} passHref>
-                <Text color={textColor} cursor={"pointer"} mx={6} >
-                  {item.name}
-                </Text>
-              </Link>
+              <Box
+                key={item.name}
+                position="relative"
+                onMouseEnter={() => item.hasDropdown && setIsDropdownOpen(true)}
+                onMouseLeave={() => item.hasDropdown && setIsDropdownOpen(false)}
+              >
+                <Link href={item.href} passHref>
+                  <Flex
+                    align="center"
+                    color={isActive(item.href) ? activeColor : inactiveColor}
+                    cursor="pointer"
+                    mx={4}
+                    fontWeight={isActive(item.href) ? "bold" : "normal"}
+                  >
+                    {item.name}
+                    {item.hasDropdown && <ChevronDown />}
+                  </Flex>
+                </Link>
+                {item.hasDropdown && isDropdownOpen && item.dropdownContent}
+              </Box>
             ))}
           </Flex>
+          <CartDialog />
 
           <Box mr={"5vw"} display={"flex"} flexDir={"row"}>
             {/* Right Side Icons */}
@@ -126,7 +138,6 @@ const Header = () => {
             >
               {colorMode === 'dark' ? <Sun /> : <Moon />}
             </IconButton>
-            <CartDialog />
           </Box>
         </Flex>
 
@@ -148,7 +159,7 @@ const Header = () => {
         <Stack display={{ md: 'none' }} gap={4} mt={4}>
           <MenuRoot>
             <MenuTrigger as={Button} >
-              Products
+              Productos
               <ChevronDown />
             </MenuTrigger>
             <MenuContent>

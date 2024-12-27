@@ -6,7 +6,7 @@ import { LanguageProvider } from "./context/LanguageProvider";
 import { ProductProvider } from './context/ProductContext';
 import { Provider } from "./components/ui/provider";
 import Header from "./header/Header";
-import Footer from "./components/Footer";
+import Footer from "./footer/Footer";
 import "./styles/globals.css";
 
 

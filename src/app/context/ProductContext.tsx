@@ -3,10 +3,12 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import { Product } from '../../types/Product';
 import { Category } from '../../types/Category';
 import { supabase } from '../supabase';
+import { ProductImage } from '../../types/ProductImage';
 
 interface ProductContextProps {
   categories: Category[];
   products: Product[];
+  productImages: ProductImage[];
   featuredProducts: Product[];
   isLoading: boolean;
   error: string | null;
@@ -17,6 +19,7 @@ const ProductContext = createContext<ProductContextProps | undefined>(undefined)
 export const ProductProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
+  const [productImages, setProductImages] = useState<ProductImage[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -56,7 +59,25 @@ export const ProductProvider: React.FC<{ children: React.ReactNode }> = ({ child
         setIsLoading(false);
       }
     }
+    
+    const fetchProductImages = async () => {
+      setIsLoading(true);
+      try {
+        const { data: productImageData, error } = await supabase.from('product_images').select('*');
+        if (error) console.error(error);
 
+        if (productImageData) {
+          setProductImages(productImageData);
+        } else {
+          setProductImages([]);
+        }
+      } catch (error) {
+        setError((error as Error).message);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+    fetchProductImages()
     fetchCategories();
     fetchProducts();
   }, []);
@@ -65,7 +86,7 @@ export const ProductProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const featuredProducts = products.filter(product => product.featured);
 
   return (
-    <ProductContext.Provider value={{ categories, products, featuredProducts, isLoading, error }}>
+    <ProductContext.Provider value={{ products, categories, productImages, featuredProducts, isLoading, error }}>
       {children}
     </ProductContext.Provider>
   );
