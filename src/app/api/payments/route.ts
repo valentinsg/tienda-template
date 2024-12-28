@@ -2,6 +2,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { MercadoPagoConfig, Preference } from 'mercadopago';
 import { readFileSync } from 'node:fs';
+const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://busy.com.ar';
 
 interface Message {
   id: number;
@@ -39,9 +40,9 @@ export async function POST(request: NextRequest) {
           text,
         },
         back_urls: {
-          success: 'http://localhost:3000/success',
-          failure: 'http://localhost:3000/failure',
-          pending: 'http://localhost:3000/pending',
+          success: `${baseUrl}/success`,
+          failure: `${baseUrl}/failure`,
+          pending: `${baseUrl}/pending`,
         },
         auto_return: 'approved',
       }
