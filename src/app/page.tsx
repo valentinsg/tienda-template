@@ -11,14 +11,14 @@ import "./styles/globals.css";
 
 export default function Home() {
   const router = useRouter();
-  const { products, productImages, isLoading, error } = useProducts();
+  const { products, isLoading, error } = useProducts();
   const bgColor = useColorModeValue("gray.50", 'bg.muted');
 
   const handleSelectProduct = (product: Product) => {
     router.push(`/product/${product.id}`);
   };
 
-  if (isLoading) return <div>Loading.v..</div>;
+  if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error loading products</div>;
 
   return (
@@ -28,7 +28,7 @@ export default function Home() {
         <Carrousell />
         {/* Listado completo de productos */}
         <Flex mt={12}>
-          <ProductList products={products} productImages={productImages} onSelectProduct={handleSelectProduct} />
+          <ProductList products={products} onSelectProduct={handleSelectProduct} />
         </Flex>
       </Box>
 

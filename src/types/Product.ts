@@ -1,34 +1,26 @@
+import { ProductImage } from './ProductImage';
+
 export interface Product {
-  id: number;
-  images: {
-    id: number;
-    image_url: string;
-    is_main: boolean;
-    order: number;
-    created_at: string;
-  }[];
-  created_at: string;
-  updated_at: string;
-  is_active: boolean;
-  name: string;
-  slug: string;
-  sku: string;
-  description: string;
-  price: string;
-  sale_price: string | null;
-  sale_start: string | null;
-  sale_end: string | null;
-  featured: boolean;
-  available_sizes: {
+  available_sizes: string[]; // Corresponde a "available_sizes" en la base de datos.
+  id: number; // Corresponde a "id" en la base de datos.
+  name: string; // Corresponde a "name".
+  slug: string; // Corresponde a "slug".
+  sku: string; // Corresponde a "sku".
+  description: string; // Corresponde a "description".
+  price: number; // Corresponde a "price".
+  category: number; // Corresponde a "category".
+  sizes: string[]; // Corresponde a "sizes" en la base de datos como un array de strings.
+  stock: {
     [size: string]: {
       stock: number;
       sku: string;
     };
-  };
-  meta_title: string;
-  meta_description: string;
-  weight: number | null;
-  dimensions: string | null;
-  tags: string[];
-  category: number;
+  }; // Corresponde al JSONB "stock".
+  meta_title: string; // Corresponde a "meta_title".
+  meta_description: string; // Corresponde a "meta_description".
+  weight: number; // Corresponde a "weight".
+  width: number; // Corresponde a "width".
+  height: number; // Corresponde a "height".
+  colors: string[]; // Corresponde a "colors".
+  images: ProductImage[]; // Corresponde a "product_image".
 }

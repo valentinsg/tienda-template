@@ -63,26 +63,6 @@ const BackgroundPattern = () => {
           border="60px solid"
           borderColor={borderColor}
         />
-
-        {/* Líneas diagonales sutiles */}
-        <Box
-          position="absolute"
-          top="25%"
-          left="25%"
-          width="3px"
-          height="90%"
-          transform="rotate(45deg)"
-          bg={lineColor}
-        />
-        <Box
-          position="absolute"
-          top="25%"
-          right="25%"
-          width="3px"
-          height="85%"
-          transform="rotate(-45deg)"
-          bg={lineColor}
-        />
       </Flex>
     </Box>
   );

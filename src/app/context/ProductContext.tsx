@@ -5,21 +5,26 @@ import { Category } from '../../types/Category';
 import { supabase } from '../supabase';
 import { ProductImage } from '../../types/ProductImage';
 
+interface ProductWithImages extends Product {
+  images: ProductImage[]; // Añadimos un campo para las imágenes
+}
+
 interface ProductContextProps {
   categories: Category[];
-  products: Product[];
-  productImages: ProductImage[];
-  featuredProducts: Product[];
+  products: ProductWithImages[];
   isLoading: boolean;
   error: string | null;
 }
 
-const ProductContext = createContext<ProductContextProps | undefined>(undefined);
-
+const ProductContext = createContext<ProductContextProps>({
+  categories: [],
+  products: [],
+  isLoading: false,
+  error: null,
+});
 export const ProductProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [products, setProducts] = useState<Product[]>([]);
+  const [products, setProducts] = useState<ProductWithImages[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
-  const [productImages, setProductImages] = useState<ProductImage[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -30,26 +35,32 @@ export const ProductProvider: React.FC<{ children: React.ReactNode }> = ({ child
         const { data: categoryData, error } = await supabase.from('categories').select('*');
         if (error) console.error(error);
 
-        if (categoryData) {
-          setCategories(categoryData);
-        } else {
-          setCategories([]);
-        }
+        setCategories(categoryData || []);
       } catch (error) {
         setError((error as Error).message);
       } finally {
         setIsLoading(false);
       }
-    }
+    };
 
-    const fetchProducts = async () => {
+    const fetchProductsAndImages = async () => {
       setIsLoading(true);
       try {
-        const { data: productsData, error } = await supabase.from('products').select('*');
-        if (error) console.error(error);
+        // Fetch products
+        const { data: productsData, error: productError } = await supabase.from('products').select('*');
+        if (productError) console.error(productError);
 
-        if (productsData) {
-          setProducts(productsData);
+        // Fetch product images
+        const { data: productImageData, error: imageError } = await supabase.from('product_images').select('*');
+        if (imageError) console.error(imageError);
+
+        if (productsData && productImageData) {
+          // Combine products with their images
+          const combinedProducts = productsData.map(product => ({
+            ...product,
+            images: productImageData.filter(image => image.product_id === product.id), // Asociar imágenes
+          }));
+          setProducts(combinedProducts);
         } else {
           setProducts([]);
         }
@@ -58,35 +69,15 @@ export const ProductProvider: React.FC<{ children: React.ReactNode }> = ({ child
       } finally {
         setIsLoading(false);
       }
-    }
-    
-    const fetchProductImages = async () => {
-      setIsLoading(true);
-      try {
-        const { data: productImageData, error } = await supabase.from('product_images').select('*');
-        if (error) console.error(error);
+    };
 
-        if (productImageData) {
-          setProductImages(productImageData);
-        } else {
-          setProductImages([]);
-        }
-      } catch (error) {
-        setError((error as Error).message);
-      } finally {
-        setIsLoading(false);
-      }
-    }
-    fetchProductImages()
     fetchCategories();
-    fetchProducts();
+    fetchProductsAndImages();
   }, []);
 
 
-  const featuredProducts = products.filter(product => product.featured);
-
   return (
-    <ProductContext.Provider value={{ products, categories, productImages, featuredProducts, isLoading, error }}>
+    <ProductContext.Provider value={{ products, categories, isLoading, error }}>
       {children}
     </ProductContext.Provider>
   );

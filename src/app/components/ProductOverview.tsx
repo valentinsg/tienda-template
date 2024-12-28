@@ -54,9 +54,9 @@ const ProductOverview: React.FC<ProductOverviewProps> = ({
   const mutedTextColor = useColorModeValue('gray.600', 'gray.400');
 
   const getCurrentStock = () => {
-    if (!selectedSize) return 0;
+    if (!selectedSize || selectedSize.length === 0) return 0;
     const size = selectedSize[0];
-    return product.available_sizes[size]?.stock || 0;
+    return product.stock[size]?.stock || 0;
   };
 
   const getCurrentCartQuantity = () => {
@@ -82,7 +82,7 @@ const ProductOverview: React.FC<ProductOverviewProps> = ({
       const cartItem = {
         id: `${product.id}-${selectedSize[0]}`,
         name: `${product.name} (${selectedSize[0].toUpperCase()})`,
-        price: parseFloat(product.price),
+        price: product.price,
         quantity: 1,
         imageUrl: product.images?.[0]?.image_url || '/placeholder.jpg',
       };
@@ -217,16 +217,16 @@ const ProductOverview: React.FC<ProductOverviewProps> = ({
                 value={selectedSize || []}
                 onValueChange={(e) => setSelectedSize(e.value)}
                 collection={createListCollection(
-                  { items: Object.keys(product.available_sizes).map(size => ({ value: size, label: size.toUpperCase() })) }
+                  { items: Object.keys(product.stock).map(size => ({ value: size, label: size.toUpperCase() })) }
                 )}
               >
                 <SelectTrigger>
                   <SelectValueText placeholder="Choose a size" />
                 </SelectTrigger>
                 <SelectContent>
-                  {Object.entries(product.available_sizes).map(([size, data]) => {
+                  {Object.entries(product.stock).map(([size, data]) => {
                     const inCart = cartItems.find(item => item.id === `${product.id}-${size}`)?.quantity || 0;
-                    const remaining = data.stock - inCart;
+                    const remaining = (data as { stock: number }).stock - inCart;
                     return (
                       <SelectItem
                         key={size}

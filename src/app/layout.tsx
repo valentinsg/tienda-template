@@ -8,7 +8,8 @@ import { Provider } from "./components/ui/provider";
 import Header from "./header/Header";
 import Footer from "./footer/Footer";
 import "./styles/globals.css";
-
+import { Toaster } from 'react-hot-toast';
+import NewsletterPopover from "./components/NewsletterPopover";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -22,7 +23,7 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://busystreetwear.com.ar'),
+  metadataBase: new URL('https://busy.com.ar'),
   title: {
     default: "Busy | Streetwear | Ropa Urbana y Streetwear en Mar Del Plata, Argentina",
     template: "%s | Busy Streetwear"
@@ -33,7 +34,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Busy Streetwear | Ropa Urbana y Streetwear en Argentina",
     description: "Tienda online de ropa urbana y streetwear en Argentina. Envíos a todo el país.",
-    url: 'https://busystreetwear.com.ar',
+    url: 'https://busy.com.ar',
     siteName: 'Busy Streetwear',
     locale: 'es_AR',
     type: 'website',
@@ -68,7 +69,7 @@ export default function RootLayout({
               "@type": "ClothingStore",
               "name": "Busy Streetwear",
               "description": "Tienda online de ropa urbana y streetwear en Argentina",
-              "url": "https://busystreetwear.com",
+              "url": "https://busy.com.ar",
               "priceRange": "$$",
               "address": {
                 "@type": "PostalAddress",
@@ -77,7 +78,7 @@ export default function RootLayout({
             })
           }}
         />
-        <link rel="canonical" href="https://busystreetwear.com" />
+        <link rel="canonical" href="https://busy.com.ar" />
         <meta name="geo.region" content="AR" />
         <meta name="geo.placename" content="Argentina" />
       </head>
@@ -89,12 +90,39 @@ export default function RootLayout({
             <Provider>
               <ClientProviders>
                 <Header />
-                <main>{children}</main>
+                <main>
+                  {children}
+                  <NewsletterPopover />
+                </main>
                 <Footer />
               </ClientProviders>
             </Provider>
           </LanguageProvider>
         </ProductProvider>
+        <Toaster
+          position="top-right"
+          toastOptions={{
+            duration: 3000,
+            style: {
+              background: '#363636',
+              color: '#fff',
+            },
+            success: {
+              duration: 3000,
+              iconTheme: {
+                primary: '#4CAF50',
+                secondary: '#fff',
+              },
+            },
+            error: {
+              duration: 3000,
+              iconTheme: {
+                primary: '#E53E3E',
+                secondary: '#fff',
+              },
+            },
+          }}
+        />
       </body>
     </html >
   );

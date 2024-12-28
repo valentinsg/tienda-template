@@ -1,21 +1,15 @@
 import React from 'react';
 import { Box, Grid, Heading, Text, VStack, Image, Stack } from '@chakra-ui/react';
 import { Product } from '../../types/Product';
-import { ProductImage } from '../../types/ProductImage';
 
 interface ProductListProps {
   products: Product[];
-  productImages: ProductImage[];
   onSelectProduct: (product: Product) => void;
 }
 
-export default function ProductList({ products, onSelectProduct, productImages }: ProductListProps) {
+export default function ProductList({ products, onSelectProduct }: ProductListProps) {
   const handleProductClick = (product: Product) => {
     onSelectProduct(product);
-  };
-
-  const getProductImage = (productId: number) => {
-    return productImages.find(img => img.product_id === productId)?.image_url;
   };
 
   if (!products || products.length === 0) {
@@ -23,15 +17,6 @@ export default function ProductList({ products, onSelectProduct, productImages }
       <Box textAlign="center" py={10}>
         <Text fontSize="lg" color="gray.500">
           No hay productos disponibles.
-        </Text>
-      </Box>
-    );
-  }
-  if (!productImages) {
-    return (
-      <Box textAlign="center" py={10}>
-        <Text fontSize="lg" color="gray.500">
-          Cargando productos...
         </Text>
       </Box>
     );
@@ -76,9 +61,9 @@ export default function ProductList({ products, onSelectProduct, productImages }
               alignItems="center"
               justifyContent="center"
             >
-              {productImages.length > 0 ? (
+              {product.images && product.images.length > 0 ? ( // Validación de imágenes
                 <Image
-                  src={getProductImage(product.id)}
+                  src={product.images[0].image_url}
                   alt={product.name}
                   objectFit="cover"
                   h="full"
