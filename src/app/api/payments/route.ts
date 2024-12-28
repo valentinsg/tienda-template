@@ -23,44 +23,50 @@ export async function POST(request: NextRequest) {
     }
 
     // Initialize Mercado Pago client with access token
-    const mercadopago = new MercadoPagoConfig({
-      accessToken: process.env.MP_ACCESS_TOKEN!
+    const client = new MercadoPagoConfig({ 
+      accessToken: process.env.MP_ACCESS_TOKEN! 
     });
-
+    const preferenceClient = new Preference(client);
+    
     // Create the payment preference
-    const preference = await new Preference(mercadopago).create({
-      body: {
-        items: [
-          {
-            id: "message",
-            unit_price: 1, // You can adjust the price here if needed
-            quantity: 1,
-            title: "Mensaje de muro", // You can adjust the title
-          },
-        ],
-        metadata: {
-          text, // Including the text metadata from the request body
+    const preference = {
+      items: [
+        {
+          id: "message",
+          unit_price: 1, 
+          quantity: 1,
+          title: "Mensaje de muro", // You can adjust the title
         },
-        back_urls: {
-          success: `${baseUrl}/success`,  // Change this to your actual production URL
-          failure: `${baseUrl}/failure`,  // Change this to your actual production URL
-          pending: `${baseUrl}/pending`,  // Change this to your actual production URL
-        },
-        auto_return: 'approved',  // Automatically returns to the success URL if approved
-      }
-    });
+      ],
+      metadata: {
+        text, // Including the text metadata from the request body
+      },
+      back_urls: {
+        success: `${baseUrl}/success`,  // Change this to your actual production URL
+        failure: `${baseUrl}/failure`,  // Change this to your actual production URL
+        pending: `${baseUrl}/pending`,  // Change this to your actual production URL
+      },
+      auto_return: 'approved',  // Automatically returns to the success URL if approved
+    };
+
+    // Make the request to MercadoPago to create the preference
+    const response = await preferenceClient.create({ body: preference });
 
     // Return the init point for the payment (MercadoPago's redirection URL)
     return NextResponse.json({
-      initPoint: preference.init_point
+      initPoint: response.init_point
     });
   } catch (error) {
     console.error('Payment Preference Error:', error);
 
-    // Return a 500 status with error details if the request fails
+    // Enhance error message with more details
+    const errorMessage = error instanceof Error ? error.message : JSON.stringify(error);
+
+    // Return detailed error information
     return NextResponse.json({
       error: 'Failed to create payment preference',
-      details: error instanceof Error ? error.message : 'Unknown error'
+      details: errorMessage,
+      statusCode: (error as { status?: number }).status || 500
     }, { status: 500 });
   }
 }
