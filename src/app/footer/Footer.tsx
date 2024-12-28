@@ -9,7 +9,6 @@ import BusyLightMode from '../../../public/busy-logo-light-mode.png';
 import Visa from '../../../public/visa.png';
 import Mastercard from '../../../public/mastercard.png';
 import MercadoPago from '../../../public/mercadopagop.png';
-import Andreani from '../../../public/andreani.png';
 
 export default function Footer() {
   const { colorMode } = useColorMode();
