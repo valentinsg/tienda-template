@@ -1,5 +1,5 @@
-import { MercadoPagoConfig } from 'mercadopago';
+import { MercadoPagoConfig } from "mercadopago";
 
 export const mercadopago = new MercadoPagoConfig({
-  accessToken: process.env.MP_ACCESS_TOKEN || ''
+  accessToken: process.env.MP_ACCESS_TOKEN || "",
 });
