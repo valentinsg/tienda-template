@@ -30,14 +30,14 @@ export async function POST(request: NextRequest) {
       body: {
         items: [
           {
-            id: "message",
-            unit_price: 1,
+            id: "product-id",
+            unit_price: 1, // Aquí va el precio del producto
             quantity: 1,
-            title: "Mensaje de muro",
+            title: "Product Title", // Título del producto
           },
         ],
-        metadata: {
-          text,
+        payment_methods: {
+          installments: 12, // Número máximo de cuotas
         },
         back_urls: {
           success: `${baseUrl}/success`,
@@ -45,7 +45,7 @@ export async function POST(request: NextRequest) {
           pending: `${baseUrl}/pending`,
         },
         auto_return: 'approved',
-      }
+      },
     });
 
     // Return the init point

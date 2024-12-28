@@ -127,32 +127,55 @@ const Checkout: React.FC = () => {
     console.log('Checkout Data:', checkoutData);
     // TODO: Implement actual checkout process
   };
+  const validateForm = () => {
+    const errors = [];
+    if (cartItems.length === 0) errors.push('El carrito está vacío');
+    if (!personalInfo.name) errors.push('Nombre es requerido');
+    if (!personalInfo.lastName) errors.push('Apellido es requerido');
+    if (!personalInfo.email) errors.push('Email es requerido');
+    if (!personalInfo.phone) errors.push('Teléfono es requerido');
+    if (shippingMethod === 'home') {
+      if (!homeShippingDetails.address) errors.push('Dirección es requerida');
+      if (!homeShippingDetails.province) errors.push('Provincia es requerida');
+      if (!homeShippingDetails.postalCode) errors.push('Código Postal es requerido');
+      if (!homeShippingDetails.city) errors.push('Ciudad es requerida');
+    } else if (shippingMethod === 'branch') {
+      if (!homeShippingDetails.province) errors.push('Provincia es requerida');
+      if (!homeShippingDetails.city) errors.push('Ciudad es requerida');
+      if (!homeShippingDetails.postalCode) errors.push('Código Postal es requerido');
+    }
+
+    if (errors.length > 0) {
+      alert(errors.join('\n'));
+      return false; // Form no válido
+    }
+    return true; // Form válido
+  };
 
   const handleCheckout = async () => {
+    if (!validateForm()) return;
     try {
       const response = await fetch('/api/payments', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ text }),
+        body: JSON.stringify({
+          cartItems,
+          totalPrice: calculateTotalPrice(),
+          text,
+        }),
       });
-  
+
       const data = await response.json();
-      
-      if (data.initPoint) {
-        // Redirect to Mercado Pago payment page
-        window.location.href = data.initPoint;
-      } else {
-        console.error('Failed to create payment preference:', data);
-        alert(data.error || 'Failed to submit message');
-      }
+      if (data.initPoint) window.location.href = data.initPoint;
+      else alert(data.error || 'Error al generar la preferencia de pago');
     } catch (error) {
-      console.error('Submission error:', error);
-      alert('There was a problem submitting your message');
+      console.error(error);
+      alert('Error al procesar el pago.');
     }
   };
-  
+
   // Price Calculation
   const calculateTotalPrice = () => {
     const productTotal = cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
@@ -161,25 +184,12 @@ const Checkout: React.FC = () => {
   };
 
   return (
-    <Stack h={"auto"} justify={"center"} direction={{ base: 'column', md: 'row' }} gap={12} p={8} m={4}>
+    <Stack minH={"100vh"} justify={"center"} direction={{ base: 'column', md: 'row' }} gap={12} p={8} m={2}>
       {/* Cart Summary */}
-      <Box w={"27%"} borderWidth={1} borderRadius="md" p={6} boxShadow={"md"}>
-        <Text fontWeight="bold" textAlign="center" fontSize="3xl"  m={6}>Resumen de Compra</Text>
-        {cartItems.map((item) => (
-          <Box key={item.id} mt={3}>
-            <Text>{item.name} x{item.quantity}</Text>
-            <Text>${item.price * item.quantity}</Text>
-          </Box>
-        ))}
-        <Box my={4} />
-        <Text>Productos: ${calculateTotalPrice() - (shippingMethod === 'home' ? 9500 : 8000)}</Text>
-        <Text>Envío: ${shippingMethod === 'home' ? 9500 : 8000}</Text>
-        <Box height="1px" bg="gray.200" my={4} />
-        <Text fontWeight="bold" mt={2}>Total: ${calculateTotalPrice()}</Text>
-      </Box>
+
 
       {/* Checkout Form */}
-      <Box w={"63%"} borderWidth={1} borderRadius="md" p={6} boxShadow={"md"}>
+      <Box w={"75%"} borderWidth={1} borderRadius="md" p={6} boxShadow={"md"} overflowY="auto" maxHeight="90vh">
         <Fieldset.Root>
           <Stack w={"85%"} m={"auto"}>
             {/* Personal Info Section */}
@@ -275,25 +285,25 @@ const Checkout: React.FC = () => {
                   <Card.Body gap={4}>
                     <Field label="Provincia">
                       <SelectRoot
-                      collection={provinces}
-                      value={homeShippingDetails.province ? [homeShippingDetails.province] : []}
-                      onChange={(e) => setHomeShippingDetails({
-                        ...homeShippingDetails, 
-                        province: (e.target as HTMLSelectElement).value
-                      })}
+                        collection={provinces}
+                        value={homeShippingDetails.province ? [homeShippingDetails.province] : []}
+                        onChange={(e) => setHomeShippingDetails({
+                          ...homeShippingDetails,
+                          province: (e.target as HTMLSelectElement).value
+                        })}
                       >
-                      <SelectTrigger>
-                        <SelectValueText>
-                          {() => homeShippingDetails.province || "Selecciona tu provincia"}
-                        </SelectValueText>
-                      </SelectTrigger>
-                      <SelectContent>
-                        {provinces.items.map((province) => (
-                        <SelectItem key={province} item={province}>
-                          {province}
-                        </SelectItem>
-                        ))}
-                      </SelectContent>
+                        <SelectTrigger>
+                          <SelectValueText>
+                            {() => homeShippingDetails.province || "Selecciona tu provincia"}
+                          </SelectValueText>
+                        </SelectTrigger>
+                        <SelectContent>
+                          {provinces.items.map((province) => (
+                            <SelectItem key={province} item={province}>
+                              {province}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
                       </SelectRoot>
                     </Field>
                     <Field label="Ciudad">
@@ -422,6 +432,7 @@ const Checkout: React.FC = () => {
               >
                 <Radio value="creditCard">Tarjeta de Crédito</Radio>
                 <Radio value="debitCard">Tarjeta de Débito</Radio>
+
               </Flex>
             </RadioGroup>
 
@@ -429,12 +440,26 @@ const Checkout: React.FC = () => {
             <Button
               mt={6}
               colorScheme="green"
-              onClick={handleSubmit}
+              onClick={handleCheckout}
             >
-              Finalizar Compra
+              Ir a pagar
             </Button>
           </Stack>
         </Fieldset.Root>
+      </Box>
+      <Box w={"35%"} minH={"35vh"} maxH={"90vh"} h={"100%"} borderWidth={1} borderRadius="md" p={6} boxShadow={"md"}>
+        <Text fontWeight="bold" textAlign="center" fontSize="3xl" m={6}>Resumen de Compra</Text>
+        {cartItems.map((item) => (
+          <Box key={item.id} mt={3}>
+            <Text>{item.name} x{item.quantity}</Text>
+            <Text>${item.price * item.quantity}</Text>
+          </Box>
+        ))}
+        <Box my={4} />
+        <Text>Productos: ${calculateTotalPrice() - (shippingMethod === 'home' ? 9500 : 8000)}</Text>
+        <Text>Envío: ${shippingMethod === 'home' ? 9500 : 8000}</Text>
+        <Box height="1px" bg="gray.200" my={4} />
+        <Text fontWeight="bold" mt={2}>Total: ${calculateTotalPrice()}</Text>
       </Box>
     </Stack>
   );
