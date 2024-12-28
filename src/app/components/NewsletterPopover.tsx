@@ -10,7 +10,6 @@ import {
 } from "../components/ui/dialog";
 import { 
   Button, 
-  Image, 
   Input, 
   Text, 
   Grid, 

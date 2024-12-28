@@ -8,7 +8,7 @@ import { Box } from '@chakra-ui/react';
 
 const Products = () => {
   const router = useRouter();
-  const { products, isLoading, error, productImages } = useProducts();
+  const { products, isLoading, error } = useProducts();
   const [filteredProducts] = useState(products);
 
   const handleSelectProduct = (product: Product) => {
@@ -21,7 +21,7 @@ const Products = () => {
 
   return (
     <Box minH={"100vh"} p={6}>
-      <ProductList products={filteredProducts} onSelectProduct={handleSelectProduct} productImages={productImages}  />
+      <ProductList products={filteredProducts} onSelectProduct={handleSelectProduct}  />
     </Box>
   );
 };

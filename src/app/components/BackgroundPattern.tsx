@@ -9,7 +9,6 @@ const BackgroundPattern = () => {
   const { colorMode } = useColorMode();
   const bgGradient = colorMode === 'light' ? 'linear(to-br, gray.50, gray.100)' : 'linear(to-br, gray.800, gray.900)';
   const borderColor = colorMode === 'light' ? '#555454' : 'gray.100';
-  const lineColor = colorMode === 'light' ? 'gray.900' : 'gray.100';
   return (
     <Box top={0} left={0} right={0} bottom={0} zIndex={1} shadow={"md"}>
       {/* Gradiente sutil */}
