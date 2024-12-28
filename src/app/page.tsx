@@ -18,7 +18,7 @@ export default function Home() {
     router.push(`/product/${product.id}`);
   };
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading) return <div>Loading.v..</div>;
   if (error) return <div>Error loading products</div>;
 
   return (
