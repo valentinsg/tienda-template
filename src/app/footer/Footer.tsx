@@ -98,12 +98,6 @@ export default function Footer() {
             width={45}
             height={45}
           />
-          <Image
-            src={Andreani} // Asegúrate de que la imagen esté en tu carpeta pública.
-            alt="Andreani"
-            width={45}
-            height={45}
-          />
           {/* Información adicional */}
         </HStack>
 
