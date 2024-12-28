@@ -116,12 +116,11 @@ const Checkout: React.FC = () => {
 
     // Prepare Checkout Data
     const checkoutData = {
-      personalInfo,
-      shippingMethod,
-      shippingDetails: shippingMethod === 'home' ? homeShippingDetails : null,
-      paymentMethod,
-      cartItems,
-      totalPrice: calculateTotalPrice()
+      cartItems, // Lista de productos con id, name, quantity, price
+      totalPrice: calculateTotalPrice(), // Precio total
+      shippingMethod, // Método de envío seleccionado
+      shippingDetails: shippingMethod === 'home' ? homeShippingDetails : null, // Detalles de envío
+      paymentMethod, // Método de pago seleccionado
     };
 
     console.log('Checkout Data:', checkoutData);
@@ -250,19 +249,7 @@ const Checkout: React.FC = () => {
                     </SelectContent>
                   </SelectRoot>
                 </Field>
-                <Field label="Mensaje">
-                  <Input
-                    type="text"
-                    value={text}
-                    onChange={(e) => setText(e.target.value)}
-                  />
-                </Field>
-                <Button
-                  colorScheme="blue"
-                  onClick={handleCheckout}
-                >
-                  pagar
-                </Button>
+
               </Stack>
 
             </Flex>
@@ -457,7 +444,13 @@ const Checkout: React.FC = () => {
         ))}
         <Box my={4} />
         <Text>Productos: ${calculateTotalPrice() - (shippingMethod === 'home' ? 9500 : 8000)}</Text>
-        <Text>Envío: ${shippingMethod === 'home' ? 9500 : 8000}</Text>
+        <Text>
+          {shippingMethod === 'home' 
+            ? 'Envío a domicilio: $9500' 
+            : shippingMethod === 'branch' 
+            ? 'Envío a sucursal (Andreani): $8000' 
+            : 'Selecciona un método de envío'}
+        </Text>
         <Box height="1px" bg="gray.200" my={4} />
         <Text fontWeight="bold" mt={2}>Total: ${calculateTotalPrice()}</Text>
       </Box>

@@ -6,12 +6,15 @@ import { CartItem } from '@/types/CartItem';
 // Estado inicial del carrito
 interface CartState {
   items: CartItem[];
+  totalPrice: number;
+  totalItems: number;
 }
 
 const initialState: CartState = {
   items: [],
+  totalPrice: 0,
+  totalItems: 0,
 };
-
 // Creación del slice para manejar las acciones y el estado del carrito
 const cartSlice = createSlice({
   name: 'cart',
@@ -21,14 +24,16 @@ const cartSlice = createSlice({
 
     addItem: (state, action: PayloadAction<CartItem>) => {
       const existingItem = state.items.find(item => item.id === action.payload.id);
-
+    
       if (existingItem) {
-        // Si el producto ya existe, aumentamos su cantidad
         existingItem.quantity += action.payload.quantity;
       } else {
-        // Si no existe, lo añadimos al carrito
         state.items.push(action.payload);
       }
+    
+      // Actualizamos el precio total y los productos totales
+      state.totalPrice = state.items.reduce((acc, item) => acc + item.price * item.quantity, 0);
+      state.totalItems = state.items.reduce((acc, item) => acc + item.quantity, 0);
     },
     //#endregion
 
