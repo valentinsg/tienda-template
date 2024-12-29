@@ -60,6 +60,9 @@ export default function RootLayout({
   return (
     <html lang="es-AR" suppressHydrationWarning>
       <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&display=swap" rel="stylesheet" />
         <Script
           id="structured-data"
           type="application/ld+json"

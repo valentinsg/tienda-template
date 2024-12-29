@@ -61,18 +61,18 @@ const Header = () => {
           {categories.map((category, index) => (
             <Link
               key={index}
-              href={`/products/${category.name}`}
+              href={`/products/${category.name.toLowerCase()}`}
               passHref
             >
               <Text
-                p={3}
-                color={textColor}
-                _hover={{
-                  bg: colorMode === 'dark' ? 'gray.600' : 'gray.100'
-                }}
-                cursor="pointer"
+              p={3}
+              color={textColor}
+              _hover={{
+                bg: colorMode === 'dark' ? 'gray.600' : 'gray.100'
+              }}
+              cursor="pointer"
               >
-                {category.name}
+              {category.name}
               </Text>
             </Link>
           ))}

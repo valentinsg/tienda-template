@@ -19,7 +19,10 @@ import { Radio, RadioGroup } from '../components/ui/radio';
 import { createListCollection } from "@chakra-ui/react"
 import { FaHome } from 'react-icons/fa';
 import { LuBuilding2 } from "react-icons/lu"
-import axios from 'axios';
+import * as Yup from 'yup';
+import { useFormik, FormikValues } from 'formik';
+import {AndreaniBranch} from "../../types/checkout/shipping/AndreaniBranch"
+import { supabase } from '../supabase';
 
 // Types
 interface PersonalInfo {
@@ -36,11 +39,6 @@ interface HomeShippingDetails {
   province: string;
   postalCode: string;
   city: string;
-}
-
-interface AndreaniBranch {
-  id: string;
-  address: string;
 }
 
 // Constants
@@ -70,7 +68,6 @@ const Checkout: React.FC = () => {
 
   const [shippingMethod, setShippingMethod] = useState<'home' | 'branch'>('home');
   const [paymentMethod, setPaymentMethod] = useState<'creditCard' | 'debitCard'>('creditCard');
-  const [text, setText] = useState<string>('');
 
   const [homeShippingDetails, setHomeShippingDetails] = useState<HomeShippingDetails>({
     address: '',
@@ -78,13 +75,26 @@ const Checkout: React.FC = () => {
     postalCode: '',
     city: '',
   });
+  const [branchShippingDetails, setBranchShippingDetails] = useState<AndreaniBranch>({
+    id: '',
+    province: '',
+    postalCode: '',
+    name: '',
+  });
 
   // Fetch Branches
   useEffect(() => {
     const fetchBranches = async () => {
       try {
-        const response = await axios.get('http://127.0.0.1:8000/andreani-branches/');
-        setAndreaniBranches(response.data as AndreaniBranch[]);
+        const { data, error } = await supabase
+          .from('andreani_branches')
+          .select('*');
+
+        if (error) {
+          throw error;
+        }
+
+        setAndreaniBranches(data as AndreaniBranch[]);
       } catch (error) {
         console.error('Error fetching Andreani branches:', error);
       }
@@ -95,85 +105,55 @@ const Checkout: React.FC = () => {
     }
   }, [shippingMethod]);
 
-  // Validation and Submit
-  const handleSubmit = () => {
-    // Basic Validation
-    const errors: string[] = [];
+  const validationSchema = Yup.object({
+    name: Yup.string().required('Nombre es requerido'),
+    lastName: Yup.string().required('Apellido es requerido'),
+    email: Yup.string().email('Email inválido').required('Email es requerido'),
+    phone: Yup.string().required('Teléfono es requerido'),
+    address: Yup.string().when('shippingMethod', {
+      is: (val: string) => val === 'home',
+      then: (schema) => schema.required('Dirección es requerida'),
+    }),
+    province: Yup.string().required('Provincia es requerida'),
+    city: Yup.string().required('Ciudad es requerida'),
+    postalCode: Yup.string().required('Código Postal es requerido'),
+  });
 
-    if (!personalInfo.name) errors.push('Nombre es requerido');
-    if (!personalInfo.lastName) errors.push('Apellido es requerido');
-    if (!personalInfo.email) errors.push('Email es requerido');
+  const formik = useFormik({
+    initialValues: {
+      name: '',
+      lastName: '',
+      email: '',
+      phone: '',
+      address: '',
+      province: '',
+      city: '',
+      postalCode: '',
+      shippingMethod: 'home',
+    },
+    validationSchema,
+    onSubmit: async (values: FormikValues) => {
+      try {
+        const response = await fetch('/api/payments', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            cartItems,
+            totalPrice: calculateTotalPrice(),
+          }),
+        });
 
-    if (shippingMethod === 'home') {
-      if (!homeShippingDetails.province) errors.push('Provincia es requerida');
-      if (!homeShippingDetails.address) errors.push('Dirección es requerida');
-    }
-
-    if (errors.length > 0) {
-      alert(errors.join('\n'));
-      return;
-    }
-
-    // Prepare Checkout Data
-    const checkoutData = {
-      cartItems, // Lista de productos con id, name, quantity, price
-      totalPrice: calculateTotalPrice(), // Precio total
-      shippingMethod, // Método de envío seleccionado
-      shippingDetails: shippingMethod === 'home' ? homeShippingDetails : null, // Detalles de envío
-      paymentMethod, // Método de pago seleccionado
-    };
-
-    console.log('Checkout Data:', checkoutData);
-    // TODO: Implement actual checkout process
-  };
-  const validateForm = () => {
-    const errors = [];
-    if (cartItems.length === 0) errors.push('El carrito está vacío');
-    if (!personalInfo.name) errors.push('Nombre es requerido');
-    if (!personalInfo.lastName) errors.push('Apellido es requerido');
-    if (!personalInfo.email) errors.push('Email es requerido');
-    if (!personalInfo.phone) errors.push('Teléfono es requerido');
-    if (shippingMethod === 'home') {
-      if (!homeShippingDetails.address) errors.push('Dirección es requerida');
-      if (!homeShippingDetails.province) errors.push('Provincia es requerida');
-      if (!homeShippingDetails.postalCode) errors.push('Código Postal es requerido');
-      if (!homeShippingDetails.city) errors.push('Ciudad es requerida');
-    } else if (shippingMethod === 'branch') {
-      if (!homeShippingDetails.province) errors.push('Provincia es requerida');
-      if (!homeShippingDetails.city) errors.push('Ciudad es requerida');
-      if (!homeShippingDetails.postalCode) errors.push('Código Postal es requerido');
-    }
-
-    if (errors.length > 0) {
-      alert(errors.join('\n'));
-      return false; // Form no válido
-    }
-    return true; // Form válido
-  };
-
-  const handleCheckout = async () => {
-    if (!validateForm()) return;
-    try {
-      const response = await fetch('/api/payments', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          cartItems,
-          totalPrice: calculateTotalPrice(),
-          text,
-        }),
-      });
-
-      const data = await response.json();
-      if (data.initPoint) window.location.href = data.initPoint;
-      else alert(data.error || 'Error al generar la preferencia de pago');
-    } catch (error) {
-      console.error(error);
-      alert('Error al procesar el pago.');
-    }
-  };
+        const data = await response.json();
+        if (data.initPoint) window.location.href = data.initPoint;
+        else alert(data.error || 'Error al generar la preferencia de pago');
+      } catch (error) {
+        console.error(error);
+        alert('Error al procesar el pago.');
+      }
+    },
+  });
 
   // Price Calculation
   const calculateTotalPrice = () => {
@@ -182,17 +162,20 @@ const Checkout: React.FC = () => {
     return productTotal + shippingCost;
   };
 
+  const handleCheckout = () => {
+    formik.handleSubmit();
+  };
   return (
-    <Stack minH={"100vh"} justify={"center"} direction={{ base: 'column', md: 'row' }} gap={12} p={8} m={2}>
+    <Stack minH={"90vh"} justify={"center"} direction={{ base: 'column', md: 'row' }} >
       {/* Cart Summary */}
 
 
       {/* Checkout Form */}
-      <Box w={"75%"} borderWidth={1} borderRadius="md" p={6} boxShadow={"md"} overflowY="auto" maxHeight="90vh">
+      <Box mx={8} w={"60%"} borderWidth={1} borderRadius="md" boxShadow={"md"} overflowY="auto" maxHeight="80vh" p={8} mt={8}>
         <Fieldset.Root>
           <Stack w={"85%"} m={"auto"}>
             {/* Personal Info Section */}
-            <Text fontWeight="bold" fontSize="3xl" textAlign="center" m={10}>Datos Personales</Text>
+            <Text fontWeight="bold" fontSize="3xl" textAlign="left" m={4}>Datos Personales</Text>
             <Flex gap={12} direction={{ base: 'column', md: 'row' }} >
               <Stack flex={1}>
                 <Field label="Nombre">
@@ -341,15 +324,15 @@ const Checkout: React.FC = () => {
                     <Field label="Provincia">
                       <SelectRoot
                         collection={provinces}
-                        value={[homeShippingDetails.province]}
-                        onChange={(e) => setHomeShippingDetails({
-                          ...homeShippingDetails,
+                        value={[branchShippingDetails.province]}
+                        onChange={(e) => setBranchShippingDetails({
+                          ...branchShippingDetails,
                           province: (e.target as HTMLSelectElement).value
                         })}
                       >
                         <SelectTrigger>
                           <SelectValueText>
-                            {() => homeShippingDetails.province || 'Selecciona provincia'}
+                            {() => branchShippingDetails.province || 'Selecciona provincia'}
                           </SelectValueText>
                         </SelectTrigger>
                         <SelectContent>
@@ -363,18 +346,18 @@ const Checkout: React.FC = () => {
                     </Field>
                     <Field label="Ciudad">
                       <Input
-                        value={homeShippingDetails.city}
-                        onChange={(e) => setHomeShippingDetails({
-                          ...homeShippingDetails,
-                          city: e.target.value
+                        value={branchShippingDetails.name}
+                        onChange={(e) => setBranchShippingDetails({
+                          ...branchShippingDetails,
+                          name: e.target.value 
                         })}
                       />
                     </Field>
                     <Field label="Código Postal">
                       <Input
-                        value={homeShippingDetails.postalCode}
-                        onChange={(e) => setHomeShippingDetails({
-                          ...homeShippingDetails,
+                        value={branchShippingDetails.postalCode}
+                        onChange={(e) => setBranchShippingDetails({
+                          ...branchShippingDetails,
                           postalCode: e.target.value
                         })}
                       />
@@ -391,7 +374,7 @@ const Checkout: React.FC = () => {
                         <SelectContent>
                           {andreaniBranches.map((branch) => (
                             <SelectItem key={branch.id} item={branch.id}>
-                              {branch.address}
+                              {`${branch.postalCode}, ${branch.province}, ${branch.name}, ${branch.address}`}
                             </SelectItem>
                           ))}
                         </SelectContent>
@@ -434,7 +417,7 @@ const Checkout: React.FC = () => {
           </Stack>
         </Fieldset.Root>
       </Box>
-      <Box w={"35%"} minH={"35vh"} maxH={"90vh"} h={"100%"} borderWidth={1} borderRadius="md" p={6} boxShadow={"md"}>
+      <Box w={"25%"} minH={"35vh"} maxH={"90vh"} h={"100%"} borderWidth={1} borderRadius="md" boxShadow={"md"} gap={12} p={8} mx={8} mt={8}>
         <Text fontWeight="bold" textAlign="center" fontSize="3xl" m={6}>Resumen de Compra</Text>
         {cartItems.map((item) => (
           <Box key={item.id} mt={3}>
@@ -445,11 +428,11 @@ const Checkout: React.FC = () => {
         <Box my={4} />
         <Text>Productos: ${calculateTotalPrice() - (shippingMethod === 'home' ? 9500 : 8000)}</Text>
         <Text>
-          {shippingMethod === 'home' 
-            ? 'Envío a domicilio: $9500' 
-            : shippingMethod === 'branch' 
-            ? 'Envío a sucursal (Andreani): $8000' 
-            : 'Selecciona un método de envío'}
+          {shippingMethod === 'home'
+            ? 'Envío a domicilio: $9500'
+            : shippingMethod === 'branch'
+              ? 'Envío a sucursal (Andreani): $8000'
+              : 'Selecciona un método de envío'}
         </Text>
         <Box height="1px" bg="gray.200" my={4} />
         <Text fontWeight="bold" mt={2}>Total: ${calculateTotalPrice()}</Text>
@@ -459,3 +442,5 @@ const Checkout: React.FC = () => {
 };
 
 export default Checkout;
+
+// Removed the local declaration of useFormik to avoid conflict with the imported one.

@@ -21,7 +21,7 @@ export default function Footer() {
       {/* Sección de suscripción */}
       <Flex flexDir={"row"} justifyContent={"space-between"} p={6} alignItems={"center"}>
         <Flex flexDir={"column"} w={"45%"} gap={12}>
-          <Heading fontSize={"1.8vw"} lineHeight={1.1} color={textColor}>
+          <Heading fontSize={"2.5vw"} lineHeight={1.1} fontFamily={"Archivo Black"} letterSpacing={"tighter"}   color={textColor}>
             Sé el primero en enterarte de todas nuestras novedades
           </Heading>
 
@@ -60,14 +60,12 @@ export default function Footer() {
       <Box as="hr" my={4} borderColor={useColorModeValue('gray.400', 'gray.600')} />
 
       {/* Links de navegación */}
-      <Flex flexDir={"column"} gap={2} color={textColor} fontWeight={600} p={6}>
-        <Text><Link href="#" className={`hover:text-${hoverColor}`}>Productos</Link></Text>
-        <Text><Link href="#" className={`hover:text-${hoverColor}`}>Sobre nosotros</Link></Text>
-        <Text><Link href="#" className={`hover:text-${hoverColor}`}>Contacto</Link></Text>
-        <Text><Link href="#" className={`hover:text-${hoverColor}`}>FAQs</Link></Text>
-        <Box>
-          <Text fontSize={"md"} color={textColor}>Envíos a toda Argentina</Text>
-        </Box>
+      <Flex flexDir={"column"} gap={2} color={textColor} fontWeight={600} fontFamily={""} p={6} fontSize={"xl"}>
+        <Text><Link href="/products" className={`hover:text-${hoverColor}`}>Productos</Link></Text>
+        <Text><Link href="/about" className={`hover:text-${hoverColor}`}>Sobre nosotros</Link></Text>
+        <Text><Link href="/contact" className={`hover:text-${hoverColor}`}>Contacto</Link></Text>
+        <Text><Link href="/faqs" className={`hover:text-${hoverColor}`}>FAQs</Link></Text>
+          <Text>Envíos a todo Argentina</Text>
       </Flex>
 
       {/* Redes sociales y derechos reservados */}

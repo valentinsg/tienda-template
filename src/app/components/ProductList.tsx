@@ -1,6 +1,7 @@
 import React from 'react';
 import { Box, Grid, Heading, Text, VStack, Image, Stack } from '@chakra-ui/react';
 import { Product } from '../../types/Product';
+import { useColorMode } from './ui/color-mode';
 
 interface ProductListProps {
   products: Product[];
@@ -8,6 +9,8 @@ interface ProductListProps {
 }
 
 export default function ProductList({ products, onSelectProduct }: ProductListProps) {
+  const { colorMode } = useColorMode();
+
   const handleProductClick = (product: Product) => {
     onSelectProduct(product);
   };
@@ -24,9 +27,6 @@ export default function ProductList({ products, onSelectProduct }: ProductListPr
 
   return (
     <Box maxW="7xl" mx="auto" px={4} py={10}>
-      <Heading as="h2" size="lg" textAlign="center" mb={8}>
-        Productos
-      </Heading>
       <Grid
         templateColumns={{
           base: 'repeat(1, 1fr)',

@@ -30,15 +30,15 @@ export interface AndreaniBranch {
   /**
    * The address of the branch.
    */
-  address: string;
+  address?: string;
 
   /**
    * The province where the branch is located.
    */
-  province: Province;
+  province: Province | string;
 
   /**
    * The postal code of the branch.
    */
-  postalCode: string;
+  postalCode: number | string;
 }
