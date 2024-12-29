@@ -19,6 +19,7 @@ export default function Home() {
     router.push(`/product/${product.id}`);
   };
 
+
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error loading products</div>;
 
@@ -27,13 +28,13 @@ export default function Home() {
       <Logo />
       <Carrousell />
       {/* Listado completo de productos */}
-      <Flex direction="column" gap={20} p={20}>
-        <Heading fontFamily={"Archivo Black"} w={"80%"} as="h2" fontSize="4.5vw" letterSpacing={"tighter"} lineHeight={"11vh"} color={colorMode === 'dark' ? '#d0d0d0' : 'gray.700'}>
+      <Flex direction="column" gap={20} p={20} textAlign={"center"} align={"center"}>
+        <Heading fontFamily={"Archivo Black"} w={"80%"} as="h2" fontSize="4vw" letterSpacing={"tighter"} lineHeight={"11vh"} color={colorMode === 'dark' ? '#d0d0d0' : 'gray.700'}>
           Nuestra primer cápsula ya está disponible para toda Argentina.
         </Heading>
       </Flex>
-      <CategoryGrid />
       <ProductList products={products} onSelectProduct={handleSelectProduct} />
+      <CategoryGrid />
 
     </Box >
 

@@ -20,7 +20,7 @@ import { createListCollection } from "@chakra-ui/react"
 import { FaHome } from 'react-icons/fa';
 import { LuBuilding2 } from "react-icons/lu"
 import * as Yup from 'yup';
-import { useFormik, FormikValues } from 'formik';
+import { useFormik } from 'formik';
 import {AndreaniBranch} from "../../types/checkout/shipping/AndreaniBranch"
 import { supabase } from '../supabase';
 
@@ -132,7 +132,7 @@ const Checkout: React.FC = () => {
       shippingMethod: 'home',
     },
     validationSchema,
-    onSubmit: async (values: FormikValues) => {
+    onSubmit: async () => {
       try {
         const response = await fetch('/api/payments', {
           method: 'POST',

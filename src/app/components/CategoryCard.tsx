@@ -1,3 +1,4 @@
+import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 import { Box, Button, Text } from '@chakra-ui/react';
 import { useColorMode } from './ui/color-mode';
@@ -11,13 +12,16 @@ interface CategoryCardProps {
   lightImage: string;
   darkImage: string;
   onClick: () => void;
+  letter: string;
+  
 }
 
 const CategoryCard: React.FC<CategoryCardProps> = ({
   title,
   lightImage,
   darkImage,
-  onClick
+  onClick,
+  letter
 }) => {
   const { colorMode } = useColorMode();
   const [isHovered, setIsHovered] = useState(false);
@@ -27,7 +31,7 @@ const CategoryCard: React.FC<CategoryCardProps> = ({
       position="relative"
       borderRadius="lg"
       w="32%"
-      h="75vh"
+      h="80vh"
       shadow="lg"
       transition="all 0.3s ease-in-out"
       cursor="pointer"
@@ -40,31 +44,21 @@ const CategoryCard: React.FC<CategoryCardProps> = ({
         shadow: 'xl'
       }}
     >
-      {/* Background layers */}
-      <Box
-        position="absolute"
-        top="0"
-        left="0"
-        right="0"
-        bottom="0"
-        bg={colorMode === 'dark' ? 'gray.800' : 'gray.100'}
-        bgGradient={
-          colorMode === 'dark'
-            ? 'linear(to-br, gray.800, purple.900)'
-            : 'linear(to-br, gray.100, teal.50)'
-        }
-      />
+
       
       {/* Pattern overlay */}
-      <Box
+      <Text
         position="absolute"
-        top="0"
-        left="0"
-        right="0"
-        bottom="0"
+        fontSize="35vw"
+        color={colorMode === 'dark' ? 'gray.50' : 'gray.700'}
         opacity={0.1}
-        backgroundImage={`data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%239C92AC' fill-opacity='0.4' fill-rule='evenodd'%3E%3Ccircle cx='3' cy='3' r='3'/%3E%3Ccircle cx='13' cy='13' r='3'/%3E%3C/g%3E%3C/svg%3E`}
-      />
+        top="50%"
+        left="50%"
+        fontFamily={'Archivo Black'}
+        transform="translate(-50%, -50%)"
+      >
+        {letter}
+      </Text>
 
       {/* Main image */}
       <Box
@@ -133,8 +127,9 @@ const CategoryCard: React.FC<CategoryCardProps> = ({
 };
 
 export default function CategoryGrid() {
+  const router = useRouter();
   const handleCategoryClick = (category: string) => {
-    console.log(`Navigating to ${category}`);
+    router.push(`/products/${category}`);
   };
 
   return (
@@ -144,18 +139,21 @@ export default function CategoryGrid() {
         lightImage={FrontRemerasLight.src}
         darkImage={FrontRemerasBlack.src}
         onClick={() => handleCategoryClick('remeras')}
+        letter='M'
       />
       <CategoryCard
         title="Hoodies"
         lightImage={FrontHoodieLight.src}
         darkImage={FrontHoodieBlack.src}
         onClick={() => handleCategoryClick('hoodies')}
+        letter='D'
       />
       <CategoryCard
         title="Todos los productos"
-        lightImage="gray.100"
-        darkImage="gray.700"
-        onClick={() => handleCategoryClick('all')}
+        lightImage={""}
+        darkImage={""}
+        onClick={() => handleCategoryClick('')}
+        letter='P'
       />
     </Box>
   );
