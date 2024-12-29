@@ -3,15 +3,11 @@ import { useRouter } from 'next/navigation';
 import ProductList from './components/ProductList';
 import { useProducts } from './context/ProductContext';
 import { Product } from '../types/Product';
-import { Box, Flex, Heading, Text, Button, Link } from '@chakra-ui/react';
+import { Box, Flex, Heading, } from '@chakra-ui/react';
 import Carrousell from './components/Carrousell';
 import { useColorMode } from './components/ui/color-mode';
 import Logo from './components/Logo';
 import "./styles/globals.css";
-import FrontRemerasBlack from "../../public/portada-remeras-black.png";
-import FrontHoodieBlack from "../../public/portada-hoodies-black.png";
-import FrontHoodieLight from "../../public/portada-hoodies-light.png";
-import FrontRemerasLight from "../../public/portada-remeras-light.png";
 import CategoryGrid from './components/CategoryCard';
 
 export default function Home() {
@@ -21,9 +17,6 @@ export default function Home() {
 
   const handleSelectProduct = (product: Product) => {
     router.push(`/product/${product.id}`);
-  };
-  const handleCategoryClick = (category: string) => {
-    router.push(`/products/${category}`);
   };
 
   if (isLoading) return <div>Loading...</div>;
