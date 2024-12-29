@@ -8,6 +8,11 @@ import Carrousell from './components/Carrousell';
 import { useColorMode } from './components/ui/color-mode';
 import Logo from './components/Logo';
 import "./styles/globals.css";
+import FrontRemerasBlack from "../../public/portada-remeras-black.png";
+import FrontHoodieBlack from "../../public/portada-hoodies-black.png";
+import FrontHoodieLight from "../../public/portada-hoodies-light.png";
+import FrontRemerasLight from "../../public/portada-remeras-light.png";
+import CategoryGrid from './components/CategoryCard';
 
 export default function Home() {
   const router = useRouter();
@@ -30,80 +35,14 @@ export default function Home() {
       <Carrousell />
       {/* Listado completo de productos */}
       <Flex direction="column" gap={20} p={20}>
-        <Heading fontFamily={"Archivo Black"} w={"75%"} as="h2" fontSize="4.5vw" letterSpacing={"tighter"} lineHeight={"11vh"} color={colorMode === 'dark' ? 'white' : 'gray.800'}>
-          Nuestra primer cápsula ya está disponible.
+        <Heading fontFamily={"Archivo Black"} w={"80%"} as="h2" fontSize="4.5vw" letterSpacing={"tighter"} lineHeight={"11vh"} color={colorMode === 'dark' ? '#d0d0d0' : 'gray.700'}>
+          Nuestra primer cápsula ya está disponible para toda Argentina.
         </Heading>
-        <ProductList products={products} onSelectProduct={handleSelectProduct} />
       </Flex>
-      <Flex justify="space-around" wrap="wrap" h={"90vh"} p={10}>
-        {/* Card Hoodies */}
-        <Box
-          bgImage={}
-          bgSize="cover"
-          borderRadius="lg"
-          p={6}
-          w="30%"
-          textAlign="center"
-          shadow="md"
-          onClick={() => handleCategoryClick('hoodies')}
-        >
-          <Flex textAlign={"left"} flexDir={"column"} w="50%">
-            <Heading fontSize="xl" mb={4}>
-              Hoodies
-            </Heading>
-            <Button
-              colorScheme="teal"
-            >
-              Ver Hoodies
-            </Button>
-          </Flex>
-        </Box>
+      <CategoryGrid />
+      <ProductList products={products} onSelectProduct={handleSelectProduct} />
 
-        {/* Card Remeras */}
-        <Box
-          bg={colorMode === 'dark' ? 'gray.700' : 'gray.100'}
-          borderRadius="lg"
-          p={6}
-          w="30%"
-          textAlign="center"
-          shadow="md"
-          onClick={() => handleCategoryClick('remeras')}
-
-        >
-          <Flex textAlign={"left"} flexDir={"column"} w="50%">
-            <Heading fontSize="4.5vw" mb={4}>
-              Remeras
-            </Heading>
-            <Button
-              colorScheme="teal"
-            >
-              Ver Remeras
-            </Button>
-          </Flex>
-        </Box>
-
-        {/* Card Todos los productos */}
-        <Box
-          bg={colorMode === 'dark' ? 'gray.700' : 'gray.100'}
-          borderRadius="lg"
-          p={6}
-          w="30%"
-          textAlign="center"
-          shadow="md"
-          onClick={() => router.push('/products')}
-        >
-          <Flex textAlign={"left"} flexDir={"column"} w="50%">
-            <Heading fontSize="xl" mb={4}>
-              Todos los productos
-            </Heading>
-
-            <Button colorScheme="teal" >
-              Ver Todos
-            </Button>
-          </Flex>
-        </Box>
-      </Flex>
-    </Box>
+    </Box >
 
   );
 }
