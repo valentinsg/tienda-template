@@ -55,7 +55,7 @@ export default function ProductList({ products, onSelectProduct }: ProductListPr
   }
 
   return (
-    <Box maxW="7xl" mx="auto" px={4} py={10}>
+    <Box maxW="7xl" mx="auto" px={4} py={20}>
       <Grid
         templateColumns={{
           base: 'repeat(1, 1fr)',

@@ -13,15 +13,14 @@ import MercadoPago from '../../../public/mercadopagop.png';
 export default function Footer() {
   const { colorMode } = useColorMode();
   const bgColor = useColorModeValue("#D0D0D0", 'gray.800');
-  const textColor = useColorModeValue("gray.800", "#F0F0F0")
+  const textColor = useColorModeValue('gray.700', '#D0D0D0')
   const hoverColor = useColorModeValue("gray.600", "gray.400");
-
   return (
     <Flex bg={bgColor} flexDir={"column"} w="100%" p={8} shadow="md">
       {/* Sección de suscripción */}
       <Flex flexDir={"row"} justifyContent={"space-between"} p={6} alignItems={"center"}>
         <Flex flexDir={"column"} w={"45%"} gap={12}>
-          <Heading fontSize={"2.5vw"} lineHeight={1.1} fontFamily={"Archivo Black"} letterSpacing={"tighter"}   color={textColor}>
+          <Heading fontSize={"3vw"} lineHeight={1.2} fontFamily={"Archivo Black"} letterSpacing={"tighter"} color={textColor}>
             Sé el primero en enterarte de todas nuestras novedades
           </Heading>
 
@@ -51,7 +50,7 @@ export default function Footer() {
             <Image
               src={colorMode === 'dark' ? BusyDarkMode : BusyLightMode}
               alt="Busy logo"
-              width={455}
+              width={500}
             />
           </Link>
         </Box>
@@ -65,65 +64,65 @@ export default function Footer() {
         <Text><Link href="/about" className={`hover:text-${hoverColor}`}>Sobre nosotros</Link></Text>
         <Text><Link href="/contact" className={`hover:text-${hoverColor}`}>Contacto</Link></Text>
         <Text><Link href="/faqs" className={`hover:text-${hoverColor}`}>FAQs</Link></Text>
-          <Text>Envíos a todo Argentina</Text>
-      </Flex>
-
-      {/* Redes sociales y derechos reservados */}
-      <Flex justifyContent={"space-between"} color={textColor} p={6}>
-
-        <HStack gap={6} mt={"auto"}>
-          {/* Visa */}
-          <Image
-            src={Visa} // Asegúrate de que la imagen esté en tu carpeta pública.
-            alt="Visa"
-            width={45}
-            height={45}
-          />
-
-          {/* Mastercard */}
-          <Image
-            src={Mastercard} // Asegúrate de que la imagen esté en tu carpeta pública.
-            alt="Mastercard"
-            width={45}
-            height={45}
-          />
-
-          {/* MercadoPago */}
-          <Image
-            src={MercadoPago} // Asegúrate de que la imagen esté en tu carpeta pública.
-            alt="MercadoPago"
-            width={45}
-            height={45}
-          />
-          {/* Información adicional */}
-        </HStack>
-
-        <VStack gap={4}>
-
-          <Flex gap={10} ml={"auto"}>
-            <Link href="#" className={`hover:text-${hoverColor}`}>
-              <Icon
-                _hover={{ transform: "scale(1.1)" }}
-                transition="all 0.5s ease"
-                size={"xl"}
-              >
-                <FaTiktok />
-              </Icon>
-            </Link>
-            <Link href="#" className={`hover:text-${hoverColor}`}>
-              <Icon
-                _hover={{ transform: "scale(1.1)" }}
-                transition="all 0.5s ease"
-                size={"xl"}
-              >
-                <FaInstagram />
-              </Icon>
-            </Link>
-          </Flex>
-
-          <Text fontSize={"xl"} textAlign={"center"} color={textColor}>&copy; 2024 Busy. Todos los derechos reservados.</Text>
-        </VStack>
-      </Flex>
+        <Text className={`hover:text-${hoverColor}`}> Envíos a todo Argentina</Text>
     </Flex>
+
+      {/* Redes sociales y derechos reservados */ }
+  <Flex justifyContent={"space-between"} color={textColor} p={6}>
+
+    <HStack gap={6} mt={"auto"}>
+      {/* Visa */}
+      <Image
+        src={Visa} // Asegúrate de que la imagen esté en tu carpeta pública.
+        alt="Visa"
+        width={45}
+        height={45}
+      />
+
+      {/* Mastercard */}
+      <Image
+        src={Mastercard} // Asegúrate de que la imagen esté en tu carpeta pública.
+        alt="Mastercard"
+        width={45}
+        height={45}
+      />
+
+      {/* MercadoPago */}
+      <Image
+        src={MercadoPago} // Asegúrate de que la imagen esté en tu carpeta pública.
+        alt="MercadoPago"
+        width={45}
+        height={45}
+      />
+      {/* Información adicional */}
+    </HStack>
+
+    <VStack gap={4}>
+
+      <Flex gap={10} ml={"auto"}>
+        <Link href="#" className={`hover:text-${hoverColor}`}>
+          <Icon
+            _hover={{ transform: "scale(1.1)" }}
+            transition="all 0.5s ease"
+            size={"xl"}
+          >
+            <FaTiktok />
+          </Icon>
+        </Link>
+        <Link href="#" className={`hover:text-${hoverColor}`}>
+          <Icon
+            _hover={{ transform: "scale(1.1)" }}
+            transition="all 0.5s ease"
+            size={"xl"}
+          >
+            <FaInstagram />
+          </Icon>
+        </Link>
+      </Flex>
+
+      <Text fontSize={"xl"} textAlign={"center"} color={textColor}>&copy; 2024 Busy. Todos los derechos reservados.</Text>
+    </VStack>
+  </Flex>
+    </Flex >
   );
 }

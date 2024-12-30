@@ -142,7 +142,7 @@ const Carrousell = () => {
               <FaArrowRight />
             </IconButton>
           </Box>
-          <Flex position={"absolute"} bottom={0} zIndex={1000}>
+          <Flex position={"absolute"} bottom={0} zIndex={990}>
             {slides.map((_, index) => (
               <Box
                 key={index}

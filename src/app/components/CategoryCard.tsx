@@ -30,8 +30,8 @@ const CategoryCard: React.FC<CategoryCardProps> = ({
     <Box
       position="relative"
       borderRadius="lg"
-      w="32%"
-      h="80vh"
+      w={{base: "100%", md:"32%"}}
+      h={{base: "60vh", md:"80vh"}}
       shadow="lg"
       transition="all 0.3s ease-in-out"
       cursor="pointer"
@@ -43,6 +43,7 @@ const CategoryCard: React.FC<CategoryCardProps> = ({
         transform: 'scale(1.02)',
         shadow: 'xl'
       }}
+      mb={20}
     >
 
       
@@ -133,7 +134,7 @@ export default function CategoryGrid() {
   };
 
   return (
-    <Box display="flex" gap="6" justifyContent="center" p="6">
+    <Box display="flex" flexDir={{base: "column", md:"row"}} gap="6" justifyContent="center" p={8}>
       <CategoryCard
         title="Remeras"
         lightImage={FrontRemerasLight.src}

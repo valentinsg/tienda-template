@@ -3,10 +3,10 @@ import { Box, Container, Grid, Heading, Text, VStack, Button } from '@chakra-ui/
 import { useColorModeValue } from '../components/ui/color-mode';
 
 const AboutUs = () => {
-  const bgColor = useColorModeValue('bg.muted', '#555454'); 
+  const bgColor = useColorModeValue('bg.muted', '#555454');
   const textColor = useColorModeValue('#555454', '#D0D0D0');
   const buttonColor = useColorModeValue('black', 'white');
-  const buttonBg = useColorModeValue('#D0D0D0', '#555454'); 
+  const buttonBg = useColorModeValue('#D0D0D0', '#555454');
 
   return (
     <Box bg={bgColor} py={12} color={textColor}>
@@ -41,11 +41,16 @@ const AboutUs = () => {
               Bienvenido a nuestro mundo
             </Heading>
             <Text fontSize="md" lineHeight="tall">
-              Este es el espacio donde compartimos nuestra historia y misión.
-              Hemos trabajado durante años para traer a nuestros clientes no
-              solo productos de calidad, sino una experiencia que transforma
-              vidas. Todo comenzó con una visión clara y el deseo de marcar la
-              diferencia.
+
+              La idea nació para ser algo más que ropa. Nuestro movimiento celebra ocuparse de lo que realmente importa. Estás BUSY en esos momentos que invertís en vos, en tu sueño o lo que realmente queres, por lo que estar BUSY ayuda a dar pasos hacia eso, BUSY es el accionar constante, y un accionar constante inevitablemente atrae resultados.
+
+              Emprendedores, empleados, artistas o estudiantes: tengas la ocupación que tengas, hay que ocuparse de lo que realmente te moviliza. Ojalá esta idea llegue a mas personas en el futuro y realmente logremos impulsar a alguien.
+
+              Busy no existiría sin las personas que trabajaron y creyeron en este proyecto. Desde amigos cercanos que pusieron sus manos en los detalles, hasta los que compraron o aportaron energía a la distancia. Mucha gente, TODOS ellos forman parte de esto.
+
+              Creaciones por amigos Busy en constante educación, prendas trabajadas al detalle y una comunidad de valor. Si posta compartís algo de lo que significa BUSY, cada vez que veas nuestra marca pensá en ocuparte de ESO y reafirma, por qué ESO?
+
+              Keep Calm And Stay Busy.
             </Text>
             <Button
               bg={buttonBg}

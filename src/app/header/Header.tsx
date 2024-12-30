@@ -24,6 +24,8 @@ import BusyLightMode from '../../../public/busy-logo-light-mode.png';
 import Image from 'next/image';
 import CartDialog from '../components/CartDialog';
 import { usePathname } from 'next/navigation';
+import { FaFolderMinus, FaHamburger } from 'react-icons/fa';
+import { FiEdit2 } from 'react-icons/fi';
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -65,14 +67,14 @@ const Header = () => {
               passHref
             >
               <Text
-              p={3}
-              color={textColor}
-              _hover={{
-                bg: colorMode === 'dark' ? 'gray.600' : 'gray.100'
-              }}
-              cursor="pointer"
+                p={3}
+                color={textColor}
+                _hover={{
+                  bg: colorMode === 'dark' ? 'gray.600' : 'gray.100'
+                }}
+                cursor="pointer"
               >
-              {category.name}
+                {category.name}
               </Text>
             </Link>
           ))}
@@ -142,31 +144,27 @@ const Header = () => {
         </Flex>
 
         {/* Mobile Menu Button */}
-        <Box display={{ base: 'flex', md: 'none' }} alignSelf="center">
+        <Box display={{ base: 'flex', md: 'none' }} alignSelf="center" zIndex={10000}>
           <IconButton
             onClick={() => setIsOpen(!isOpen)}
             aria-label="Open Menu"
             variant="ghost"
             colorScheme="gray"
           >
-            {isOpen ? <Sun /> : <Moon />}
+            {isOpen ? <FaFolderMinus /> : <FaHamburger />}
           </IconButton>
         </Box>
       </Flex>
 
       {/* Mobile Menu */}
       {isOpen && (
-        <Stack display={{ md: 'none' }} gap={4} mt={4}>
-          <MenuRoot>
-            <MenuTrigger as={Button} >
-              Productos
-              <ChevronDown />
-            </MenuTrigger>
+        <Stack display={{ base: "flex", md: 'none' }} gap={4} mt={4}  w={"100%"} zIndex={10000}>
+          <MenuRoot >
             <MenuContent>
               {categories.map((category, index) => (
                 <MenuItem key={index} value={category.name}>
                   <Link href={`/products/${category.name}`} passHref>
-                    <Text>{category.name}</Text>
+                    <Text fontSize={"2xl"}>{category.name}</Text>
                   </Link>
                 </MenuItem>
               ))}
@@ -174,7 +172,7 @@ const Header = () => {
           </MenuRoot>
           {navigation.map((item) => (
             <Link key={item.name} href={item.href} passHref>
-              <Button variant="ghost" colorScheme="gray">
+              <Button variant="ghost" colorScheme="gray" fontSize={"xl"}>
                 {item.name}
               </Button>
             </Link>
