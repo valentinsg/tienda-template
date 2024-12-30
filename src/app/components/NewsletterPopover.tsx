@@ -8,14 +8,15 @@ import {
   DialogBody,
   DialogActionTrigger,
 } from "../components/ui/dialog";
-import { 
-  Button, 
-  Input, 
-  Text, 
-  Grid, 
-  GridItem, 
+import {
+  Button,
+  Input,
+  Text,
   Box,
-  VStack
+  VStack,
+  Grid,
+  GridItem,
+  useBreakpointValue,
 } from "@chakra-ui/react";
 import { toast } from "react-toastify";
 import { useColorModeValue } from "./ui/color-mode";
@@ -25,6 +26,8 @@ export default function NewsletterDialog() {
   const [email, setEmail] = useState("");
   const bgColor = useColorModeValue('white', 'gray.800');
   const borderColor = useColorModeValue('gray.100', 'gray.700');
+  const video =
+    "https://tfufdiayyhcndcgncylf.supabase.co/storage/v1/object/sign/videos/video%20Busy%20Mili.mp4?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJ2aWRlb3MvdmlkZW8gQnVzeSBNaWxpLm1wNCIsImlhdCI6MTczNTUyNzgyMCwiZXhwIjoxNzY3MDYzODIwfQ.to9jKpRQA2kHbvLbt_vjaXzM-SlE5aai9mRrvmBOxJ8&t=2024-12-30T03%3A03%3A42.058Z";
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -43,15 +46,18 @@ export default function NewsletterDialog() {
       toast.error("Por favor ingresa un email válido");
       return;
     }
-    
+
     // Aquí irría la lógica para guardar el email
     toast.success("¡Gracias por suscribirte! Revisa tu email");
     setIsOpen(false);
     setEmail("");
   };
+
+  const isMobile = useBreakpointValue({ base: true, md: false });
+
   return (
     <DialogRoot open={isOpen} onOpenChange={details => setIsOpen(details.open)}>
-      <DialogContent 
+      <DialogContent
         style={{
           background: bgColor,
           border: `1px solid ${borderColor}`,
@@ -62,14 +68,14 @@ export default function NewsletterDialog() {
           margin: 'auto',
         }}
       >
-        <Grid templateColumns="1fr 1.2fr" gap={8}>
+        <Grid templateColumns={isMobile ? "1fr" : "1fr 1.2fr"} gap={8}>
           <GridItem>
-            <Box 
-              borderRadius="lg" 
+            <Box
+              borderRadius="lg"
               overflow="hidden"
-              height="100%"
               position="relative"
             >
+
             </Box>
           </GridItem>
 
@@ -83,19 +89,19 @@ export default function NewsletterDialog() {
 
               <DialogBody>
                 <form onSubmit={handleSubmit}>
-                  <VStack gap={4}>
+                  <VStack gap={4} align="stretch">
                     <Text fontSize="md">
                       Suscribite a nuestra newsletter y recibí un cupón de descuento para tu primera compra.
                     </Text>
-                    
-                      <Input
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        placeholder="tucorreo@email.com"
-                        size="lg"
-                        type="email"
-                        required
-                      />
+
+                    <Input
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="tucorreo@email.com"
+                      size="lg"
+                      type="email"
+                      required
+                    />
 
                     <Button
                       colorScheme="blue"
@@ -107,8 +113,8 @@ export default function NewsletterDialog() {
                     </Button>
 
                     <DialogActionTrigger asChild>
-                      <Button 
-                        variant="ghost" 
+                      <Button
+                        variant="ghost"
                         size="lg"
                         width="full"
                         onClick={() => setIsOpen(false)}

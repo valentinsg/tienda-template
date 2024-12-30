@@ -82,7 +82,7 @@ const CategoryCard: React.FC<CategoryCardProps> = ({
         right="0"
         bottom="0"
         bg="blackAlpha.700"
-        opacity={isHovered ? 1 : 0}
+        opacity={{base: 1, md: isHovered ? 1 : 0}}
         transition="opacity 0.3s ease-in-out"
         display="flex"
         flexDirection="column"
@@ -90,13 +90,13 @@ const CategoryCard: React.FC<CategoryCardProps> = ({
         alignItems="center"
       >
         <Text
-          fontSize="7xl"
+          fontSize={{ base: "4xl", md: "7xl" }}
           color="white"
           textAlign="center"
           fontFamily="Archivo Black"
           letterSpacing="tighter"
-          transform={isHovered ? 'translateY(0)' : 'translateY(-20px)'}
-          opacity={isHovered ? 1 : 0}
+          transform={{ base: 'translateY(0)', md: isHovered ? 'translateY(0)' : 'translateY(-20px)' }}
+          opacity={{ base: 1, md: isHovered ? 1 : 0 }}
           transition="all 0.3s ease-in-out"
           lineHeight={1}
         >
@@ -104,20 +104,20 @@ const CategoryCard: React.FC<CategoryCardProps> = ({
         </Text>
        
         <Button
-          size="lg"
+          size={{ base: "md", md: "lg" }}
           letterSpacing="tighter"
           fontWeight="600"
-          width="70%"
+          width={{ base: "80%", md: "70%" }}
           bg={colorMode === 'dark' ? '#d0d0d0' : 'gray.700'}
           color={colorMode === 'dark' ? 'black' : 'white'}
-          transform={isHovered ? 'translateY(0)' : 'translateY(20px)'}
-          opacity={isHovered ? 1 : 0}
+          transform={{ base: 'translateY(0)', md: isHovered ? 'translateY(0)' : 'translateY(20px)' }}
+          opacity={{ base: 1, md: isHovered ? 1 : 0 }}
           transition="all 0.3s ease-in-out"
           _hover={{
             transform: 'scale(1.03)',
             bg: colorMode === 'dark' ? 'white' : 'black'
           }}
-          p={6}
+          p={{ base: 4, md: 6 }}
           mt={6}
         >
           Comprar ahora
@@ -134,7 +134,7 @@ export default function CategoryGrid() {
   };
 
   return (
-    <Box display="flex" flexDir={{base: "column", md:"row"}} gap="6" justifyContent="center" p={8}>
+    <Box display="flex" flexDir={{base: "column", md:"row"}} gap={{base: 6, md:12}} justifyContent="center" p={{base: 8, md:12}}>
       <CategoryCard
         title="Remeras"
         lightImage={FrontRemerasLight.src}

@@ -15,7 +15,6 @@ import {
   MenuContent,
   MenuItem,
   MenuRoot,
-  MenuTrigger,
 } from "../components/ui/menu"
 import { Sun, Moon, ChevronDown } from 'lucide-react';
 import { useColorMode, useColorModeValue } from '../components/ui/color-mode';
@@ -25,7 +24,6 @@ import Image from 'next/image';
 import CartDialog from '../components/CartDialog';
 import { usePathname } from 'next/navigation';
 import { FaFolderMinus, FaHamburger } from 'react-icons/fa';
-import { FiEdit2 } from 'react-icons/fi';
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);

@@ -1,5 +1,5 @@
 'use client';
-import { Flex, Heading, Input, Text, Box, Icon, Link, HStack, VStack } from '@chakra-ui/react';
+import { Flex, Heading, Input, Text, Box, Icon, Link, HStack, Stack, useBreakpointValue } from '@chakra-ui/react';
 import { FaInstagram, FaTiktok } from 'react-icons/fa';
 import Image from 'next/image';
 import { useColorMode, useColorModeValue } from '../components/ui/color-mode';
@@ -18,13 +18,20 @@ export default function Footer() {
   return (
     <Flex bg={bgColor} flexDir={"column"} w="100%" p={8} shadow="md">
       {/* Sección de suscripción */}
-      <Flex flexDir={"row"} justifyContent={"space-between"} p={6} alignItems={"center"}>
-        <Flex flexDir={"column"} w={"45%"} gap={12}>
-          <Heading fontSize={"3vw"} lineHeight={1.2} fontFamily={"Archivo Black"} letterSpacing={"tighter"} color={textColor}>
+      <Flex flexDir={{base: "column", md:"row"}} justifyContent={"space-between"} p={6} alignItems={"center"}>
+        <Flex flexDir={"column"} w={{base: "100%",md:"45%"}} gap={{base: 6, md:12}}>
+          <Heading
+            fontSize={useBreakpointValue({ base: "2xl", md: "3vw" })}
+            lineHeight={1.2}
+            fontFamily={"Archivo Black"}
+            letterSpacing={"tighter"}
+            textAlign={{ base: "center", md: "left" }}
+            color={textColor}
+          >
             Sé el primero en enterarte de todas nuestras novedades
           </Heading>
 
-          <Flex w={"90%"} alignItems="center">
+          <Flex w={{base: "100%", md:"90%"} }alignItems="center">
             <Input
               placeholder="me@example.com"
               borderRadius={"full"}
@@ -45,7 +52,7 @@ export default function Footer() {
           </Flex>
         </Flex>
 
-        <Box>
+        <Box display={{ base: "none", md: "block" }}>
           <Link href="/">
             <Image
               src={colorMode === 'dark' ? BusyDarkMode : BusyLightMode}
@@ -65,64 +72,64 @@ export default function Footer() {
         <Text><Link href="/contact" className={`hover:text-${hoverColor}`}>Contacto</Link></Text>
         <Text><Link href="/faqs" className={`hover:text-${hoverColor}`}>FAQs</Link></Text>
         <Text className={`hover:text-${hoverColor}`}> Envíos a todo Argentina</Text>
-    </Flex>
-
-      {/* Redes sociales y derechos reservados */ }
-  <Flex justifyContent={"space-between"} color={textColor} p={6}>
-
-    <HStack gap={6} mt={"auto"}>
-      {/* Visa */}
-      <Image
-        src={Visa} // Asegúrate de que la imagen esté en tu carpeta pública.
-        alt="Visa"
-        width={45}
-        height={45}
-      />
-
-      {/* Mastercard */}
-      <Image
-        src={Mastercard} // Asegúrate de que la imagen esté en tu carpeta pública.
-        alt="Mastercard"
-        width={45}
-        height={45}
-      />
-
-      {/* MercadoPago */}
-      <Image
-        src={MercadoPago} // Asegúrate de que la imagen esté en tu carpeta pública.
-        alt="MercadoPago"
-        width={45}
-        height={45}
-      />
-      {/* Información adicional */}
-    </HStack>
-
-    <VStack gap={4}>
-
-      <Flex gap={10} ml={"auto"}>
-        <Link href="#" className={`hover:text-${hoverColor}`}>
-          <Icon
-            _hover={{ transform: "scale(1.1)" }}
-            transition="all 0.5s ease"
-            size={"xl"}
-          >
-            <FaTiktok />
-          </Icon>
-        </Link>
-        <Link href="#" className={`hover:text-${hoverColor}`}>
-          <Icon
-            _hover={{ transform: "scale(1.1)" }}
-            transition="all 0.5s ease"
-            size={"xl"}
-          >
-            <FaInstagram />
-          </Icon>
-        </Link>
       </Flex>
 
-      <Text fontSize={"xl"} textAlign={"center"} color={textColor}>&copy; 2024 Busy. Todos los derechos reservados.</Text>
-    </VStack>
-  </Flex>
+      {/* Redes sociales y derechos reservados */}
+      <Flex justifyContent={"space-between"} color={textColor} p={6}>
+
+        <HStack gap={6} mt={"auto"}>
+          {/* Visa */}
+          <Image
+            src={Visa} // Asegúrate de que la imagen esté en tu carpeta pública.
+            alt="Visa"
+            width={45}
+            height={45}
+          />
+
+          {/* Mastercard */}
+          <Image
+            src={Mastercard} // Asegúrate de que la imagen esté en tu carpeta pública.
+            alt="Mastercard"
+            width={45}
+            height={45}
+          />
+
+          {/* MercadoPago */}
+          <Image
+            src={MercadoPago} // Asegúrate de que la imagen esté en tu carpeta pública.
+            alt="MercadoPago"
+            width={45}
+            height={45}
+          />
+          {/* Información adicional */}
+        </HStack>
+
+        <Stack direction={{base: "column", md: "row"}} gap={4} >
+
+          <Flex gap={10} ml={"auto"}>
+            <Link href="#" className={`hover:text-${hoverColor}`}>
+              <Icon
+                _hover={{ transform: "scale(1.1)" }}
+                transition="all 0.5s ease"
+                size={"xl"}
+              >
+                <FaTiktok />
+              </Icon>
+            </Link>
+            <Link href="#" className={`hover:text-${hoverColor}`}>
+              <Icon
+                _hover={{ transform: "scale(1.1)" }}
+                transition="all 0.5s ease"
+                size={"xl"}
+              >
+                <FaInstagram />
+              </Icon>
+            </Link>
+          </Flex>
+
+          <Text fontSize={"xl"} textAlign={"center"} color={textColor}>&copy; 2024 Busy. Todos los derechos reservados.</Text>
+        </Stack>
+      </Flex>
     </Flex >
   );
 }
