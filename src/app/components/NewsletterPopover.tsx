@@ -26,8 +26,6 @@ export default function NewsletterDialog() {
   const [email, setEmail] = useState("");
   const bgColor = useColorModeValue('white', 'gray.800');
   const borderColor = useColorModeValue('gray.100', 'gray.700');
-  const video =
-    "https://tfufdiayyhcndcgncylf.supabase.co/storage/v1/object/sign/videos/video%20Busy%20Mili.mp4?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJ2aWRlb3MvdmlkZW8gQnVzeSBNaWxpLm1wNCIsImlhdCI6MTczNTUyNzgyMCwiZXhwIjoxNzY3MDYzODIwfQ.to9jKpRQA2kHbvLbt_vjaXzM-SlE5aai9mRrvmBOxJ8&t=2024-12-30T03%3A03%3A42.058Z";
 
   useEffect(() => {
     const timer = setTimeout(() => {
