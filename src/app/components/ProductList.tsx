@@ -12,7 +12,6 @@ import {
 import { Product } from '../../types/Product';
 import { addItem } from "../store/slices/cartSlice";
 import { useColorMode } from './ui/color-mode';
-import { Tooltip } from './ui/tooltip';
 
 interface ProductListProps {
   products: Product[];

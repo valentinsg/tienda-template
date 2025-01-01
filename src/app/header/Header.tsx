@@ -162,7 +162,7 @@ const Header = () => {
               {categories.map((category, index) => (
                 <MenuItem key={index} value={category.name}>
                   <Link href={`/products/${category.name}`} passHref>
-                    <Text fontSize={"2xl"}>{category.name}</Text>
+                    <Text fontSize={"xl"}>{category.name}</Text>
                   </Link>
                 </MenuItem>
               ))}
