@@ -11,7 +11,7 @@ export type ColorModeProviderProps = ThemeProviderProps
 
 export function ColorModeProvider(props: ColorModeProviderProps) {
   return (
-    <ThemeProvider attribute="class" disableTransitionOnChange {...props} />
+    <ThemeProvider attribute="class" disableTransitionOnChange defaultTheme="light" {...props} />
   )
 }
 
@@ -33,8 +33,13 @@ export function useColorModeValue<T>(light: T, dark: T) {
 }
 
 export function ColorModeIcon() {
-  const { colorMode } = useColorMode()
-  return colorMode === "light" ? <LuSun /> : <LuMoon />
+  const { colorMode } = useColorMode();
+
+  if (typeof window === "undefined") {
+    return <LuSun />;
+  }
+
+  return colorMode === "light" ? <LuSun /> : <LuMoon />;
 }
 
 type ColorModeButtonProps = Omit<IconButtonProps, "aria-label">

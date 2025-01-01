@@ -1,76 +1,49 @@
 'use client';
-import { Box, Container, Grid, Heading, Text, VStack, Button } from '@chakra-ui/react';
-import { useColorModeValue } from '../components/ui/color-mode';
+import { Box, Container, Grid, Heading, Text, VStack, Image } from '@chakra-ui/react';
+import { useColorMode, useColorModeValue } from '../components/ui/color-mode';
+import Ciro from "../../../public/ciro.png";
+import "../styles/globals.css";
 
 const AboutUs = () => {
-  const bgColor = useColorModeValue('bg.muted', '#555454');
   const textColor = useColorModeValue('#555454', '#D0D0D0');
-  const buttonColor = useColorModeValue('black', 'white');
-  const buttonBg = useColorModeValue('#D0D0D0', '#555454');
+  const { colorMode } = useColorMode();
 
   return (
-    <Box bg={bgColor} py={12} color={textColor}>
+    <Box bg={colorMode === 'dark' ? 'gray.800' : 'bg.muted'} py={12} color={textColor}>
       {/* Primera sección */}
-      <Container maxW="6xl" textAlign="center" mb={10}>
-        <Heading as="h1" size="2xl" fontWeight="bold" mb={6}>
-          Empoderando a descubrir y despertar tu confianza inquebrantable
-        </Heading>
-        <Text fontSize="lg" mb={6}>
-          Descubre cómo podemos ayudarte a alcanzar tu mejor versión.
-        </Text>
-        <Button
-          size="lg"
-          bg={buttonBg}
-          color={buttonColor}
-          _hover={{ bg: textColor, color: bgColor }}
-        >
-          Descubre más
-        </Button>
-      </Container>
+      <Heading mb={10} textAlign="center" fontFamily={"Archivo Black"} as="h1" fontSize={{ base: "4xl", md: "4vw" }} letterSpacing={"tighter"} lineHeight={{ base: 1.2, md: "11vh" }} color={textColor}>
+        Dos amigos, una visión.
+      </Heading>
 
       {/* Segunda sección */}
-      <Container maxW="6xl">
+      <Container maxW="65%" py={12}>
         <Grid
           templateColumns={{ base: '1fr', md: '2fr 1fr' }}
-          gap={10}
-          mb={12}
+          gap={12}
         >
           {/* Texto principal */}
-          <VStack align="start" gap={6}>
-            <Heading as="h2" size="lg">
-              Bienvenido a nuestro mundo
+          <VStack align="start" gap={12}>
+            <Heading fontFamily={"Archivo Black"} as="h2" fontSize={{ base: "4xl", md: "5vw" }} letterSpacing={"tighter"} lineHeight={{ base: 1.2, md: "11vh" }} color={textColor}>
+              Idea central
             </Heading>
-            <Text fontSize="md" lineHeight="tall">
+            <Text fontSize="xl" lineHeight={1.5}>
+              La idea nació para ser algo más que ropa, nuestro movimiento celebra ocuparse de lo que realmente importa. Estás BUSY en esos momentos que invertís en vos, tus sueños o lo que te moviliza, por lo que, estar BUSY es lo que nos ayuda a dar pasos hacia nuestra eudaimonía, lo que se convierte en accionar constante, y un accionar constante inevitablemente trae resultados.
+              Emprendedores, empleados, artistas o estudiantes: tengas la ocupación que tengas, hay que ocuparse de lo que realmente te moviliza.
+              <br />Keep Calm And Stay Busy.
 
-              La idea nació para ser algo más que ropa. Nuestro movimiento celebra ocuparse de lo que realmente importa. Estás BUSY en esos momentos que invertís en vos, en tu sueño o lo que realmente queres, por lo que estar BUSY ayuda a dar pasos hacia eso, BUSY es el accionar constante, y un accionar constante inevitablemente atrae resultados.
-
-              Emprendedores, empleados, artistas o estudiantes: tengas la ocupación que tengas, hay que ocuparse de lo que realmente te moviliza. Ojalá esta idea llegue a mas personas en el futuro y realmente logremos impulsar a alguien.
-
-              Busy no existiría sin las personas que trabajaron y creyeron en este proyecto. Desde amigos cercanos que pusieron sus manos en los detalles, hasta los que compraron o aportaron energía a la distancia. Mucha gente, TODOS ellos forman parte de esto.
-
-              Creaciones por amigos Busy en constante educación, prendas trabajadas al detalle y una comunidad de valor. Si posta compartís algo de lo que significa BUSY, cada vez que veas nuestra marca pensá en ocuparte de ESO y reafirma, por qué ESO?
-
-              Keep Calm And Stay Busy.
             </Text>
-            <Button
-              bg={buttonBg}
-              color={buttonColor}
-              _hover={{ bg: textColor, color: bgColor }}
-            >
-              Ver más
-            </Button>
           </VStack>
 
           {/* Espacio para imagen */}
           <Box
-            bg="gray.300"
-            w="full"
-            h="300px"
-            borderRadius="md"
             backgroundSize="cover"
             backgroundPosition="center"
+            borderRadius="lg"
           >
-            {/* Aquí puedes agregar una imagen de fondo */}
+            <Image src={Ciro.src} alt="Ciro" w={"100%"}
+              h={"85%"}
+              borderRadius="lg"
+            />
           </Box>
         </Grid>
 
@@ -81,8 +54,8 @@ const AboutUs = () => {
         >
           {/* Tarjeta 1 */}
           <Box
-            bg={textColor}
-            color={bgColor}
+            color={textColor}
+            bg={colorMode === 'dark' ? 'gray.800' : 'bg.muted'}
             p={8}
             borderRadius="md"
             shadow="lg"
@@ -90,17 +63,18 @@ const AboutUs = () => {
             <Heading as="h3" size="md" mb={4}>
               Nuestra historia
             </Heading>
-            <Text fontSize="sm" lineHeight="tall">
-              Fundada en 2020, nuestra misión siempre ha sido ofrecer lo mejor
-              en diseño y calidad. Con el tiempo, hemos crecido gracias a la
-              confianza de nuestros clientes.
+            <Text fontSize="md" lineHeight="tall">
+              Busy no existiría sin las personas que trabajaron y creyeron en este proyecto. Desde amigos cercanos que pusieron sus manos en los detalles, hasta los que compraron o aportaron energía a la distancia. Mucha gente, TODOS ellos forman parte de esto.
+
+              Creaciones por amigos Busy en constante educación, prendas trabajadas al detalle y una comunidad de valor. Si posta compartís algo de lo que significa BUSY, cada vez que veas nuestra marca pensá en ocuparte de ESO y reafirma, por qué ESO?
+
             </Text>
           </Box>
 
           {/* Tarjeta 2 */}
           <Box
-            bg={textColor}
-            color={bgColor}
+            color={textColor}
+            bg={colorMode === 'dark' ? 'gray.800' : 'bg.muted'}
             p={8}
             borderRadius="md"
             shadow="lg"
@@ -109,9 +83,9 @@ const AboutUs = () => {
               Nuestra misión
             </Heading>
             <Text fontSize="sm" lineHeight="tall">
-              Queremos inspirar confianza y estilo, garantizando que cada pieza
-              que llevamos a nuestros clientes refleje nuestra pasión por la
-              excelencia.
+              <Text fontSize="xl" mb={6}>
+                Queremos que esta idea realmente llegue a mas personas en el futuro y logremos impulsar a alguien que lo necesite.
+              </Text>
             </Text>
           </Box>
         </Grid>

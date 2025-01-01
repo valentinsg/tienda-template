@@ -7,11 +7,16 @@ import {
   Accordion,
   Input,
   VStack,
+  Container,
 } from "@chakra-ui/react";
 import { AccordionItemTrigger, AccordionItemContent } from "@chakra-ui/react";
+import { useColorMode } from '../components/ui/color-mode';
+import "../styles/globals.css";
 
 const FAQs = () => {
   const [searchTerm, setSearchTerm] = useState("");
+  const { colorMode } = useColorMode();
+
   const faqData = [
     {
       category: "Sobre Busy",
@@ -187,12 +192,13 @@ const FAQs = () => {
     }));
 
   return (
-    <Box p={6} minH={"100vh"} bg={"gray.50"} >
+    <Box p={6} minH={"100vh"} bg={colorMode === 'dark' ? 'gray.800' : 'bg.muted'} >
       {/* Encabezado */}
-      < Heading as="h1" mb={6} textAlign="center" fontSize="3xl" color="teal.600" >
-        Preguntas Frecuentes
-      </Heading >
-
+      <Container textAlign="center" mb={10}>
+        <Heading fontFamily={"Archivo Black"} as="h1" fontSize={{ base: "4xl", md: "4vw" }} letterSpacing={"tighter"} lineHeight={{ base: 1.2, md: "11vh" }} >
+          Preguntas Frecuentes.
+        </Heading>
+      </Container>
       {/* Barra de búsqueda */}
       < Input
         placeholder="Buscar una pregunta..."
@@ -203,13 +209,14 @@ const FAQs = () => {
       />
       <VStack gap={6} align="stretch">
         {filteredFAQs.map((section) => section.questions.length > 0 && (
-          <Box key={section.category} p={4} bg={"#8E24AA"} borderRadius="md">
+          <Box key={section.category} p={4} bg="gray.800" borderRadius="md" shadow="lg">
             <Heading
               as="h2"
               fontSize="xl"
               mb={4}
-              color="teal.500"
+              color="blue.400"
               textTransform="uppercase"
+              fontFamily={"Archivo Black"}
             >
               {section.category}
             </Heading>

@@ -90,19 +90,38 @@ export default function ProductList({ products, onSelectProduct }: ProductListPr
               bg="gray.100"
               position="relative"
             >
-              {product.images && product.images.length > 0 ? (
-                <Image
+                {product.images && product.images.length > 0 ? (
+                <>
+                  <Image
                   src={product.images[0].image_url}
                   alt={product.name}
                   objectFit="cover"
                   h="full"
                   w="full"
-                />
-              ) : (
+                  />
+                  <Box
+                  position="absolute"
+                  bottom="0"
+                  left="0"
+                  right="0"
+                  bg="blackAlpha.600"
+                  color="white"
+                  p={2}
+                  textAlign="center"
+                  >
+                  <Text fontWeight="semibold" fontSize="md">
+                    {product.name}
+                  </Text>
+                  <Text fontSize="lg" fontWeight="bold">
+                    ${product.price}
+                  </Text>
+                  </Box>
+                </>
+                ) : (
                 <Text fontSize="sm" color="gray.500" textAlign="center">
                   Imagen no disponible
                 </Text>
-              )}
+                )}
 
               {/* Hover overlay */}
               <Box
@@ -119,20 +138,6 @@ export default function ProductList({ products, onSelectProduct }: ProductListPr
             </Box>
 
             <Stack gap={1} textAlign="center" w="full">
-              <Text
-                fontWeight="semibold"
-                fontSize="md"
-                color={colorMode === 'dark' ? 'gray.100' : 'gray.700'}
-              >
-                {product.name}
-              </Text>
-              <Text
-                fontSize="lg"
-                color={colorMode === 'dark' ? 'white' : 'gray.900'}
-                fontWeight="bold"
-              >
-                ${product.price}
-              </Text>
 
               {showSizes[product.id] ? (
                 <Box display="flex" gap={2} mt={2} justifyContent="center">
@@ -163,35 +168,18 @@ export default function ProductList({ products, onSelectProduct }: ProductListPr
                       e.stopPropagation();
                       handleProductClick(product);
                     }}
-                    bg={colorMode === 'dark' ? 'gray.100' : 'gray.800'}
-                    color={colorMode === 'dark' ? 'gray.800' : 'white'}
+                    fontWeight={'bold'}
+                    bg={"blue.600"}
+                    color={colorMode === 'dark' ? '#D0D0D0' : '#D0D0D0'}
                     _hover={{
-                      bg: colorMode === 'dark' ? 'white' : 'black',
+                      bg: colorMode === 'dark' ? 'blue.700' : 'blue.700',
                       transform: 'scale(1.03)'
                     }}
                     transition="all 0.3s"
-                    fontFamily={'Archivo Black'}
                     fontSize={'md'}
-                    letterSpacing={'tighter'}
                   >
                     Comprar
                   </Button>
-                  <Tooltip content="Agregar al carrito"  >
-                    <Button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setShowSizes(prev => ({ ...prev, [product.id]: true }));
-                      }}
-                      bg={colorMode === 'dark' ? 'gray.700' : 'gray.200'}
-                      color={colorMode === 'dark' ? 'white' : 'gray.800'}
-                      _hover={{
-                        bg: colorMode === 'dark' ? 'gray.600' : 'gray.300'
-                      }}
-                      transition="all 0.3s"
-                    >
-                      🛒
-                    </Button>
-                  </Tooltip>
                 </Box>
               )}
             </Stack>
