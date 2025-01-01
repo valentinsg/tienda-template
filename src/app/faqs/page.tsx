@@ -192,13 +192,11 @@ const FAQs = () => {
     }));
 
   return (
-    <Box p={6} minH={"100vh"} bg={colorMode === 'dark' ? 'gray.800' : 'bg.muted'} >
+    <Box py={12} minH={"100vh"} bg={colorMode === 'dark' ? 'gray.800' : 'bg.muted'} >
       {/* Encabezado */}
-      <Container textAlign="center" mb={10}>
-        <Heading fontFamily={"Archivo Black"} as="h1" fontSize={{ base: "4xl", md: "4vw" }} letterSpacing={"tighter"} lineHeight={{ base: 1.2, md: "11vh" }} >
-          Preguntas Frecuentes.
-        </Heading>
-      </Container>
+      <Heading textAlign="center" mb={10} fontFamily={"Archivo Black"} as="h1" fontSize={{ base: "4xl", md: "4vw" }} letterSpacing={"tighter"} lineHeight={{ base: 1.2, md: "11vh" }} >
+        Preguntas Frecuentes.
+      </Heading>
       {/* Barra de búsqueda */}
       < Input
         placeholder="Buscar una pregunta..."

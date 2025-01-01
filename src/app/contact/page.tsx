@@ -55,11 +55,9 @@ const Contact = () => {
     <Box bg={bgColor} py={12} color={textColor}>
       <Container maxW="6xl">
         <VStack gap={8}>
-          <Container textAlign="center" mb={10}>
-            <Heading fontFamily={"Archivo Black"} as="h1" fontSize={{ base: "4xl", md: "4vw" }} letterSpacing={"tighter"} lineHeight={{ base: 1.2, md: "11vh" }} color={textColor}>
-              Contáctanos.
-            </Heading>
-          </Container>
+          <Heading textAlign="center" mb={10} fontFamily={"Archivo Black"} as="h1" fontSize={{ base: "4xl", md: "4vw" }} letterSpacing={"tighter"} lineHeight={{ base: 1.2, md: "11vh" }} color={textColor}>
+            Contáctanos.
+          </Heading>
           <SimpleGrid columns={{ base: 1, md: 2 }} gap={10} w="full">
             {/* Información de Contacto */}
             <Box>
