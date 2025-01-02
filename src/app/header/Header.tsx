@@ -61,7 +61,7 @@ const Header = () => {
           {categories.map((category, index) => (
             <Link
               key={index}
-              href={`/products/${category.name.toLowerCase()}`}
+              href={`/products/category/${category.slug}`}
               passHref
             >
               <Text

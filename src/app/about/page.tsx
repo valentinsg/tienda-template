@@ -2,7 +2,7 @@
 import { Box, Container, Grid, Heading, Text, VStack, Image } from '@chakra-ui/react';
 import { useColorMode, useColorModeValue } from '../components/ui/color-mode';
 import Ciro from "../../../public/ciro.png";
-import "../styles/globals.css";
+
 
 const AboutUs = () => {
   const textColor = useColorModeValue('#555454', '#D0D0D0');

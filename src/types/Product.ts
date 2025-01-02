@@ -8,7 +8,7 @@ export interface Product {
   sku: string; // Corresponde a "sku".
   description: string; // Corresponde a "description".
   price: number; // Corresponde a "price".
-  category: number; // Corresponde a "category".
+  category: string; // Corresponde a "category".
   sizes: string[]; // Corresponde a "sizes" en la base de datos como un array de strings.
   stock: {
     [size: string]: {

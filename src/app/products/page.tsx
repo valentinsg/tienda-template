@@ -14,7 +14,7 @@ const Products = () => {
   const [filteredProducts] = useState(products);
 
   const handleSelectProduct = (product: Product) => {
-    router.push(`/product/${product.id}`);
+    router.push(`/products/${product.id}`);
   };
 
   if (isLoading) return <div>Loading...</div>;

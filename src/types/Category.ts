@@ -1,4 +1,5 @@
 export interface Category {
+  toLowerCase(): unknown;
   id: number;
   name: string;
   slug: string;
