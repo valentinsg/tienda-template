@@ -7,7 +7,6 @@ import {
   Accordion,
   Input,
   VStack,
-  Container,
 } from "@chakra-ui/react";
 import { AccordionItemTrigger, AccordionItemContent } from "@chakra-ui/react";
 import { useColorMode } from '../components/ui/color-mode';
