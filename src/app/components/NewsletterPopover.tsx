@@ -24,8 +24,8 @@ import { useColorModeValue } from "./ui/color-mode";
 export default function NewsletterDialog() {
   const [isOpen, setIsOpen] = useState(false);
   const [email, setEmail] = useState("");
-  const bgColor = useColorModeValue('white', 'gray.800');
   const borderColor = useColorModeValue('gray.100', 'gray.700');
+  const textColor = useColorModeValue('#555454', '#D0D0D0');
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -57,12 +57,11 @@ export default function NewsletterDialog() {
     <DialogRoot open={isOpen} onOpenChange={details => setIsOpen(details.open)}>
       <DialogContent
         style={{
-          background: bgColor,
           border: `1px solid ${borderColor}`,
-          borderRadius: '1rem',
+          borderRadius: 'full',
           padding: '2rem',
           boxShadow: '0 0 10px rgba(0, 0, 0, 0.5)',
-          maxWidth: '600px',
+          maxWidth: '700px',
           margin: 'auto',
         }}
       >
@@ -73,14 +72,14 @@ export default function NewsletterDialog() {
               overflow="hidden"
               position="relative"
             >
-
+              
             </Box>
           </GridItem>
 
           <GridItem>
             <VStack gap={6} align="stretch">
               <DialogHeader>
-                <DialogTitle className="text-2xl font-bold">
+                <DialogTitle fontSize="2xl" color={textColor} fontFamily={"Archivo Black"} letterSpacing={"tighter"} fontWeight={500}>
                   ¡Obtené un 10% de descuento!
                 </DialogTitle>
               </DialogHeader>
@@ -88,7 +87,7 @@ export default function NewsletterDialog() {
               <DialogBody>
                 <form onSubmit={handleSubmit}>
                   <VStack gap={4} align="stretch">
-                    <Text fontSize="md">
+                    <Text fontSize="md" color={textColor}>
                       Suscribite a nuestra newsletter y recibí un cupón de descuento para tu primera compra.
                     </Text>
 
@@ -99,10 +98,11 @@ export default function NewsletterDialog() {
                       size="lg"
                       type="email"
                       required
+                      colorPalette={"blue"}
                     />
 
                     <Button
-                      colorScheme="blue"
+                      colorPalette={"blue"}
                       width="full"
                       size="lg"
                       type="submit"
@@ -112,10 +112,11 @@ export default function NewsletterDialog() {
 
                     <DialogActionTrigger asChild>
                       <Button
-                        variant="ghost"
                         size="lg"
+                        variant={"outline"}
                         width="full"
                         onClick={() => setIsOpen(false)}
+                        color={textColor}
                       >
                         No, gracias
                       </Button>

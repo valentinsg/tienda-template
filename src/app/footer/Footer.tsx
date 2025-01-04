@@ -47,7 +47,7 @@ export default function Footer() {
             />
             <Button
               bg={useColorModeValue('gray.600', 'gray.400')}
-              color="white"
+              color={useColorModeValue('white', 'black')}
               borderRadius="lg"
               _hover={{ bg: hoverColor }}
               ml={-2}
@@ -72,17 +72,17 @@ export default function Footer() {
 
       {/* Links de navegación */}
       <Flex flexDir={{ base: "column", md: "row" }} gap={4} >
-        <Box gap={6} color={textColor} fontWeight={600} p={8} fontSize="lg">
-          <Text><Link href="/products" _hover={{ color: hoverColor }}>Productos</Link></Text>
-          <Text><Link href="/about" _hover={{ color: hoverColor }}>Sobre nosotros</Link></Text>
-          <Text><Link href="#" _hover={{ color: hoverColor }}>Instagram</Link></Text>
-          <Text><Link href="#" _hover={{ color: hoverColor }}>TikTok</Link></Text>
+        <Box gap={6} fontWeight={600} p={8} fontSize="lg">
+          <Text color={textColor} ><Link href="/products" _hover={{ color: hoverColor }}>Productos</Link></Text>
+          <Text color={textColor} ><Link href="/about" _hover={{ color: hoverColor }}>Sobre nosotros</Link></Text>
+          <Text color={textColor} ><Link href="#" _hover={{ color: hoverColor }}>Instagram</Link></Text>
+          <Text color={textColor} ><Link href="#" _hover={{ color: hoverColor }}>TikTok</Link></Text>
         </Box>
-        <Box gap={6} color={textColor} fontWeight={600} p={8} fontSize="lg">
-          <Text><Link href="/contact" _hover={{ color: hoverColor }}>Contacto</Link></Text>
-          <Text><Link href="/faqs" _hover={{ color: hoverColor }}>FAQs</Link></Text>
-          <Text _hover={{ color: hoverColor }}> <Link href="/terms" _hover={{ color: hoverColor }}>Términos y Condiciones</Link> </Text>
-          <Text _hover={{ color: hoverColor }}><Link href="/privacy" _hover={{ color: hoverColor }}>Política de Privacidad</Link> </Text>
+        <Box gap={6} fontWeight={600} p={8} fontSize="lg">
+          <Text color={textColor} ><Link href="/contact" _hover={{ color: hoverColor }}>Contacto</Link></Text>
+          <Text color={textColor} ><Link href="/faqs" _hover={{ color: hoverColor }}>FAQs</Link></Text>
+          <Text color={textColor}  _hover={{ color: hoverColor }}> <Link href="/terms" _hover={{ color: hoverColor }}>Términos y Condiciones</Link> </Text>
+          <Text color={textColor}  _hover={{ color: hoverColor }}><Link href="/privacy" _hover={{ color: hoverColor }}>Política de Privacidad</Link> </Text>
         </Box>
       </Flex>
 
@@ -94,7 +94,7 @@ export default function Footer() {
         color={textColor}
         px={8}
       >
-        <Text fontSize="lg">
+        <Text fontSize="lg" fontWeight={600} textAlign={{ base: "center", md: "left" }}>
           Busy es un estilo de vida para quienes ocupan su tiempo en lo que realmente importa.
         </Text>
         <HStack gap={6} mt={{ base: 8, md: 0 }}>

@@ -1,22 +1,28 @@
-// src/app/api/payments/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 import { MercadoPagoConfig, Preference } from 'mercadopago';
-import { readFileSync } from 'node:fs';
+
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://busy.com.ar';
 
-interface Message {
-  id: number;
-  text: string;
+interface CartItem {
+  id: string;
+  name: string;
+  price: number;
+  quantity: number;
+}
+
+interface PaymentRequestBody {
+  cartItems: CartItem[];
+  totalPrice: number;
 }
 
 export async function POST(request: NextRequest) {
   try {
     // Parse the incoming request body
-    const { text } = await request.json();
-
-    if (!text) {
-      return NextResponse.json({ 
-        error: 'Message text is required' 
+    const { cartItems }: PaymentRequestBody = await request.json();
+    
+    if (!cartItems || !cartItems.length) {
+      return NextResponse.json({
+        error: 'Cart items are required'
       }, { status: 400 });
     }
 
@@ -25,60 +31,44 @@ export async function POST(request: NextRequest) {
       accessToken: process.env.MP_ACCESS_TOKEN!
     });
 
-    // Create preference
+    // Create preference with cart items
     const preference = await new Preference(mercadopago).create({
       body: {
-        items: [
-          {
-            id: "product-id",
-            unit_price: 1, // Aquí va el precio del producto
-            quantity: 1,
-            title: "Product Title", // Título del producto
-          },
-        ],
-        payment_methods: {
-          installments: 12, // Número máximo de cuotas
-        },
+        items: cartItems.map(item => ({
+          id: item.id,
+          title: item.name,
+          unit_price: item.price,
+          quantity: item.quantity,
+          currency_id: 'ARS', // Add your currency code here
+        })),
         back_urls: {
           success: `${baseUrl}/success`,
           failure: `${baseUrl}/failure`,
           pending: `${baseUrl}/pending`,
         },
         auto_return: 'approved',
+        notification_url: `${baseUrl}/api/webhook`, // Optional: Add this if you want to receive payment notifications
+        statement_descriptor: 'BUSY STORE', // This is what appears on the buyer's card statement
+        external_reference: Date.now().toString(), // Useful for tracking orders
       },
     });
 
-    // Return the init point
+    if (!preference.init_point) {
+      throw new Error('Failed to get payment init point from Mercado Pago');
+    }
+
     return NextResponse.json({
       initPoint: preference.init_point
     });
   } catch (error) {
     console.error('Payment Preference Error:', error);
-  
+    
     return NextResponse.json(
       {
         error: 'Failed to create payment preference',
-        details: error instanceof Error ? error.stack || error.message : JSON.stringify(error),
+        details: error instanceof Error ? error.message : 'Unknown error occurred',
       },
       { status: 500 }
     );
-  }
-}
-
-// Optional: Add a GET method to list messages
-export async function GET() {
-  try {
-    // Read messages from the database file
-    const db = readFileSync("db/message.db");
-    const messages: Message[] = JSON.parse(db.toString());
-    
-    return NextResponse.json(messages);
-  } catch (error) {
-    console.error('Error reading messages:', error);
-    
-    return NextResponse.json({
-      error: 'Failed to retrieve messages',
-      details: error instanceof Error ? error.message : 'Unknown error'
-    }, { status: 500 });
   }
 }

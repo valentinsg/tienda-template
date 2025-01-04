@@ -19,8 +19,6 @@ import { selectCartItems } from '../store/slices/cartSlice';
 import { createListCollection } from "@chakra-ui/react"
 import { FaHome } from 'react-icons/fa';
 import { LuBuilding2 } from "react-icons/lu"
-import * as Yup from 'yup';
-import { useFormik } from 'formik';
 import { AndreaniBranch } from "../../types/checkout/shipping/AndreaniBranch"
 import { supabase } from '../supabase';
 import { useColorMode, useColorModeValue } from '../components/ui/color-mode';
@@ -106,56 +104,39 @@ const Checkout: React.FC = () => {
       fetchBranches();
     }
   }, [shippingMethod]);
-
-  const validationSchema = Yup.object({
-    name: Yup.string().required('Nombre es requerido'),
-    lastName: Yup.string().required('Apellido es requerido'),
-    email: Yup.string().email('Email inválido').required('Email es requerido'),
-    phone: Yup.string().required('Teléfono es requerido'),
-    address: Yup.string().when('shippingMethod', {
-      is: (val: string) => val === 'home',
-      then: (schema) => schema.required('Dirección es requerida'),
-    }),
-    province: Yup.string().required('Provincia es requerida'),
-    city: Yup.string().required('Ciudad es requerida'),
-    postalCode: Yup.string().required('Código Postal es requerido'),
-  });
-
-  const formik = useFormik({
-    initialValues: {
-      name: '',
-      lastName: '',
-      email: '',
-      phone: '',
-      address: '',
-      province: '',
-      city: '',
-      postalCode: '',
-      shippingMethod: 'home',
-    },
-    validationSchema,
-    onSubmit: async () => {
-      try {
-        const response = await fetch('/api/payments', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            cartItems,
-            totalPrice: calculateTotalPrice(),
-          }),
-        });
-
-        const data = await response.json();
-        if (data.initPoint) window.location.href = data.initPoint;
-        else alert(data.error || 'Error al generar la preferencia de pago');
-      } catch (error) {
-        console.error(error);
-        alert('Error al procesar el pago.');
+  
+  const handleCheckout = async () => {
+    try {
+      console.log('Sending payment request with:', {
+        cartItems,
+        totalPrice: calculateTotalPrice()
+      });
+      
+      const response = await fetch('/api/payments', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          cartItems,
+          totalPrice: calculateTotalPrice(),
+        }),
+      });
+  
+      const data = await response.json();
+      console.log('Payment response:', data);
+  
+      if (data.initPoint) {
+        window.location.href = data.initPoint;
+      } else {
+        console.error('Payment error:', data.error);
+        alert(data.error || 'Error al generar la preferencia de pago');
       }
-    },
-  });
+    } catch (error) {
+      console.error('Checkout error:', error);
+      alert('Error al procesar el pago.');
+    }
+  };
 
   // Price Calculation
   const calculateTotalPrice = () => {
@@ -164,9 +145,6 @@ const Checkout: React.FC = () => {
     return productTotal + shippingCost;
   };
 
-  const handleCheckout = () => {
-    formik.handleSubmit();
-  };
   return (
     <Box  bg={colorMode === 'dark' ? 'gray.800' : 'bg.muted'} py={12} color={textColor} minH={"90vh"} w={"100%"} >
       <Heading textAlign="center" fontFamily={"Archivo Black"} as="h1" fontSize={{ base: "4xl", md: "4vw" }} letterSpacing={"tighter"} lineHeight={{ base: 1.2, md: "11vh" }} color={textColor}>

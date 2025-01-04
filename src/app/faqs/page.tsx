@@ -9,12 +9,13 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import { AccordionItemTrigger, AccordionItemContent } from "@chakra-ui/react";
-import { useColorMode } from '../components/ui/color-mode';
+import { useColorMode, useColorModeValue } from '../components/ui/color-mode';
 import "../styles/globals.css";
 
 const FAQs = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const { colorMode } = useColorMode();
+  const textColor = useColorModeValue('#555454', '#D0D0D0');
 
   const faqData = [
     {
@@ -191,9 +192,9 @@ const FAQs = () => {
     }));
 
   return (
-    <Box py={12} minH={"100vh"} bg={colorMode === 'dark' ? 'gray.800' : 'bg.muted'} >
-      {/* Encabezado */}
-      <Heading textAlign="center" mb={10} fontFamily={"Archivo Black"} as="h1" fontSize={{ base: "4xl", md: "4vw" }} letterSpacing={"tighter"} lineHeight={{ base: 1.2, md: "11vh" }} >
+    <Box bg={colorMode === 'dark' ? 'gray.800' : 'bg.muted'} py={12}  color={textColor}>
+      {/* Primera sección */}
+      <Heading mb={10} textAlign="center" fontFamily={"Archivo Black"} as="h1" fontSize={{ base: "4xl", md: "4vw" }} letterSpacing={"tighter"} lineHeight={{ base: 1.2, md: "11vh" }} color={textColor}>
         Preguntas Frecuentes.
       </Heading>
       {/* Barra de búsqueda */}
