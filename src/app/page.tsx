@@ -34,8 +34,8 @@ export default function Home() {
         </Heading>
       </Flex>
       <CategoryGrid />
-      <Flex direction="column" gap={20} p={20} align={"center"}>
-        <Heading fontFamily={"Archivo Black"} as="h2" fontSize={{ base: "4xl", md: "4vw" }}  letterSpacing={"tighter"} lineHeight={"11vh"} color={colorMode === 'dark' ? '#d0d0d0' : 'gray.700'}>
+      <Flex direction="column" gap={10} p={10} align={"center"}>
+        <Heading fontFamily={"Archivo Black"} as="h2" fontSize={{ base: "4xl", md: "4vw" }}  letterSpacing={"tighter"} color={colorMode === 'dark' ? '#d0d0d0' : 'gray.700'}>
           Nuevo
         </Heading>
       </Flex>

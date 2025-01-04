@@ -16,6 +16,7 @@ import {
   VStack,
   Grid,
   GridItem,
+  Image,
   useBreakpointValue,
 } from "@chakra-ui/react";
 import { toast } from "react-toastify";
@@ -26,7 +27,8 @@ export default function NewsletterDialog() {
   const [email, setEmail] = useState("");
   const borderColor = useColorModeValue('gray.100', 'gray.700');
   const textColor = useColorModeValue('#555454', '#D0D0D0');
-
+  const lucas = "https://tfufdiayyhcndcgncylf.supabase.co/storage/v1/object/sign/imagenes%20web/DSC06719(2).png?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJpbWFnZW5lcyB3ZWIvRFNDMDY3MTkoMikucG5nIiwiaWF0IjoxNzM1OTU1MDY1LCJleHAiOjE3Njc0OTEwNjV9.PtjZT7MChCXucfFuPbubX8HtiP4IQxE-z_cyrY7E2OY&t=2025-01-04T01%3A44%3A25.739Z";
+  
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsOpen(true);
@@ -72,7 +74,7 @@ export default function NewsletterDialog() {
               overflow="hidden"
               position="relative"
             >
-              
+              <Image src={lucas} alt="Lucas" />
             </Box>
           </GridItem>
 
