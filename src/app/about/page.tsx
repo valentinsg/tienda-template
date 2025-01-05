@@ -2,14 +2,48 @@
 import { Box, Container, Grid, Heading, Text, VStack, Image } from '@chakra-ui/react';
 import { useColorMode, useColorModeValue } from '../components/ui/color-mode';
 import Ciro from "../../../public/ciro.png";
-
+import { useEffect, useState } from 'react';
 
 const AboutUs = () => {
   const textColor = useColorModeValue('#555454', '#D0D0D0');
   const { colorMode } = useColorMode();
   const dosAmigos = "https://tfufdiayyhcndcgncylf.supabase.co/storage/v1/object/sign/imagenes%20web/creadores.jpg?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJpbWFnZW5lcyB3ZWIvY3JlYWRvcmVzLmpwZyIsImlhdCI6MTczNTk1OTc4MSwiZXhwIjoxNzY3NDk1NzgxfQ.eMCVXQ1yX0dunuQkdmV0eBeVBF5RVwbKVa9ft3I3hLw&t=2025-01-04T03%3A03%3A01.629Z"
-  const dosAmigos2 = "https://tfufdiayyhcndcgncylf.supabase.co/storage/v1/object/sign/imagenes%20web/sobre-nosotros_6.png?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJpbWFnZW5lcyB3ZWIvc29icmUtbm9zb3Ryb3NfNi5wbmciLCJpYXQiOjE3MzU5NjA1NTcsImV4cCI6MTc2NzQ5NjU1N30.jIPcnBHiswkoG2_QYM8_L-WWOBjKSiiylQ1_BwNzECw&t=2025-01-04T03%3A15%3A57.251Z"
   const community = "https://tfufdiayyhcndcgncylf.supabase.co/storage/v1/object/sign/imagenes%20web/sobre-nosotros_1.png?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJpbWFnZW5lcyB3ZWIvc29icmUtbm9zb3Ryb3NfMS5wbmciLCJpYXQiOjE3MzU5NjA1ODksImV4cCI6MTc2NzQ5NjU4OX0.53y-sG87NW8owUsOp6nsviXza9NnJ5rUTPd-ckB7L6s&t=2025-01-04T03%3A16%3A29.753Z"
+  const community2 = "https://tfufdiayyhcndcgncylf.supabase.co/storage/v1/object/sign/imagenes%20web/sobre-nosotros_6.png?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJpbWFnZW5lcyB3ZWIvc29icmUtbm9zb3Ryb3NfNi5wbmciLCJpYXQiOjE3MzU5NjA1NTcsImV4cCI6MTc2NzQ5NjU1N30.jIPcnBHiswkoG2_QYM8_L-WWOBjKSiiylQ1_BwNzECw&t=2025-01-04T03%3A15%3A57.251Z"
+  const community3 = "https://tfufdiayyhcndcgncylf.supabase.co/storage/v1/object/sign/imagenes%20web/sobre-nosotros_5.png?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJpbWFnZW5lcyB3ZWIvc29icmUtbm9zb3Ryb3NfNS5wbmciLCJpYXQiOjE3MzYwMzc1MTAsImV4cCI6MTc2NzU3MzUxMH0.pSgXrZw8HfL7BVHcJRJMUuc4jmE6LzV7ywRMt76YL9E&t=2025-01-05T00%3A38%3A31.770Z"
+  const [currentSlide, setCurrentSlide] = useState(1);
+
+  const slides = [
+    {
+      id: 1,
+      image: community,
+      alt: "Slide 1",
+      objectFit: "contain",
+      objectPosition: "top"
+    },
+    {
+      id: 2,
+      image: community2,
+      alt: "Slide 2",
+      objectFit: "contain",
+      objectPosition: "center"
+    },
+    {
+      id: 3,
+      image: community3,
+      alt: "Slide 3",
+      objectFit: "contain",
+      objectPosition: "center"
+    }
+  ];
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % slides.length);
+    }, 5000);
+    return () => clearInterval(timer);
+  }, [slides.length]);
+
   return (
     <Box bg={colorMode === 'dark' ? 'gray.800' : 'bg.muted'} py={12} color={textColor}>
       {/* Primera sección */}
@@ -75,41 +109,60 @@ const AboutUs = () => {
           </Box>
         </Grid>
 
+        {/* Texto principal */}
+        <VStack align="center" gap={10}>
+          <Heading fontFamily={"Archivo Black"} as="h2" fontSize={{ base: "4xl", md: "5vw" }} letterSpacing={"tighter"} lineHeight={{ base: 1.2, md: "11vh" }} color={textColor}>
+            Un Movimiento Busy
+          </Heading>
+          <Text fontSize="sm" lineHeight="tall">
+            <Text fontSize="xl" mb={6}>
+              Estamos preparando eventos, lanzamientos especiales y muchas sorpresas para la comunidad que buscamos crear. Seguí nuestras redes y suscribite a nuestra newsletter para no perderte nada de lo que se viene.
 
-        {/* Tercera sección */}
-        <Grid
-          templateColumns={{ base: '1fr', md: '2fr' }}
-          gap={6}
-        >
-          {/* Texto principal */}
-          <VStack align="center" gap={10}>
-            <Heading fontFamily={"Archivo Black"} as="h2" fontSize={{ base: "4xl", md: "5vw" }} letterSpacing={"tighter"} lineHeight={{ base: 1.2, md: "11vh" }} color={textColor}>
-              Un Movimiento Busy
-            </Heading>
-            <Text fontSize="sm" lineHeight="tall">
-              <Text fontSize="xl" mb={6}>
-                Estamos preparando eventos, lanzamientos especiales y muchas sorpresas para la comunidad que buscamos crear. Seguí nuestras redes y suscribite a nuestra newsletter para no perderte nada de lo que se viene.
+              En Busy, creemos que ocuparse de lo que importa puede transformar vidas y comunidades. Queremos inspirar a otros con nuestra filosofía y demostrar que es posible hacer las cosas de manera diferente.
 
-                En Busy, creemos que ocuparse de lo que importa puede transformar vidas y comunidades. Queremos inspirar a otros con nuestra filosofía y demostrar que es posible hacer las cosas de manera diferente.
+              Queremos colaborar con iniciativas que reflejen esta filosofía: apoyar artistas, impulsar emprendedores y expandir este movimiento.
 
-                Queremos colaborar con iniciativas que reflejen esta filosofía: apoyar artistas, impulsar emprendedores y expandir este movimiento.
-
-                Creaciones por amigos en constante educación, prendas trabajadas al detalle y la creación de una comunidad de valor. Si posta compartís algo de lo que significa BUSY, cada vez que veas nuestra marca pensá en ocuparte de ESO y reafirma, por qué ESO?
-              </Text>
             </Text>
-          </VStack>
+          </Text>
           <Box
-            backgroundSize="cover"
-            backgroundPosition="center"
-            borderRadius="lg"
+            position="relative"
+            width="100%"
+            height={{ base: "auto", md: "85vh" }}
           >
-            <Image src={community} alt="Ciro" w={"100%"}
-              h={"60%"}
-              borderRadius="lg"
-            />
+            {slides.map((slide, index) => (
+              <Box
+                key={slide.id}
+                opacity={index === currentSlide ? 1 : 0}
+                visibility={index === currentSlide ? "visible" : "hidden"}
+                transition="opacity 0.5s ease-in-out"
+                borderRadius="lg"
+                position={index === currentSlide ? "relative" : "absolute"}
+                width="100%"
+                height="100%"
+                transform={slide.id === 3 ? "translateY(-20px)" : "none"} // Ajuste para la tercera imagen
+              >
+                <Image
+                  borderRadius="lg"
+                  src={slide.image}
+                  objectFit="cover" // Aseguramos consistencia en tamaño
+                  width="100%"
+                  height="100%"
+                  alt={slide.alt}
+                />
+              </Box>
+            ))}
           </Box>
-        </Grid>
-        
+        </VStack>
+        <Box
+          mt={10}
+          textAlign="center"
+        >
+          <Text fontSize="xl" mb={6}>
+            Creaciones por amigos en constante educación, prendas trabajadas al detalle y la creación de una comunidad de valor.
+
+            Si posta compartís algo de lo que significa BUSY, cada vez que veas nuestra marca pensá en ocuparte de ESO y reafirma, por qué ESO?
+          </Text>
+        </Box>
       </Container>
     </Box>
   );

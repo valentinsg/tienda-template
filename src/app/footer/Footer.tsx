@@ -31,6 +31,7 @@ export default function Footer() {
             fontSize={useBreakpointValue({ base: "2xl", md: "2.3vw" })}
             lineHeight={1.2}
             fontFamily="Archivo Black"
+            fontWeight={500}
             letterSpacing="tighter"
             textAlign={{ base: "center", md: "left" }}
             color={textColor}
