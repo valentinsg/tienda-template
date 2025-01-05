@@ -55,8 +55,37 @@ const Checkout: React.FC = () => {
   // State Management
   const cartItems = useSelector(selectCartItems);
   const [andreaniBranches, setAndreaniBranches] = useState<AndreaniBranch[]>([]);
-  const { colorMode } = useColorMode();
   const textColor = useColorModeValue('#555454', '#D0D0D0');
+  const { colorMode } = useColorMode();
+  const buttonColor = useColorModeValue('blue.500', 'blue.300');
+  const [showDiscountInput, setShowDiscountInput] = useState(false);
+  const [discountCode, setDiscountCode] = useState('');
+  const [discountError, setDiscountError] = useState('');
+  const [discountApplied, setDiscountApplied] = useState(false);
+
+  const validDiscountCodes = [
+    'HastaElFinDeLosTiempos',
+    'KeepCalmAndStayBusy',
+    'DosAmigosUnaVision'
+  ];
+
+  const handleApplyDiscount = () => {
+    if (discountApplied) {
+      alert("El descuento ya ha sido aplicado.");
+      return;
+    }
+    setShowDiscountInput(true);
+  };
+
+  const validateDiscountCode = () => {
+    if (validDiscountCodes.includes(discountCode)) {
+      setDiscountApplied(true);
+      setDiscountError('');
+      setShowDiscountInput(false);
+    } else {
+      setDiscountError('Código de descuento inválido');
+    }
+  };
 
   const [personalInfo, setPersonalInfo] = useState<PersonalInfo>({
     name: '',
@@ -104,14 +133,14 @@ const Checkout: React.FC = () => {
       fetchBranches();
     }
   }, [shippingMethod]);
-  
+
   const handleCheckout = async () => {
     try {
       console.log('Sending payment request with:', {
         cartItems,
         totalPrice: calculateTotalPrice()
       });
-      
+
       const response = await fetch('/api/payments', {
         method: 'POST',
         headers: {
@@ -122,10 +151,10 @@ const Checkout: React.FC = () => {
           totalPrice: calculateTotalPrice(),
         }),
       });
-  
+
       const data = await response.json();
       console.log('Payment response:', data);
-  
+
       if (data.initPoint) {
         window.location.href = data.initPoint;
       } else {
@@ -142,11 +171,12 @@ const Checkout: React.FC = () => {
   const calculateTotalPrice = () => {
     const productTotal = cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
     const shippingCost = shippingMethod === 'home' ? 9500 : 8000;
-    return productTotal + shippingCost;
+    const subtotal = productTotal + shippingCost;
+    return discountApplied ? subtotal * 0.9 : subtotal;
   };
 
   return (
-    <Box  bg={colorMode === 'dark' ? 'gray.800' : 'bg.muted'} py={12} color={textColor} minH={"90vh"} w={"100%"} >
+    <Box bg={colorMode === 'dark' ? 'gray.800' : 'bg.muted'} py={12} color={textColor} minH={"90vh"} w={"100%"} >
       <Heading textAlign="center" fontFamily={"Archivo Black"} as="h1" fontSize={{ base: "4xl", md: "4vw" }} letterSpacing={"tighter"} lineHeight={{ base: 1.2, md: "11vh" }} color={textColor}>
         Checkout
       </Heading>
@@ -155,6 +185,7 @@ const Checkout: React.FC = () => {
         {/* Checkout Form */}
         <Box w={"52%"} minH="80vh" >
           <Text fontSize="3xl" textAlign="left" m={4} fontFamily={"Archivo Black"} letterSpacing={"tighter"}>Datos Personales</Text>
+
           <Fieldset.Root>
             <Stack w={"100%"} m={4}>
               {/* Personal Info Section */}
@@ -164,16 +195,22 @@ const Checkout: React.FC = () => {
                     <Input
                       value={personalInfo.name}
                       onChange={(e) => setPersonalInfo({ ...personalInfo, name: e.target.value })}
+                      colorPalette={"blue"}
+                      borderColor={buttonColor}
                     />
                   </Field>
                   <Field label="Apellido">
                     <Input
+                      colorPalette={"blue"}
+                      borderColor={buttonColor}
                       value={personalInfo.lastName}
                       onChange={(e) => setPersonalInfo({ ...personalInfo, lastName: e.target.value })}
                     />
                   </Field>
                   <Field label="Email">
                     <Input
+                      colorPalette={"blue"}
+                      borderColor={buttonColor}
                       value={personalInfo.email}
                       onChange={(e) => setPersonalInfo({ ...personalInfo, email: e.target.value })}
                     />
@@ -182,6 +219,8 @@ const Checkout: React.FC = () => {
                 <Stack flex={1}>
                   <Field label="Teléfono">
                     <Input
+                      colorPalette={"blue"}
+                      borderColor={buttonColor}
                       type="tel"
                       value={personalInfo.phone}
                       onChange={(e) => setPersonalInfo({ ...personalInfo, phone: e.target.value })}
@@ -191,6 +230,8 @@ const Checkout: React.FC = () => {
                   <Field label="Fecha de Nacimiento">
                     <Input
                       type="date"
+                      colorPalette={"blue"}
+                      borderColor={buttonColor}
                       value={personalInfo.age}
                       onChange={(e) => setPersonalInfo({ ...personalInfo, age: e.target.value })}
                     />
@@ -198,19 +239,22 @@ const Checkout: React.FC = () => {
                   <Field label="Género">
                     <SelectRoot
                       collection={createListCollection({
-                        items: ['masculino', 'femenino', 'otro', 'prefiero-no-decir']
+                        items: ["Masculino", "Femenino", "Otro", "Prefiero-No-Decir"],
                       })}
+                      value={personalInfo.gender ? [personalInfo.gender] : []}
+                      onValueChange={(details: { value: string[] }) => setPersonalInfo({ ...personalInfo, gender: details.value[0] })}
                     >
-                      <SelectTrigger>
+                      <SelectTrigger >
                         <SelectValueText>
-                          {() => personalInfo.gender || 'Selecciona género'}
+                          {() => personalInfo.gender?.replace(/-/g, ' ') || "Selecciona tu género"}
                         </SelectValueText>
                       </SelectTrigger>
+
                       <SelectContent>
-                        <SelectItem item="masculino">Masculino</SelectItem>
-                        <SelectItem item="femenino">Femenino</SelectItem>
-                        <SelectItem item="otro">Otro</SelectItem>
-                        <SelectItem item="prefiero-no-decir">Prefiero no decir</SelectItem>
+                        <SelectItem item="Masculino">Masculino</SelectItem>
+                        <SelectItem item="Femenino">Femenino</SelectItem>
+                        <SelectItem item="Otro">Otro</SelectItem>
+                        <SelectItem item="Prefiero-No-Decir">Prefiero no decir</SelectItem>
                       </SelectContent>
                     </SelectRoot>
                   </Field>
@@ -219,7 +263,7 @@ const Checkout: React.FC = () => {
 
               {/* Shipping Method Section */}
               <Text fontSize="3xl" textAlign="left" fontFamily={"Archivo Black"} letterSpacing={"tighter"} mt={10}>Método de Envío</Text>
-              
+
               <Flex gap={12} direction={{ base: 'row', md: 'column' }} w={"100%"} justify={"center"} mt={10} >
                 <Box display={{ base: 'block', md: 'flex' }} w={"100%"} justifyContent={"center"} gap={10}>
                   {/* Home Delivery */}
@@ -367,31 +411,79 @@ const Checkout: React.FC = () => {
                     )}
                   </Card.Root>
                 </Box>
-                {/* Submit Button */}
-
-                <Button
-                  colorScheme="green"
-                  onClick={handleCheckout}
-
-                >
-                  Ir a pagar
-                </Button>
               </Flex>
             </Stack>
           </Fieldset.Root>
         </Box>
 
-        <Box w={"28%"} minH={"35vh"} maxH={"90vh"} h={"100%"} >
-          <Text fontSize="3xl" textAlign="left" m={4} fontFamily={"Archivo Black"} letterSpacing={"tighter"}> Carrito</Text>
+        <Box w={"28%"} minH={"35vh"} maxH={"90vh"} h={"100%"} p={4} border="1px" borderColor={useColorModeValue('gray.300', 'gray.700')} borderRadius="md">
+          {/* Título principal */}
+          <Text fontSize="3xl" textAlign="left" mb={4} fontFamily={"Archivo Black"} letterSpacing={"tighter"}>
+            Carrito de compras
+          </Text>
+          <Box as="hr" my={4} borderColor={useColorModeValue('gray.400', 'gray.600')} />
+
+          {/* Listado de productos */}
+          <Text fontSize="lg" fontWeight="bold" mb={2}>
+            Productos en tu carrito:
+          </Text>
           {cartItems.map((item) => (
             <Box key={item.id} mt={3}>
-              <Text>{item.name} x{item.quantity}</Text>
+              <Text fontWeight="semibold">{item.name} x{item.quantity}</Text>
               <Text>${item.price * item.quantity}</Text>
             </Box>
           ))}
-          <Box my={4} />
-          <Box m={4}>
-            <Text>Productos: ${calculateTotalPrice() - (shippingMethod === 'home' ? 9500 : 8000)}</Text>
+          <Box as="hr" my={6} borderColor={useColorModeValue('gray.400', 'gray.600')} />
+          {/* Verificar descuentos */}
+          <Box>
+            <Text fontSize="lg" fontWeight="bold" mb={2}>
+              Código de descuento:
+            </Text>
+            {!showDiscountInput ? (
+                <Button
+                variant={colorMode === 'dark' ? 'solid' : 'outline'}
+                w="100%"
+                onClick={handleApplyDiscount}
+                >
+                Verificar
+                </Button>
+            ) : (
+              <Stack gap={4}>
+                <Input
+                  placeholder="Ingresa el código de descuento"
+                  value={discountCode}
+                  colorPalette={"blue"}
+                  borderColor={buttonColor}
+                  onChange={(e) => setDiscountCode(e.target.value)}
+                />
+                {discountError && (
+                  <Text color="red.500" fontSize="sm">
+                    {discountError}
+                  </Text>
+                )}
+                <Button
+                  colorPalette={"blue"}
+                  variant={"outline"}
+                  onClick={validateDiscountCode}
+                >
+                  Aplicar
+                </Button>
+              </Stack>
+            )}
+            {discountApplied && (
+              <Text color="green.500" mt={2}>
+                ¡Descuento del 10% aplicado!
+              </Text>
+            )}
+          </Box>
+          <Box as="hr" my={6} borderColor={useColorModeValue('gray.400', 'gray.600')} />
+
+          {/* Resumen de precios */}
+          <Box>
+            <Text fontSize="lg" fontWeight="bold" mb={2}>
+              Resumen:
+            </Text>
+            <Text>Subtotal: ${calculateTotalPrice() - (shippingMethod === 'home' ? 9500 : 8000)}</Text>
             <Text>
               {shippingMethod === 'home'
                 ? 'Envío a domicilio: $9500'
@@ -399,12 +491,23 @@ const Checkout: React.FC = () => {
                   ? 'Envío a sucursal (Andreani): $8000'
                   : 'Selecciona un método de envío'}
             </Text>
-            <Box height="1px" bg="gray.200" my={4} />
-            <Text fontWeight="bold" mt={2}>Total: ${calculateTotalPrice()}</Text>
+            <Text fontWeight="bold" mt={2}>
+              Total: ${calculateTotalPrice()}
+            </Text>
           </Box>
+
+          {/* Botón para finalizar compra */}
+          <Button
+            colorPalette="blue"
+            onClick={handleCheckout}
+            w={"100%"}
+            mt={6}
+          >
+            Ir a pagar
+          </Button>
         </Box>
-      </Stack>
-    </Box>
+      </Stack >
+    </Box >
   );
 };
 

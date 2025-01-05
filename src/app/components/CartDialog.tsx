@@ -90,7 +90,7 @@ const CartDialog = () => {
         <Box as={FaShoppingCart} w="24px" h="24px" color={theme.text} />
       </IconButton>
       {cartItems.length > 0 && (
-        <MotionBox initial={{ scale: 0.5 }} animate={{ scale: 1 }} position="absolute" top="-2" right="-2" bg={theme.text} color="white" borderRadius="full" w="6" h="6" display="flex" alignItems="center" justifyContent="center" fontSize="sm" fontWeight="bold">
+        <MotionBox initial={{ scale: 0.5 }} animate={{ scale: 1 }} position="absolute" top="-1" right="-1" bg={"red.500"} color="white" borderRadius="full" w="5" h="5" display="flex" alignItems="center" justifyContent="center" fontSize="sm" fontWeight="bold">
           {cartItems.length}
         </MotionBox>
       )}
@@ -98,32 +98,32 @@ const CartDialog = () => {
   );
 
   const renderShippingProgress = () => (
-    <Box mb="8" p="4" bg={theme.hover} borderRadius="lg">
-      <Flex align="center" gap="3" mb="3">
-        <Box as={FaTruck} color={freeShippingQualified ? 'green.500' : theme.text} />
-        <Text fontSize="sm" fontWeight="medium">
-          {freeShippingQualified ? "🎉 You've qualified for free shipping!" : `$${(FREE_SHIPPING_THRESHOLD - totalAmount).toLocaleString()} away from free shipping`}
+    <Box borderRadius="lg" w={'100%'} p={2}>
+      <Flex gap="3" mb="3">
+        <Box as={FaTruck} color={freeShippingQualified ? 'green.500' : theme.text} fontSize={"xl"} />
+        <Text fontSize="md" fontWeight="medium" color={theme.text}>
+          {freeShippingQualified ? "Contás con envío gratis " : `Gastando $${(FREE_SHIPPING_THRESHOLD - totalAmount).toLocaleString()} más, tenes envío gratis.`}
         </Text>
       </Flex>
-      <ProgressRoot value={shippingProgress} size="sm" borderRadius="full" bg={theme.progress.bg}>
-        <HStack gap="5">
-          <ProgressLabel>Free Shipping</ProgressLabel>
-          <ProgressBar flex="1" />
-          <ProgressValueText>{`${Math.round(shippingProgress)}%`}</ProgressValueText>
+      <ProgressRoot value={shippingProgress} size="md" borderRadius="full" mt={6}>
+        <HStack gap={6} w="100%">
+          <ProgressLabel fontSize={"md"} color={theme.text}>Envío gratis </ProgressLabel>
+          <ProgressBar flex="1" colorPalette={"blue"} />
+          <ProgressValueText fontSize={"md"} color={theme.text}>{`${Math.round(shippingProgress)}%`}</ProgressValueText>
         </HStack>
       </ProgressRoot>
     </Box>
   );
 
   const renderCartItem = (item: CartItem) => (
-    <MotionFlex key={item.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} w="100%" p="5" bg={theme.card} borderWidth="1px" borderColor={theme.border} borderRadius="lg" transition="all 0.2s" _hover={{ shadow: 'md', transform: 'translateY(-2px)' }}>
-      <HStack gap="6" width="100%">
+    <MotionFlex key={item.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} w="100%" p="4" bg={theme.card} borderWidth="2px" borderColor={theme.border} borderRadius="lg" transition="all 0.2s" _hover={{ shadow: 'md', transform: 'translateY(-2px)' }}>
+      <HStack gap="4" width="100%">
         <Box overflow="hidden" borderRadius="lg" w="80px" h="80px">
           <Image src={item.imageUrl || '/placeholder.jpg'} alt={item.name} w="full" h="full" objectFit="cover" transition="transform 0.2s" _hover={{ transform: 'scale(1.05)' }} />
         </Box>
         <VStack align="start" flex="1" gap="2">
-          <Text fontWeight="medium" color={theme.text} fontSize="lg">{item.name}</Text>
-          <Text fontWeight="bold" color={theme.text} fontSize="xl">${(item.price * item.quantity).toLocaleString()}</Text>
+          <Text fontWeight="medium" color={theme.text} fontSize="md">{item.name}</Text>
+          <Text fontWeight="bold" color={theme.text} fontSize="lg">${(item.price * item.quantity).toLocaleString()}</Text>
         </VStack>
         <HStack bg={theme.hover} p="2" borderRadius="lg" gap="3">
           <IconButton aria-label="Decrease quantity" size="sm" variant="ghost" onClick={() => handleDecrement(item.id)}>
@@ -141,43 +141,42 @@ const CartDialog = () => {
  // #endregion
 
  return (
-   <DialogRoot>
+   <DialogRoot size='lg' >
      <DialogTrigger asChild>{renderCartIcon()}</DialogTrigger>
-     <DialogContent className='sm:max-w-[550px]'>
+     <DialogContent >
        <DialogHeader>
          <Flex justify='space-between' align='center' w='100%' pb='4' borderBottom='1px' borderColor={theme.border}>
-           <DialogTitle>
-             <Text fontSize='2xl' fontWeight='bold' color={theme.text}>Your Cart</Text>
+           <DialogTitle> 
+             <Text fontSize='3xl' letterSpacing={"tighter"} fontFamily={"Archivo Black"} color={theme.text}>Tú Carrito</Text>
            </DialogTitle>
-           <DialogCloseTrigger asChild><CloseButton size='lg' /></DialogCloseTrigger>
+           <DialogCloseTrigger asChild><CloseButton size='lg'/></DialogCloseTrigger>
          </Flex>
        </DialogHeader>
 
-       <DialogBody>
+       <DialogBody >
          {cartItems.length === 0 ? (
-           <VStack gap='6' py='12' align='center'>
-             <MotionBox initial={{ scale: .5 }} animate={{ scale:1 }} fontSize='6xl'>🛒</MotionBox>
-             <Text color={theme.mutedText}>Your cart is looking empty</Text>
-             <DialogCloseTrigger asChild><Button bg={theme.text} color='white' size='lg' _hover={{ opacity:.9 }}>Start Shopping</Button></DialogCloseTrigger>
+           <VStack gap='10' py='20' align='center'>
+             <MotionBox userSelect={"none"} initial={{ scale: .5 }} animate={{ scale:1 }} fontSize='7xl' >🛒</MotionBox>
+             <Text color={theme.mutedText} mt={4} fontSize={"md"}>Tú BusyCarrito está vacío, ocúpate de él</Text>
+             <DialogCloseTrigger asChild><Button colorPalette={"blue"} size='lg' p={4}>Empezá a comprar</Button></DialogCloseTrigger>
            </VStack>
          ) : (
-           <VStack gap='6'>
+           <VStack gap='10'>
              {renderShippingProgress()}
              {cartItems.map(renderCartItem)}
              <Box w='100%' pt='6' borderTop='1px' borderColor={theme.border}>
                <Flex justify='space-between' align='center' mb='6'>
-                 <Text fontSize='lg' color={theme.text}>Total</Text>
+                 <Text fontSize='xl' color={theme.text}>Total</Text>
                  <Text fontSize='2xl' fontWeight='bold' color={theme.text}>${totalAmount.toLocaleString()}</Text>
                </Flex>
 
                <VStack gap='4'>
                  <Link href='/checkout' passHref style={{ width:'100%' }}>
-                   <Button w='100%' bg={theme.text} color='white' size='lg' h='16' fontSize='lg' _hover={{ opacity:.9 }}>Proceed to Checkout</Button>
+                   <Button w='100%' colorPalette={"blue"} size='lg' h='16' fontSize='lg' _hover={{ opacity:.9 }}>Ir a pagar</Button>
                  </Link>
 
                  <HStack w='100%' gap='4'>
-                   <Button variant='outline' colorScheme='red' onClick={handleClearCart} flex='1'>Clear Cart</Button>
-                   <DialogCloseTrigger asChild><Button variant='outline' flex='1'>Continue Shopping</Button></DialogCloseTrigger>
+                   <Button variant='outline' colorScheme='red' onClick={handleClearCart} flex='1'>Limpiar carrito</Button>
                  </HStack>
                </VStack>
              </Box>
