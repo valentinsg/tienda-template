@@ -15,6 +15,7 @@ export default function Footer() {
   const bgColor = useColorModeValue("#D0D0D0", 'gray.800');
   const textColor = useColorModeValue('gray.700', '#D0D0D0');
   const hoverColor = useColorModeValue("gray.600", "gray.400");
+  const buttonColor = useColorModeValue('blue.500', 'blue.300');
 
   return (
     <Flex bg={bgColor} flexDir="column" w="100%" p={8} shadow="md">
@@ -45,12 +46,12 @@ export default function Footer() {
               _hover={{ borderColor: hoverColor }}
               borderColor={useColorModeValue('gray.600', 'none')}
               flex="1"
+              colorPalette={"blue"}
+              border={buttonColor}
             />
             <Button
-              bg={useColorModeValue('gray.600', 'gray.400')}
-              color={useColorModeValue('white', 'black')}
+              colorPalette={"blue"}
               borderRadius="lg"
-              _hover={{ bg: hoverColor }}
               ml={-2}
             >
               Suscríbete

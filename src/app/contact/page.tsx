@@ -53,7 +53,7 @@ const Contact = () => {
 
   return (
     <Box bg={colorMode === 'dark' ? 'gray.800' : 'bg.muted'} py={12} color={textColor}>
-      <Container maxW="70%">
+      <Container maxW="65%">
         <VStack gap={8}>
           <Heading textAlign="center" mb={10} fontFamily={"Archivo Black"} as="h1" fontSize={{ base: "4xl", md: "4vw" }} letterSpacing={"tighter"} lineHeight={{ base: 1.2, md: "11vh" }} color={textColor}>
             Contáctanos.

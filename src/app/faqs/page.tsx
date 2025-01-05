@@ -7,6 +7,8 @@ import {
   Accordion,
   Input,
   VStack,
+  Container,
+  Button
 } from "@chakra-ui/react";
 import { AccordionItemTrigger, AccordionItemContent } from "@chakra-ui/react";
 import { useColorMode, useColorModeValue } from '../components/ui/color-mode';
@@ -16,6 +18,7 @@ const FAQs = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const { colorMode } = useColorMode();
   const textColor = useColorModeValue('#555454', '#D0D0D0');
+  const buttonColor = useColorModeValue('blue.500', 'blue.300');
 
   const faqData = [
     {
@@ -114,7 +117,7 @@ const FAQs = () => {
         {
           question: "¿Cómo hago para cambiar una prenda?",
           answer:
-            "comunicate por Instagram @busy.streetwear o envianos un mail a busystreetwear@gmail.com para coordinar el cambio de la prenda y recibir instrucciones detalladas.",
+            "Comunicate por Instagram @busy.streetwear o envianos un mail a busystreetwear@gmail.com para coordinar el cambio de la prenda y recibir instrucciones detalladas.",
         },
       ],
     },
@@ -192,52 +195,76 @@ const FAQs = () => {
     }));
 
   return (
-    <Box bg={colorMode === 'dark' ? 'gray.800' : 'bg.muted'} py={12}  color={textColor}>
-      {/* Primera sección */}
-      <Heading mb={10} textAlign="center" fontFamily={"Archivo Black"} as="h1" fontSize={{ base: "4xl", md: "4vw" }} letterSpacing={"tighter"} lineHeight={{ base: 1.2, md: "11vh" }} color={textColor}>
-        Preguntas Frecuentes.
-      </Heading>
-      {/* Barra de búsqueda */}
-      < Input
-        placeholder="Buscar una pregunta..."
-        mb={6}
-        size="lg"
-        onChange={(e) => setSearchTerm(e.target.value)}
-        value={searchTerm}
-      />
-      <VStack gap={6} align="stretch">
-        {filteredFAQs.map((section) => section.questions.length > 0 && (
-          <Box key={section.category} p={4} bg="gray.800" borderRadius="md" shadow="lg">
-            <Heading
-              as="h2"
-              fontSize="xl"
-              mb={4}
-              color="blue.400"
-              textTransform="uppercase"
-              fontFamily={"Archivo Black"}
-            >
-              {section.category}
-            </Heading>
-            <Accordion.Root >
-              {/* Sobre la Marca Busy */}
-              {section.questions.map((faq, index) => (
-                <Accordion.Item key={index} value={`item-${index}`}>
-                  <h2>
-                    <AccordionItemTrigger>
-                      <Box flex="1" textAlign="left">
-                        {faq.question}
-                      </Box>
-                    </AccordionItemTrigger>
-                  </h2>
-                  <AccordionItemContent pb={4}>
-                    {faq.answer}
-                  </AccordionItemContent>
-                </Accordion.Item>
-              ))}
-            </Accordion.Root>
-          </Box>
-        ))}
-      </VStack>
+    <Box bg={colorMode === 'dark' ? 'gray.800' : 'bg.muted'} py={12} color={textColor}>
+      <Container maxW="70%">
+        {/* Primera sección */}
+        <Heading textAlign="center" fontFamily={"Archivo Black"} as="h1" fontSize={{ base: "4xl", md: "4vw" }} letterSpacing={"tighter"} lineHeight={{ base: 1.2, md: "11vh" }} color={textColor}>
+          Preguntas Frecuentes.
+        </Heading>
+        {/* Barra de búsqueda */}
+        <Input
+          placeholder="Buscar una pregunta..."
+          mt={8}
+          size="lg"
+          onChange={(e) => setSearchTerm(e.target.value)}
+          value={searchTerm}
+          colorPalette={"blue"}
+          borderColor={buttonColor}
+
+        />
+        <VStack align="stretch">
+          {filteredFAQs.map((section) => section.questions.length > 0 && (
+            <Box key={section.category} py={8} borderRadius="md">
+              <Heading
+                as="h2"
+                fontSize="4xl"
+                textAlign={"center"}
+                fontWeight={500}
+                py={4}
+                color={textColor}
+                textTransform="uppercase"
+                fontFamily={"Archivo Black"}
+              >
+                {section.category}
+              </Heading>
+              <Accordion.Root collapsible>
+                {/* Sobre la Marca Busy */}
+                {section.questions.map((faq, index) => (
+                  <Accordion.Item key={index} value={`item-${index}`} m={4} borderRadius="md" bg={colorMode === 'dark' ? 'gray.700' : 'white'} color={textColor}>
+                    <h2>
+                      <AccordionItemTrigger
+                        cursor={"pointer"}
+                        p={4}
+                        fontSize="xl"
+                        _hover={{ bg: colorMode === 'dark' ? 'gray.600' : 'gray.200' }}
+                        _expanded={{ bg: colorMode === 'dark' ? 'gray.600' : 'gray.200' }}
+                        transition="background-color 0.2s ease"
+                      >
+                        <Box textAlign="center" fontSize={"xl"} fontFamily={"Archivo Black"} fontWeight={500} letterSpacing={"tighter"} textTransform="uppercase">
+                          {faq.question}
+                        </Box>
+                      </AccordionItemTrigger>
+                    </h2>
+                    <AccordionItemContent px={4} py={4} fontSize="lg" textAlign="left" transition="max-height 1s ease in, padding 1s ease">
+                      {faq.answer}
+                    </AccordionItemContent>
+
+                  </Accordion.Item>
+                ))}
+              </Accordion.Root>
+            </Box>
+          ))}
+        </VStack>
+        <Box textAlign="end" mt={12}>
+          <Button
+            size="lg"
+            colorPalette={"blue"}
+            onClick={() => window.location.href = "/contact"}
+          >
+            No te quedes con nignuna duda y contáctanos.
+          </Button>
+        </Box>
+      </Container>
     </Box >
   );
 };
