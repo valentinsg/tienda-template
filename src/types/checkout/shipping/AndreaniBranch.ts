@@ -20,25 +20,24 @@ import { Province } from "./Province";
  */
 
 export interface AndreaniBranch {
-  
-  id: string;
-  /**
-   * The name of the branch.
-   */
-  name: string;
-
-  /**
-   * The address of the branch.
-   */
-  address?: string;
-
+  id?: string;
   /**
    * The province where the branch is located.
    */
   province: Province | string;
 
+  name?: string;
+
+  /**
+   * The name of the branch.
+   */
+  city: string;
   /**
    * The postal code of the branch.
    */
-  postalCode: number | string;
+  postal_code: number | string;
+  /**
+   * The address of the branch.
+   */
+  address?: string;
 }
