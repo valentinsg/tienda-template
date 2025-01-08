@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { MercadoPagoConfig, Preference } from 'mercadopago';
 import { CartItem } from '@/types/CartItem';
 
-const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://busy.com.ar';
+const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
 interface PaymentRequestBody {
   cartItems: CartItem[];
