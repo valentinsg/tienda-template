@@ -1,37 +1,31 @@
+// src/app/api/payments/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 import { MercadoPagoConfig, Preference } from 'mercadopago';
+import { CartItem } from '@/types/CartItem';
 
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://busy.com.ar';
-
-interface CartItem {
-  id: string;
-  name: string;
-  price: number;
-  quantity: number;
-}
 
 interface PaymentRequestBody {
   cartItems: CartItem[];
   totalPrice: number;
+  shippingAddress: any;
+  orderId: string; // ID de Supabase
 }
 
 export async function POST(request: NextRequest) {
   try {
-    // Parse the incoming request body
-    const { cartItems }: PaymentRequestBody = await request.json();
-    
+    const { cartItems, orderId }: PaymentRequestBody = await request.json();
+
     if (!cartItems || !cartItems.length) {
       return NextResponse.json({
         error: 'Cart items are required'
       }, { status: 400 });
     }
 
-    // Initialize Mercado Pago client
     const mercadopago = new MercadoPagoConfig({
       accessToken: process.env.MP_ACCESS_TOKEN!
     });
 
-    // Create preference with cart items
     const preference = await new Preference(mercadopago).create({
       body: {
         items: cartItems.map(item => ({
@@ -39,17 +33,18 @@ export async function POST(request: NextRequest) {
           title: item.name,
           unit_price: item.price,
           quantity: item.quantity,
-          currency_id: 'ARS', // Add your currency code here
+          currency_id: 'ARS',
+          size: item.size,
         })),
         back_urls: {
-          success: `${baseUrl}/success`,
-          failure: `${baseUrl}/failure`,
-          pending: `${baseUrl}/pending`,
+          success: `${baseUrl}/checkout/success?order=${orderId}`,
+          failure: `${baseUrl}/checkout/failure?order=${orderId}`,
+          pending: `${baseUrl}/checkout/pending?order=${orderId}`,
         },
         auto_return: 'approved',
-        notification_url: `${baseUrl}/api/webhook`, // Optional: Add this if you want to receive payment notifications
-        statement_descriptor: 'BUSY STORE', // This is what appears on the buyer's card statement
-        external_reference: Date.now().toString(), // Useful for tracking orders
+        notification_url: `${baseUrl}/api/webhook`,
+        statement_descriptor: 'BUSY STORE',
+        external_reference: orderId, // Usamos el ID de Supabase como referencia
       },
     });
 
@@ -58,11 +53,12 @@ export async function POST(request: NextRequest) {
     }
 
     return NextResponse.json({
-      initPoint: preference.init_point
+      initPoint: preference.init_point,
+      external_reference: orderId
     });
+
   } catch (error) {
     console.error('Payment Preference Error:', error);
-    
     return NextResponse.json(
       {
         error: 'Failed to create payment preference',

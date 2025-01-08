@@ -9,7 +9,6 @@ import {
   Input,
   Button,
   Flex,
-  Card,
   Heading,
   VStack,
 } from '@chakra-ui/react';
@@ -172,10 +171,10 @@ const Checkout: React.FC = () => {
           <Text fontWeight="bold">Detalles de Envío:</Text>
           <pre>
             {JSON.stringify(
-              shippingMethod === 'home' 
-                ? homeShippingDetails 
+              shippingMethod === 'home'
+                ? homeShippingDetails
                 : branchShippingDetails,
-              null, 
+              null,
               2
             )}
           </pre>
@@ -184,6 +183,8 @@ const Checkout: React.FC = () => {
           <Text fontWeight="bold">Descuento:</Text>
           <Text>Aplicado: {discountApplied ? 'Sí' : 'No'}</Text>
           <Text>Código: {discountCode || 'No ingresado'}</Text>
+          <Text fontWeight="bold">Productos en carrito:</Text>
+          <pre>{JSON.stringify(cartItems, null, 2)}</pre>
         </Box>
       </VStack>
     </Box>
@@ -199,10 +200,11 @@ const Checkout: React.FC = () => {
   });
 
   const [branchShippingDetails, setBranchShippingDetails] = useState<AndreaniBranch>({
+    address: '',
     province: '',
     city: '',
     postal_code: '',
-    address: '',
+    name: '',
   });
 
   // Fetch Branches
@@ -233,12 +235,32 @@ const Checkout: React.FC = () => {
       alert('Por favor complete todos los campos requeridos');
       return;
     }
-    try {
-      console.log('Sending payment request with:', {
-        cartItems,
-        totalPrice: calculateTotalPrice()
-      });
 
+    try {
+      // 1. Crear registro en Supabase primero
+      const { data: paymentRecord, error: supabaseError } = await supabase
+        .from('payment_records')
+        .insert({
+          status: 'pending',
+          total_amount: calculateTotalPrice(),
+          discount_applied: discountApplied,
+          discount_code: discountCode || null,
+          customer_name: personalInfo.name,
+          customer_email: personalInfo.email,
+          customer_phone: personalInfo.phone,
+          shipping_method: shippingMethod,
+          shipping_address: shippingMethod === 'home' 
+            ? homeShippingDetails 
+            : branchShippingDetails,
+          cart_items: cartItems,
+          payment_provider: 'mercadopago'
+        })
+        .select()
+        .single();
+
+      if (supabaseError) throw supabaseError;
+
+      // 2. Llamar a tu API de MercadoPago existente
       const response = await fetch('/api/payments', {
         method: 'POST',
         headers: {
@@ -247,6 +269,10 @@ const Checkout: React.FC = () => {
         body: JSON.stringify({
           cartItems,
           totalPrice: calculateTotalPrice(),
+          shippingAddress: shippingMethod === 'home' 
+            ? homeShippingDetails 
+            : branchShippingDetails,
+          orderId: paymentRecord.id // Pasamos el ID de Supabase
         }),
       });
 
@@ -254,10 +280,18 @@ const Checkout: React.FC = () => {
       console.log('Payment response:', data);
 
       if (data.initPoint) {
+        // Actualizar el registro con el ID de transacción antes de redirigir
+        await supabase
+          .from('payment_records')
+          .update({ 
+            transaction_id: data.external_reference,
+            notes: 'Redirecting to payment gateway'
+          })
+          .eq('id', paymentRecord.id);
+
         window.location.href = data.initPoint;
       } else {
-        console.error('Payment error:', data.error);
-        alert(data.error || 'Error al generar la preferencia de pago');
+        throw new Error(data.error || 'Error al generar la preferencia de pago');
       }
     } catch (error) {
       console.error('Checkout error:', error);
@@ -566,57 +600,30 @@ const Checkout: React.FC = () => {
                       <Field label="Sucursal" required>
                         <SelectRoot
                           collection={createListCollection({
-                            items: andreaniBranches.map(branch => branch.address)
+                            items: andreaniBranches.map((branch) => branch.name),
                           })}
-                          value={branchShippingDetails.address ? [branchShippingDetails.address] : []}
+                          value={branchShippingDetails.name ? [branchShippingDetails.name] : []}
                           onValueChange={(details: { value: string[] }) => {
-                            const selectedBranch = andreaniBranches.find(branch => branch.address === details.value[0]);
-                            if (selectedBranch) {
-                              setBranchShippingDetails(selectedBranch);
-                            }
+                            const branch = andreaniBranches.find((b) => b.name === details.value[0]);
+                            setBranchShippingDetails({
+                              ...branchShippingDetails,
+                              ...branch,
+                            });
                           }}
                         >
-                          <SelectTrigger
-                            _hover={{ borderColor: 'blue.500' }}
-                            _dark={{
-                              bg: 'gray.700',
-                              borderColor: 'gray.600',
-                              _hover: { borderColor: 'blue.400' }
-                            }}
-                          >
-                            <SelectValueText >
-                              {() => branchShippingDetails.address || 'Selecciona sucursal'}
+                          <SelectTrigger>
+                            <SelectValueText>
+                              {() => branchShippingDetails.name || 'Selecciona sucursal'}
                             </SelectValueText>
                           </SelectTrigger>
-
                           <SelectContent>
                             {andreaniBranches.map((branch) => (
-                              <SelectItem
-                                key={branch.id}
-                                item={branch.id}
-                                _hover={{ bg: 'blue.50' }}
-                                _dark={{
-                                  _hover: { bg: 'blue.900' }
-                                }}
-                              >
-                                <VStack align="start" gap={1} w="100%">
-                                  <Text fontWeight="bold" color={textColor}>{branch.name}</Text>
-                                  <Text fontSize="sm" color="gray.600" _dark={{ color: 'gray.300' }}>
-                                    {branch.address}
-                                  </Text>
-                                  <Text fontSize="xs" color="gray.500" _dark={{ color: 'gray.400' }}>
-                                    {branch.postal_code}, {branch.province}
-                                  </Text>
-                                </VStack>
+                              <SelectItem key={branch.id} item={branch.name} color={textColor}>
+                                {branch.name}
                               </SelectItem>
                             ))}
                           </SelectContent>
                         </SelectRoot>
-                        {errors.branchId && (
-                          <Text color="red.500" fontSize="sm" mt={1}>
-                            {errors.branchId}
-                          </Text>
-                        )}
                       </Field>
                     </VStack>
                   )}

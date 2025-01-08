@@ -25,35 +25,95 @@ import { useColorModeValue } from "./ui/color-mode";
 export default function NewsletterDialog() {
   const [isOpen, setIsOpen] = useState(false);
   const [email, setEmail] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [hasCheckedSubscription, setHasCheckedSubscription] = useState(false);
   const borderColor = useColorModeValue('gray.100', 'gray.700');
   const textColor = useColorModeValue('#555454', '#D0D0D0');
   const lucas = "https://tfufdiayyhcndcgncylf.supabase.co/storage/v1/object/sign/imagenes%20web/DSC06719(2).png?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJpbWFnZW5lcyB3ZWIvRFNDMDY3MTkoMikucG5nIiwiaWF0IjoxNzM1OTU1MDY1LCJleHAiOjE3Njc0OTEwNjV9.PtjZT7MChCXucfFuPbubX8HtiP4IQxE-z_cyrY7E2OY&t=2025-01-04T01%3A44%3A25.739Z";
-  
+
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsOpen(true);
-    }, 20000);
-    return () => clearTimeout(timer);
+    const checkSubscriptionStatus = async () => {
+      try {
+        const response = await fetch('/api/newsletter/check-status', {
+          method: 'GET',
+        });
+        
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        
+        // Solo mostrar el diálogo si el usuario no está suscrito
+        if (!data.isSubscribed) {
+          const timer = setTimeout(() => {
+            setIsOpen(true);
+          }, 20000);
+          return () => clearTimeout(timer);
+        }
+      } catch (error) {
+        console.error('Error checking subscription status:', error);
+      } finally {
+        setHasCheckedSubscription(true);
+      }
+    };
+
+    checkSubscriptionStatus();
   }, []);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
     if (!email) {
       toast.error("Por favor ingresa tu email");
       return;
     }
+
     if (!/\S+@\S+\.\S+/.test(email)) {
       toast.error("Por favor ingresa un email válido");
       return;
     }
 
-    // Aquí irría la lógica para guardar el email
-    toast.success("¡Gracias por suscribirte! Revisa tu email");
-    setIsOpen(false);
-    setEmail("");
+    setIsLoading(true);
+
+    try {
+      const response = await fetch('/api/newsletter', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+
+      if (data.error === "exists") {
+        toast.info("Este email ya está suscrito a nuestra newsletter");
+      } else if (data.message === "success") {
+        toast.success("¡Gracias por suscribirte! Revisa tu email");
+        setIsOpen(false);
+        setEmail("");
+      } else {
+        throw new Error(data.error || "Error desconocido");
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      toast.error("Hubo un error al procesar tu solicitud. Por favor intenta nuevamente.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const isMobile = useBreakpointValue({ base: true, md: false });
+
+  // No renderizar nada hasta que hayamos verificado el estado de suscripción
+  if (!hasCheckedSubscription) {
+    return null;
+  }
 
   return (
     <DialogRoot open={isOpen} onOpenChange={details => setIsOpen(details.open)}>
@@ -69,11 +129,7 @@ export default function NewsletterDialog() {
       >
         <Grid templateColumns={isMobile ? "1fr" : "1fr 1.2fr"} gap={8}>
           <GridItem>
-            <Box
-              borderRadius="lg"
-              overflow="hidden"
-              position="relative"
-            >
+            <Box borderRadius="lg" overflow="hidden" position="relative">
               <Image src={lucas} alt="Lucas" />
             </Box>
           </GridItem>
@@ -101,6 +157,7 @@ export default function NewsletterDialog() {
                       type="email"
                       required
                       colorPalette={"blue"}
+                      disabled={isLoading}
                     />
 
                     <Button
@@ -109,7 +166,7 @@ export default function NewsletterDialog() {
                       size="lg"
                       type="submit"
                     >
-                      Obtener descuento
+                      {isLoading ? "Enviando" : "Obtener descuento"}
                     </Button>
 
                     <DialogActionTrigger asChild>
@@ -119,6 +176,7 @@ export default function NewsletterDialog() {
                         width="full"
                         onClick={() => setIsOpen(false)}
                         color={textColor}
+                        disabled={isLoading}
                       >
                         No, gracias
                       </Button>
