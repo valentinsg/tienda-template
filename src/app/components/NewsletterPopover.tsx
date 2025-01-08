@@ -214,7 +214,7 @@ export default function NewsletterDialog() {
                       />
 
                       <Button
-                        colorScheme="blue"
+                        colorPalette={"blue"}
                         width="full"
                         size="lg"
                         type="submit"
