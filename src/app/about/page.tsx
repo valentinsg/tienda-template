@@ -72,8 +72,8 @@ const AboutUs = () => {
               Dos amigos, una visión.
             </Heading>
             <Text textAlign={"end"} fontSize="xl" lineHeight={1.5}>
-              Busy nació de la conexión entre dos amigos que compartían una visión: crear algo más grande que ellos mismos. Pero no hubiéramos llegado acá si no fuera por la ayuda de otros amigos que, con pequeños y grandes gestos, dejaron su huella en este proyecto.
-              Busy no existiría sin las personas que trabajaron y creyeron en el proyecto. Desde amigos cercanos que pusieron sus manos en los detalles, hasta los que cebaron mate los días de rodaje, aportaron energía a la distancia o nos compraron. TODOS esas personas queremos que sepan que ya forman parte de esto.
+              Busy nació de la conexión entre dos amigos que compartían una visión: crear algo más grande que ellos mismos. Pero no hubiéramos llegado acá si no fuera por la ayuda de nuestros amigos que dejaron su huella en el proyecto, con gestos grandes y pequeños.
+              Busy no existiría sin las personas que trabajaron y creyeron en el proyecto. Desde amigos cercanos que pusieron sus manos en los detalles, hasta los que cebaron mate los días de rodaje, aportaron energía a la distancia o compraron. TODOS esas personas queremos que sepan que forman parte de esto.
             </Text>
           </VStack>
         </Grid>
@@ -89,7 +89,7 @@ const AboutUs = () => {
               Idea central
             </Heading>
             <Text fontSize="xl" lineHeight={1.5}>
-              Busy pretende ser más que ropa, nuestro movimiento celebra ocuparse de lo que realmente importa. Estás BUSY en esos momentos que invertís en vos, tus sueños o lo que te moviliza, por lo que, estar BUSY es lo que nos ayuda a dar pasos hacia nuestra eudaimonía, lo que se convierte en accionar constante, y un accionar constante inevitablemente atrae buenos resultados. <br />
+              Busy pretende ser más que ropa, nuestro movimiento celebra ocuparse de lo que realmente importa. Estás BUSY en esos momentos que invertís en vos, tus sueños o lo que te moviliza, por lo que estar BUSY nos ayuda a dar pasos hacia nuestra eudaimonía, lo que se traduce en un accionar constante, y un accionar constante inevitablemente atrae buenos resultados. <br />
               Emprendedores, empleados, artistas o estudiantes: no importa tú ocupación, importa ocuparse, pero de eso que realmente nos moviliza, de eso que nos hace crecer.
               <br /> <br />-Keep Calm And Stay Busy.
 
@@ -118,9 +118,13 @@ const AboutUs = () => {
             <Text fontSize="xl" mb={6}>
               Estamos preparando eventos, lanzamientos especiales y muchas sorpresas para la comunidad que buscamos crear. Seguí nuestras redes y suscribite a nuestra newsletter para no perderte nada de lo que se viene.
 
-              En Busy, creemos que ocuparse de lo que importa puede transformar vidas y comunidades. Queremos inspirar a otros con nuestra filosofía y demostrar que es posible hacer las cosas de manera diferente.
+              En Busy, creemos que algo tan sencillo y obvio como ocuparse de lo que importa, puede cambiar vidas y comunidades.
 
               Queremos colaborar con iniciativas que reflejen esta filosofía: apoyar artistas, impulsar emprendedores y expandir este movimiento.
+              
+              Creaciones por amigos en constante educación, prendas trabajadas al detalle y la intención de crear una comunidad de valor.
+
+              Si posta compartís algo de lo que significa BUSY, cada vez que veas nuestra marca pensá en ocuparte de ESO y reafirma, por qué ESO?
 
             </Text>
           </Text>
@@ -153,16 +157,6 @@ const AboutUs = () => {
             ))}
           </Box>
         </VStack>
-        <Box
-          mt={10}
-          textAlign="center"
-        >
-          <Text fontSize="xl" mb={6}>
-            Creaciones por amigos en constante educación, prendas trabajadas al detalle y la creación de una comunidad de valor.
-
-            Si posta compartís algo de lo que significa BUSY, cada vez que veas nuestra marca pensá en ocuparte de ESO y reafirma, por qué ESO?
-          </Text>
-        </Box>
       </Container>
     </Box>
   );
