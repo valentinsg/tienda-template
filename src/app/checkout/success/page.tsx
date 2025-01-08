@@ -1,5 +1,4 @@
 'use client';
-import { useState } from 'react';
 import {
   Box,
   Container,
@@ -12,7 +11,6 @@ import { useColorModeValue } from '@/app/components/ui/color-mode';
 import { FaCheckCircle } from 'react-icons/fa';
 
 export default function PaymentSuccess() {
-  const [orderDetails, setOrderDetails] = useState(null);
   const bgColor = useColorModeValue('gray.50', 'gray.800');
   const cardBg = useColorModeValue('white', 'gray.700');
   const textColor = useColorModeValue('gray.600', 'gray.200');

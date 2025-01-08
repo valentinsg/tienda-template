@@ -8,7 +8,13 @@ const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://busy.com.ar';
 interface PaymentRequestBody {
   cartItems: CartItem[];
   totalPrice: number;
-  shippingAddress: any;
+  shippingAddress: {
+    street: string;
+    city: string;
+    state: string;
+    postalCode: string;
+    country: string;
+  };
   orderId: string; // ID de Supabase
 }
 
