@@ -52,7 +52,7 @@ const AboutUs = () => {
       </Heading>
 
       {/* Segunda sección */}
-      <Container maxW="65%" py={20}>
+      <Container maxW={{base: "100%", md:"65%"}} py={20}>
         <Grid
           templateColumns={{ base: '1fr', md: '2fr 3fr' }}
           gap={6}
@@ -68,10 +68,10 @@ const AboutUs = () => {
             />
           </Box>
           <VStack gap={10}>
-            <Heading textAlign={"end"} fontFamily={"Archivo Black"} as="h2" fontSize={{ base: "4xl", md: "5vw" }} letterSpacing={"tighter"} lineHeight={{ base: 1.2, md: "11vh" }} color={textColor}>
+            <Heading textAlign={{base: "center", md:"end"}}fontFamily={"Archivo Black"} as="h2" fontSize={{ base: "4xl", md: "5vw" }} letterSpacing={"tighter"} lineHeight={{ base: 1.2, md: "11vh" }} color={textColor}>
               Dos amigos, una visión.
             </Heading>
-            <Text textAlign={"end"} fontSize="xl" lineHeight={1.5}>
+            <Text textAlign={{base: "start", md:"end"}} fontSize="xl" lineHeight={1.5}>
               Busy nació de la conexión entre dos amigos que compartían una visión: crear algo más grande que ellos mismos. Pero no hubiéramos llegado acá si no fuera por la ayuda de nuestros amigos que dejaron su huella en el proyecto, con gestos grandes y pequeños.
               Busy no existiría sin las personas que trabajaron y creyeron en el proyecto. Desde amigos cercanos que pusieron sus manos en los detalles, hasta los que cebaron mate los días de rodaje, aportaron energía a la distancia o compraron. TODOS esas personas queremos que sepan que forman parte de esto.
             </Text>
@@ -84,7 +84,7 @@ const AboutUs = () => {
           mt={40}
         >
           {/* Texto principal */}
-          <VStack align="start" gap={10}>
+          <VStack align={{base: "center", md: "start"}} gap={10}>
             <Heading fontFamily={"Archivo Black"} as="h2" fontSize={{ base: "4xl", md: "5vw" }} letterSpacing={"tighter"} lineHeight={{ base: 1.2, md: "11vh" }} color={textColor}>
               Idea central
             </Heading>

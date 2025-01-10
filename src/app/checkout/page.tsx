@@ -22,6 +22,7 @@ import { LuBuilding2 } from "react-icons/lu"
 import { AndreaniBranch } from "../../types/checkout/shipping/AndreaniBranch"
 import { supabase } from '../supabase';
 import { useColorMode, useColorModeValue } from '../components/ui/color-mode';
+import { Province } from '@/types/checkout/shipping/Province';
 
 // Types
 interface PersonalInfo {
@@ -35,7 +36,7 @@ interface PersonalInfo {
 
 interface HomeShippingDetails {
   address: string;
-  province: string;
+  province: Province | string;
   postal_code: string;
   city: string;
 }
@@ -249,8 +250,8 @@ const Checkout: React.FC = () => {
           customer_email: personalInfo.email,
           customer_phone: personalInfo.phone,
           shipping_method: shippingMethod,
-          shipping_address: shippingMethod === 'home' 
-            ? homeShippingDetails 
+          shipping_address: shippingMethod === 'home'
+            ? homeShippingDetails
             : branchShippingDetails,
           cart_items: cartItems,
           payment_provider: 'mercadopago'
@@ -269,8 +270,8 @@ const Checkout: React.FC = () => {
         body: JSON.stringify({
           cartItems,
           totalPrice: calculateTotalPrice(),
-          shippingAddress: shippingMethod === 'home' 
-            ? homeShippingDetails 
+          shippingAddress: shippingMethod === 'home'
+            ? homeShippingDetails
             : branchShippingDetails,
           orderId: paymentRecord.id // Pasamos el ID de Supabase
         }),
@@ -283,7 +284,7 @@ const Checkout: React.FC = () => {
         // Actualizar el registro con el ID de transacción antes de redirigir
         await supabase
           .from('payment_records')
-          .update({ 
+          .update({
             transaction_id: data.external_reference,
             notes: 'Redirecting to payment gateway'
           })
@@ -309,13 +310,13 @@ const Checkout: React.FC = () => {
 
   return (
     <Box bg={colorMode === 'dark' ? 'gray.800' : 'bg.muted'} py={12} color={textColor} minH={"90vh"} w={"100%"} >
-      <Heading textAlign="center" fontFamily={"Archivo Black"} as="h1" fontSize={{ base: "4xl", md: "4vw" }} letterSpacing={"tighter"} lineHeight={{ base: 1.2, md: "11vh" }} color={textColor}>
+      <Heading textAlign="center" fontFamily={"Archivo Black"} as="h1" letterSpacing={"tighter"} lineHeight={{ base: 1.2, md: "11vh" }} color={textColor}>
         Checkout
       </Heading>
 
       <Stack justifyContent={"center"} direction={{ base: 'column', md: 'row' }} p={8} gap={10}>
         {/* Checkout Form */}
-        <Box w={"52%"} minH="80vh" >
+        <Box w={{ base: "100%", md: "52%" }} minH={{ base: "100vh", md: "80vh" }}>
 
           <Text fontSize="3xl" textAlign="left" m={4} fontFamily={"Archivo Black"} letterSpacing={"tighter"}>Datos Personales</Text>
 
@@ -506,9 +507,9 @@ const Checkout: React.FC = () => {
                         <SelectRoot
                           collection={provinces}
                           value={homeShippingDetails.province ? [homeShippingDetails.province] : []}
-                          onChange={(e) => setHomeShippingDetails({
+                          onValueChange={(details: { value: string[] }) => setHomeShippingDetails({
                             ...homeShippingDetails,
-                            province: (e.target as HTMLSelectElement).value
+                            province: details.value[0]
                           })}
                         >
                           <SelectTrigger>
@@ -633,7 +634,7 @@ const Checkout: React.FC = () => {
           </Fieldset.Root>
         </Box>
 
-        <Box w={"33%"} minH={"35vh"} maxH={"90vh"} h={"100%"} p={2} border="1px" borderColor={useColorModeValue('gray.300', 'gray.700')} borderRadius="md">
+        <Box w={{ base: "100%", md: "33%" }} minH={"35vh"} maxH={"90vh"} h={"100%"} p={2} border="1px" borderColor={useColorModeValue('gray.300', 'gray.700')} borderRadius="md">
           {/* Título principal */}
           <Text fontSize="3xl" textAlign="left" m={4} fontFamily={"Archivo Black"} letterSpacing={"tighter"}>
             Carrito de compras

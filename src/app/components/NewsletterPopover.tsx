@@ -17,7 +17,6 @@ import {
   Grid,
   GridItem,
   Image,
-  useBreakpointValue,
 } from "@chakra-ui/react";
 import { toast } from "react-toastify";
 import { useColorModeValue } from "../components/ui/color-mode";
@@ -116,8 +115,6 @@ export default function NewsletterDialog() {
     }
   };
 
-  const isMobile = useBreakpointValue({ base: true, md: false });
-
   if (!hasCheckedSubscription) {
     return null;
   }
@@ -135,7 +132,7 @@ export default function NewsletterDialog() {
           backgroundColor: inputBg,
         }}
       >
-        <Grid templateColumns={isMobile ? "1fr" : "1fr 1.2fr"} gap={8}>
+        <Grid templateColumns={{ base: "1fr", md: "1fr 1.2fr" }} gap={8}>
           <GridItem>
             <Box borderRadius="lg" overflow="hidden" position="relative">
               <Image src={lucas} alt="Lucas" />
@@ -187,6 +184,13 @@ export default function NewsletterDialog() {
                     <Text mt={2} fontSize="sm" color="green.700">
                       Te hemos enviado un email con el código y más información.
                     </Text>
+                    <Button
+                      mt={4}
+                      colorScheme="green"
+                      onClick={() => setIsOpen(false)}
+                    >
+                      Cerrar
+                    </Button>
                   </Box>
                 ) : (
                   <form onSubmit={handleSubmit}>

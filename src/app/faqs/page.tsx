@@ -196,7 +196,7 @@ const FAQs = () => {
 
   return (
     <Box bg={colorMode === 'dark' ? 'gray.800' : 'bg.muted'} py={12} color={textColor}>
-      <Container maxW="70%">
+      <Container maxW={{base: "100%", md:"70%"}}>
         {/* Primera sección */}
         <Heading textAlign="center" fontFamily={"Archivo Black"} as="h1" fontSize={{ base: "4xl", md: "4vw" }} letterSpacing={"tighter"} lineHeight={{ base: 1.2, md: "11vh" }} color={textColor}>
           Preguntas Frecuentes.
@@ -217,7 +217,7 @@ const FAQs = () => {
             <Box key={section.category} py={8} borderRadius="md">
               <Heading
                 as="h2"
-                fontSize="4xl"
+                fontSize={{base:"2xl", md:"4xl"}}
                 textAlign={"center"}
                 fontWeight={500}
                 py={4}
@@ -240,7 +240,7 @@ const FAQs = () => {
                         _expanded={{ bg: colorMode === 'dark' ? 'gray.600' : 'gray.200' }}
                         transition="background-color 0.2s ease"
                       >
-                        <Box textAlign="center" fontSize={"xl"} fontFamily={"Archivo Black"} fontWeight={500} letterSpacing={"tighter"} textTransform="uppercase">
+                        <Box textAlign="center" fontSize={{base:"lg", md:"xl"}} fontFamily={"Archivo Black"} fontWeight={500} letterSpacing={"tighter"} textTransform="uppercase">
                           {faq.question}
                         </Box>
                       </AccordionItemTrigger>
@@ -255,9 +255,10 @@ const FAQs = () => {
             </Box>
           ))}
         </VStack>
-        <Box textAlign="end" mt={12}>
+        <Box textAlign={{base: "center",md:"end"}} mt={12}>
           <Button
             size="lg"
+            fontWeight={600}
             colorPalette={"blue"}
             onClick={() => window.location.href = "/contact"}
           >
