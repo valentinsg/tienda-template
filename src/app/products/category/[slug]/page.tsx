@@ -1,18 +1,13 @@
 'use client';
-
-// External imports
 import { useRouter, useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
-
-// Internal imports
 import { useProducts } from '@/app/context/ProductContext';
 import ProductList from '@/app/components/ProductList';
 import { Product } from '@/types/Product';
+import { useColorModeValue,  useColorMode } from '@/app/components/ui/color-mode';
+import { Heading, Box } from '@chakra-ui/react';
 
-// Reusable Loading Component
 const Loading = () => <div>Loading...</div>;
-
-// Reusable Error Component
 const ErrorComponent = ({ message }: { message: string }) => <div>Error: {message}</div>;
 
 const CategoryPage = () => {
@@ -21,6 +16,8 @@ const CategoryPage = () => {
   const router = useRouter();
   const params = useParams();
   const slug = params.slug; // Slug actual desde la URL
+  const { colorMode } = useColorMode();
+  const textColor = useColorModeValue('#555454', '#D0D0D0');
 
   // Estado para almacenar los productos filtrados por categoría
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
@@ -55,10 +52,13 @@ const CategoryPage = () => {
   // Si no se encuentra la categoría, mostrar mensaje de error
   if (!currentCategory) return <div>Category not found</div>;
 
+
   return (
-    <div>
+    <Box bg={colorMode === 'dark' ? 'gray.800' : 'bg.muted'} py={12}  color={textColor}>
       {/* Nombre de la categoría */}
-      <h1>{currentCategory.name}</h1>
+      <Heading mb={10} textAlign="center" fontFamily={"Archivo Black"} as="h1" fontSize={{ base: "4xl", md: "4vw" }} letterSpacing={"tighter"} lineHeight={{ base: 1.2, md: "11vh" }} color={textColor}>
+        {currentCategory.name}
+      </Heading>
 
       {/* Lista de productos o mensaje si no hay productos */}
       {filteredProducts.length > 0 ? (
@@ -66,7 +66,7 @@ const CategoryPage = () => {
       ) : (
         <p>No hay productos disponibles en esta categoría.</p>
       )}
-    </div>
+    </Box>
   );
 };
 

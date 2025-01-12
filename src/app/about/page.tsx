@@ -131,7 +131,7 @@ const AboutUs = () => {
           <Box
             position="relative"
             width="100%"
-            height={{ base: "auto", md: "85vh" }}
+            height={{ base: "auto", md: "700px" }} // Set a fixed height
           >
             {slides.map((slide, index) => (
               <Box
@@ -143,12 +143,10 @@ const AboutUs = () => {
                 position={index === currentSlide ? "relative" : "absolute"}
                 width="100%"
                 height="100%"
-                transform={slide.id === 3 ? "translateY(-20px)" : "none"} // Ajuste para la tercera imagen
-              >
+              > 
                 <Image
                   borderRadius="lg"
                   src={slide.image}
-                  objectFit="cover" // Aseguramos consistencia en tamaño
                   width="100%"
                   height="100%"
                   alt={slide.alt}

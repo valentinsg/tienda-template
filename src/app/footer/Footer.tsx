@@ -18,7 +18,15 @@ export default function Footer() {
   const buttonColor = useColorModeValue('blue.500', 'blue.300');
 
   return (
-    <Flex bg={bgColor} flexDir="column" w="100%" p={8} shadow="md">
+    <Flex 
+      as={"footer"} 
+      bg={colorMode === 'dark' ? 'gray.800' : '#D0D0D0'} 
+      flexDir="column" 
+      w="100%" 
+      p={2} 
+      shadow="md"
+      zIndex="1000"
+    >
       {/* Sección de suscripción */}
       <Flex
         flexDir={{ base: "column", md: "row" }}
