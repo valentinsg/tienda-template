@@ -12,7 +12,6 @@ import { FaInstagram, FaTiktok } from 'react-icons/fa';
 
 export default function Footer() {
   const { colorMode } = useColorMode();
-  const bgColor = useColorModeValue("#D0D0D0", 'gray.800');
   const textColor = useColorModeValue('gray.700', '#D0D0D0');
   const hoverColor = useColorModeValue("gray.600", "gray.400");
   const buttonColor = useColorModeValue('blue.500', 'blue.300');
