@@ -159,7 +159,13 @@ const CartDialog = () => {
             <VStack gap='10' py='20' align='center'>
               <MotionBox userSelect={"none"} initial={{ scale: .5 }} animate={{ scale: 1 }} fontSize='7xl' >🛒</MotionBox>
               <Text color={theme.mutedText} mt={4} fontSize={"md"}>Tú BusyCarrito está vacío, ocúpate de él</Text>
-              <DialogCloseTrigger asChild><Button colorPalette={"blue"} size='lg' p={4}>Empezá a comprar</Button></DialogCloseTrigger>
+              <DialogCloseTrigger asChild>
+                <Link href='/products' passHref>
+                  <Button colorPalette={"blue"} size='lg' p={4} onClick={() => setIsDialogOpen(false)}>
+                    Empezá a comprar
+                  </Button>
+                </Link>
+              </DialogCloseTrigger>
             </VStack>
           ) : (
             <VStack gap='10'>

@@ -1,39 +1,37 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import Link from 'next/link';
 import { useProducts } from '../context/ProductContext';
 import {
   Box,
   Flex,
   Text,
-  IconButton,
+  VStack,
+  HStack,
   Button,
-  Stack,
 } from '@chakra-ui/react';
 import {
-  MenuContent,
-  MenuItem,
-  MenuRoot,
-} from "../components/ui/menu"
-import { Sun, Moon, ChevronDown } from 'lucide-react';
+  DrawerContent,
+  DrawerHeader,
+  DrawerRoot,
+  DrawerTrigger,
+} from "../components/ui/drawer";
+import { Sun, Moon, Menu, X, Heading } from 'lucide-react';
 import { useColorMode, useColorModeValue } from '../components/ui/color-mode';
 import BusyDarkMode from '../../../public/busy-logo-dark-mode.png';
 import BusyLightMode from '../../../public/busy-logo-light-mode.png';
 import Image from 'next/image';
 import CartDialog from '../components/CartDialog';
 import { usePathname } from 'next/navigation';
-import { FaFolderMinus, FaHamburger } from 'react-icons/fa';
 
 const Header = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const { categories } = useProducts();
   const { colorMode, toggleColorMode } = useColorMode();
   const pathname = usePathname();
+
   const activeColor = useColorModeValue('#000000', '#FFFFFF');
   const inactiveColor = useColorModeValue('#555454', "#D0D0D0");
-  const textColor = useColorModeValue('#555454', "#D0D0D0");
 
   const isActive = (path: string) => {
     if (path === '/') {
@@ -44,51 +42,111 @@ const Header = () => {
 
   const navigation = [
     { name: 'Casita', href: '/' },
-    {
-      name: 'Productos',
-      href: '/products',
-      hasDropdown: true,
-      dropdownContent: (
-        <Box
-          position="absolute"
-          top="100%"
-          bg={colorMode === 'dark' ? 'gray.700' : 'white'}
-          borderRadius="md"
-          boxShadow="lg"
-          minW="200px"
-          zIndex={1000}
-        >
-          {categories.map((category, index) => (
-            <Link
-              key={index}
-              href={`/products/category/${category.slug}`}
-              passHref
-            >
-              <Text
-                p={3}
-                color={textColor}
-                _hover={{
-                  bg: colorMode === 'dark' ? 'gray.600' : 'gray.100'
-                }}
-                cursor="pointer"
-              >
-                {category.name}
-              </Text>
-            </Link>
-          ))}
-        </Box>
-      )
-    },
+    { name: 'Productos', href: '/products' },
     { name: 'Sobre nosotros', href: '/about' },
     { name: 'Contacto', href: '/contact' },
     { name: "FAQ's", href: '/faqs' },
   ];
 
+  const MobileNav = () => (
+    <DrawerRoot>
+      <DrawerTrigger asChild>
+        <Button
+          aria-label="Open Menu"
+          variant="ghost"
+          colorScheme="gray"
+
+        >
+          <Menu size={24} />
+        </Button>
+      </DrawerTrigger>
+      <DrawerContent className="w-[300px] sm:w-[400px]">
+        <DrawerHeader>
+            <Image
+              src={colorMode === 'dark' ? BusyDarkMode : BusyLightMode}
+              alt="Busy logo"
+              width={150}
+              height={150}
+            />
+        </DrawerHeader>
+        <VStack align="stretch" gap={4} mt={6}>
+          {navigation.map((item) => (
+            <Link key={item.name} href={item.href} passHref>
+              <Text
+                px={4}
+                py={2}
+                fontSize="lg"
+                fontWeight={isActive(item.href) ? "bold" : "normal"}
+                color={isActive(item.href) ? activeColor : inactiveColor}
+                _hover={{ bg: useColorModeValue('gray.100', 'gray.700') }}
+                borderRadius="md"
+              >
+                {item.name}
+              </Text>
+            </Link>
+          ))}
+
+          <Box my={2}  />
+
+          <Text px={4} color={inactiveColor} fontWeight="medium" fontSize="sm">
+            Categorías
+          </Text>
+          {categories.map((category) => (
+            <Link
+              key={category.slug}
+              href={`/products/category/${category.slug}`}
+              passHref
+            >
+              <Text
+                px={4}
+                py={2}
+                fontSize="md"
+                color={inactiveColor}
+                _hover={{ bg: useColorModeValue('gray.100', 'gray.700') }}
+                borderRadius="md"
+              >
+                {category.name}
+              </Text>
+            </Link>
+          ))}
+
+          <Box my={2} />
+
+          <HStack px={4} justify="space-between">
+            <Button
+              aria-label="Toggle theme"
+              onClick={toggleColorMode}
+              variant="ghost"
+              colorScheme="gray"
+            >
+              {colorMode === 'dark' ? <Sun /> : <Moon />}
+            </Button>
+            <CartDialog />
+          </HStack>
+        </VStack>
+      </DrawerContent>
+    </DrawerRoot>
+  );
+
   return (
-    <Box as="nav" bg={colorMode === 'dark' ? 'gray.800' : '#D0D0D0'} shadow="md" w="100%" p={2} position="sticky" top="0" zIndex="1000">
+    <Box
+      as="nav"
+      bg={colorMode === 'dark' ? 'gray.800' : '#D0D0D0'}
+      shadow="md"
+      w="100%"
+      p={2}
+      position="sticky"
+      top="0"
+      zIndex="1000"
+    >
       <Flex align="center" justify="space-between">
+        {/* Mobile Menu */}
+        <Box display={{ base: 'block', md: 'none' }}>
+          <MobileNav />
+        </Box>
+
         {/* Logo */}
-        <Box ml={"2vw"}>
+        <Box ml={{ base: 0, md: "2vw" }}>
           <Link href="/" passHref>
             <Image
               src={colorMode === 'dark' ? BusyDarkMode : BusyLightMode}
@@ -101,82 +159,39 @@ const Header = () => {
 
         {/* Desktop Menu */}
         <Flex display={{ base: 'none', md: 'flex' }} align="center">
-          <Flex mr={"5vw"} alignItems={"center"}>
+          <Flex mr="5vw" alignItems="center">
             {navigation.map((item) => (
-              <Box
-                key={item.name}
-                position="relative"
-                onMouseEnter={() => item.hasDropdown && setIsDropdownOpen(true)}
-                onMouseLeave={() => item.hasDropdown && setIsDropdownOpen(false)}
-              >
-                <Link href={item.href} passHref>
-                  <Flex
-                    align="center"
-                    color={isActive(item.href) ? activeColor : inactiveColor}
-                    cursor="pointer"
-                    mx={4}
-                    fontWeight={isActive(item.href) ? "bold" : "normal"}
-                  >
-                    {item.name}
-                    {item.hasDropdown && <ChevronDown />}
-                  </Flex>
-                </Link>
-                {item.hasDropdown && isDropdownOpen && item.dropdownContent}
-              </Box>
+              <Link key={item.name} href={item.href} passHref>
+                <Text
+                  color={isActive(item.href) ? activeColor : inactiveColor}
+                  cursor="pointer"
+                  mx={4}
+                  fontWeight={isActive(item.href) ? "bold" : "normal"}
+                >
+                  {item.name}
+                </Text>
+              </Link>
             ))}
           </Flex>
-          {pathname !== '/checkout' && <CartDialog />}
 
-          <Box mr={"5vw"} display={"flex"} flexDir={"row"}>
-            {/* Right Side Icons */}
-            <IconButton
+          <HStack gap={4} mr="5vw">
+            {pathname !== '/checkout' && <CartDialog />}
+            <Button
               aria-label="Toggle theme"
               onClick={toggleColorMode}
               variant="ghost"
-              mx={2}
               colorScheme="gray"
             >
               {colorMode === 'dark' ? <Sun /> : <Moon />}
-            </IconButton>
-          </Box>
+            </Button>
+          </HStack>
         </Flex>
 
-        {/* Mobile Menu Button */}
-        <Box display={{ base: 'flex', md: 'none' }} alignSelf="center" zIndex={10000}>
-          <IconButton
-            onClick={() => setIsOpen(!isOpen)}
-            aria-label="Open Menu"
-            variant="ghost"
-            colorScheme="gray"
-          >
-            {isOpen ? <FaFolderMinus /> : <FaHamburger />}
-          </IconButton>
+        {/* Mobile Cart (when not in desktop view) */}
+        <Box display={{ base: 'block', md: 'none' }}>
+          {pathname !== '/checkout' && <CartDialog />}
         </Box>
       </Flex>
-
-      {/* Mobile Menu */}
-      {isOpen && (
-        <Stack display={{ base: "flex", md: 'none' }} gap={4} mt={4}  w={"100%"} zIndex={10000}>
-          <MenuRoot >
-            <MenuContent>
-              {categories.map((category, index) => (
-                <MenuItem key={index} value={category.name}>
-                  <Link href={`/products/${category.name}`} passHref>
-                    <Text fontSize={"xl"}>{category.name}</Text>
-                  </Link>
-                </MenuItem>
-              ))}
-            </MenuContent>
-          </MenuRoot>
-          {navigation.map((item) => (
-            <Link key={item.name} href={item.href} passHref>
-              <Button variant="ghost" colorScheme="gray" fontSize={"xl"}>
-                {item.name}
-              </Button>
-            </Link>
-          ))}
-        </Stack>
-      )}
     </Box>
   );
 };
