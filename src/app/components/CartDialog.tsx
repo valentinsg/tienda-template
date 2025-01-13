@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { decrementItem, incrementItem, clearCart } from '../store/slices/cartSlice';
+import { decrementItem, incrementItem, clearCart, setCheckoutAllowed } from '../store/slices/cartSlice';
 import Link from 'next/link';
 import {
   Box,
@@ -178,6 +178,7 @@ const CartDialog = () => {
                     passHref
                     style={{ width: '100%' }}
                     onClick={() => {
+                      dispatch(setCheckoutAllowed(true));
                       setIsDialogOpen(false);
                     }}
                   >
