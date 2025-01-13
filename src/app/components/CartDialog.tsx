@@ -51,7 +51,7 @@ const CartDialog = () => {
   // #region Hooks & State
   const dispatch = useDispatch();
   const cartItems = useSelector((state: { cart: { items: CartItem[] } }) => state.cart.items);
-  
+
   // #endregion
 
   // #region Theme
@@ -66,21 +66,21 @@ const CartDialog = () => {
       filled: useColorModeValue('#555454', '#D0D0D0'),
     }
   };
-  
+
   // #endregion
 
   // #region Calculations
   const totalAmount = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
   const shippingProgress = Math.min((totalAmount / FREE_SHIPPING_THRESHOLD) * 100, 100);
   const freeShippingQualified = totalAmount >= FREE_SHIPPING_THRESHOLD;
-  
+
   // #endregion
 
   // #region Handlers
   const handleDecrement = (id: string) => dispatch(decrementItem(id));
   const handleIncrement = (id: string) => dispatch(incrementItem(id));
   const handleClearCart = () => dispatch(clearCart());
-  
+
   // #endregion
 
   // #region Render Helpers
@@ -138,54 +138,57 @@ const CartDialog = () => {
     </MotionFlex>
   );
 
- // #endregion
+  // #endregion
 
- return (
-   <DialogRoot size='lg' >
-     <DialogTrigger asChild>{renderCartIcon()}</DialogTrigger>
-     <DialogContent >
-       <DialogHeader>
-         <Flex justify='space-between' align='center' w='100%' pb='4' borderBottom='1px' borderColor={theme.border}>
-           <DialogTitle> 
-             <Text fontSize='3xl' letterSpacing={"tighter"} fontFamily={"Archivo Black"} color={theme.text}>Tú Carrito</Text>
-           </DialogTitle>
-           <DialogCloseTrigger asChild><CloseButton size='lg'/></DialogCloseTrigger>
-         </Flex>
-       </DialogHeader>
+  return (
+    <DialogRoot size='lg' >
+      <DialogTrigger asChild>{renderCartIcon()}</DialogTrigger>
+      <DialogContent >
+        <DialogHeader>
+          <Flex justify='space-between' align='center' w='100%' pb='4' borderBottom='1px' borderColor={theme.border}>
+            <DialogTitle>
+              <Text fontSize='2xl' letterSpacing={"tighter"} fontFamily={"Archivo Black"} color={theme.text}>Tú Carrito</Text>
+            </DialogTitle>
+            <DialogCloseTrigger asChild><CloseButton size='xl' /></DialogCloseTrigger>
+          </Flex>
+        </DialogHeader>
 
-       <DialogBody >
-         {cartItems.length === 0 ? (
-           <VStack gap='10' py='20' align='center'>
-             <MotionBox userSelect={"none"} initial={{ scale: .5 }} animate={{ scale:1 }} fontSize='7xl' >🛒</MotionBox>
-             <Text color={theme.mutedText} mt={4} fontSize={"md"}>Tú BusyCarrito está vacío, ocúpate de él</Text>
-             <DialogCloseTrigger asChild><Button colorPalette={"blue"} size='lg' p={4}>Empezá a comprar</Button></DialogCloseTrigger>
-           </VStack>
-         ) : (
-           <VStack gap='10'>
-             {renderShippingProgress()}
-             {cartItems.map(renderCartItem)}
-             <Box w='100%' pt='6' borderTop='1px' borderColor={theme.border}>
-               <Flex justify='space-between' align='center' mb='6'>
-                 <Text fontSize='xl' color={theme.text}>Total</Text>
-                 <Text fontSize='2xl' fontWeight='bold' color={theme.text}>${totalAmount.toLocaleString()}</Text>
-               </Flex>
+        <DialogBody >
+          {cartItems.length === 0 ? (
+            <VStack gap='10' py='20' align='center'>
+              <MotionBox userSelect={"none"} initial={{ scale: .5 }} animate={{ scale: 1 }} fontSize='7xl' >🛒</MotionBox>
+              <Text color={theme.mutedText} mt={4} fontSize={"md"}>Tú BusyCarrito está vacío, ocúpate de él</Text>
+              <DialogCloseTrigger asChild><Button colorPalette={"blue"} size='lg' p={4}>Empezá a comprar</Button></DialogCloseTrigger>
+            </VStack>
+          ) : (
+            <VStack gap='10'>
+              {renderShippingProgress()}
+              {cartItems.map(renderCartItem)}
+              <Box w='100%' pt='6' borderTop='1px' borderColor={theme.border}>
+                <Flex justify='space-between' align='center' mb='6'>
+                  <Text fontSize='xl' color={theme.text}>Total</Text>
+                  <Text fontSize='2xl' fontWeight='bold' color={theme.text}>${totalAmount.toLocaleString()}</Text>
+                </Flex>
 
-               <VStack gap='4'>
-                 <Link href='/checkout' passHref style={{ width:'100%' }}>
-                   <Button w='100%' colorPalette={"blue"} size='lg' h='16' fontSize='lg' _hover={{ opacity:.9 }}>Ir a pagar</Button>
-                 </Link>
+                <VStack gap='4'>
+                  
+                  <DialogCloseTrigger asChild>
+                    <Link href='/checkout' passHref>
+                      <Button minW='100%' colorPalette={"blue"} >Ir a pagar</Button>
+                    </Link>
+                  </DialogCloseTrigger>
 
-                 <HStack w='100%' gap='4'>
-                   <Button variant='outline' colorScheme='red' onClick={handleClearCart} flex='1'>Limpiar carrito</Button>
-                 </HStack>
-               </VStack>
-             </Box>
-           </VStack>
-         )}
-       </DialogBody>
-     </DialogContent>
-   </DialogRoot>
- );
+                  <HStack w='100%' gap='4'>
+                    <Button variant='outline' colorPalette="red" onClick={handleClearCart} flex='1'>Limpiar carrito</Button>
+                  </HStack>
+                </VStack>
+              </Box>
+            </VStack>
+          )}
+        </DialogBody>
+      </DialogContent>
+    </DialogRoot>
+  );
 };
 
 export default CartDialog;
