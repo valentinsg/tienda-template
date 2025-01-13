@@ -125,7 +125,7 @@ const Header = () => {
               </Box>
             ))}
           </Flex>
-          <CartDialog />
+          {pathname !== '/checkout' && <CartDialog />}
 
           <Box mr={"5vw"} display={"flex"} flexDir={"row"}>
             {/* Right Side Icons */}

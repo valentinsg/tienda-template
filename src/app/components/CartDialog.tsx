@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { decrementItem, incrementItem, clearCart } from '../store/slices/cartSlice';
 import Link from 'next/link';
@@ -51,6 +51,7 @@ const CartDialog = () => {
   // #region Hooks & State
   const dispatch = useDispatch();
   const cartItems = useSelector((state: { cart: { items: CartItem[] } }) => state.cart.items);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   // #endregion
 
@@ -141,7 +142,7 @@ const CartDialog = () => {
   // #endregion
 
   return (
-    <DialogRoot size='lg' >
+    <DialogRoot open={isDialogOpen} onOpenChange={(details) => setIsDialogOpen(details.open)} size={'lg'}>
       <DialogTrigger asChild>{renderCartIcon()}</DialogTrigger>
       <DialogContent >
         <DialogHeader>
@@ -171,12 +172,19 @@ const CartDialog = () => {
                 </Flex>
 
                 <VStack gap='4'>
-                  
-                  <DialogCloseTrigger asChild>
-                    <Link href='/checkout' passHref>
-                      <Button minW='100%' colorPalette={"blue"} >Ir a pagar</Button>
-                    </Link>
-                  </DialogCloseTrigger>
+
+                  <Link
+                    href='/checkout'
+                    passHref
+                    style={{ width: '100%' }}
+                    onClick={() => {
+                      setIsDialogOpen(false);
+                    }}
+                  >
+                    <Button w='100%' colorPalette={"blue"} size='lg' h='16' fontSize='lg' _hover={{ opacity: .9 }}>
+                      Ir a pagar
+                    </Button>
+                  </Link>
 
                   <HStack w='100%' gap='4'>
                     <Button variant='outline' colorPalette="red" onClick={handleClearCart} flex='1'>Limpiar carrito</Button>

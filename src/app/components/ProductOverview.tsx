@@ -251,7 +251,7 @@ const ProductOverview: React.FC<ProductOverviewProps> = ({
             </Box>
 
             <Button
-              colorScheme={isSizeSelected && remainingStock > 0 ? 'blue' : 'gray'}
+              colorPalette={isSizeSelected && remainingStock > 0 ? 'blue' : 'gray'}
               width="100%"
               disabled={!isSizeSelected || remainingStock <= 0 || isLoading}
               onClick={handleAddToCart}
