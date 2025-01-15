@@ -1,6 +1,22 @@
+import { CartItem } from "@/types/CartItem";
+import { CheckoutData } from "@/types/checkout/CheckoutData";
+
+type FbqParameter = 
+  | ['track', string, object?]
+  | ['init', string];
+
+type FbqQueueItem = {
+  arguments: FbqParameter;
+};
+
 declare global {
   interface Window {
-    fbq: any;
+    fbq: {
+      (...args: FbqParameter): void;
+      callMethod?: (...args: FbqParameter) => void;
+      queue?: FbqQueueItem[];
+    };
+    _fbq?: Window['fbq'];
   }
 }
 
@@ -14,31 +30,31 @@ export const pageview = () => {
 
 // Eventos estándar de ecommerce
 export const events = {
-  addToCart: (data: any) => {
+  addToCart: (item: CartItem) => {
     window.fbq('track', 'AddToCart', {
-      content_ids: [data.id],
-      content_name: data.name,
+      content_ids: [item.id],
+      content_name: item.name,
       content_type: 'product',
-      value: data.price,
-      currency: 'ARS'
-    })
+      value: item.price,
+      currency: 'ARS',
+    });
   },
   initiateCheckout: (value: number) => {
     window.fbq('track', 'InitiateCheckout', {
       value: value,
-      currency: 'ARS'
-    })
-  },
-  purchase: (orderData: any) => {
-    window.fbq('track', 'Purchase', {
-      value: orderData.value,
       currency: 'ARS',
-      content_ids: orderData.products.map((p: any) => p.id),
+    });
+  },
+  purchase: (orderData: CheckoutData) => {
+    window.fbq('track', 'Purchase', {
+      value: orderData.products.reduce((acc, item) => acc + item.price * item.quantity, 0),
+      currency: 'ARS',
+      content_ids: orderData.products.map((item) => item.id),
       content_type: 'product',
-      num_items: orderData.products.length
-    })
-  }
-}
+      num_items: orderData.products.reduce((acc, item) => acc + item.quantity, 0),
+    });
+  },
+};
 
 // Script de inicialización
 export const pixelInitScript = `

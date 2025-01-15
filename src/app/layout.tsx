@@ -11,6 +11,7 @@ import "./styles/globals.css";
 import { Toaster } from 'react-hot-toast';
 import NewsletterPopover from "./components/NewsletterPopover";
 import { FB_PIXEL_ID, pixelInitScript } from './utils/pixel'
+import Image from 'next/image';
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -88,7 +89,7 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: pixelInitScript }}
         />
         <noscript>
-          <img
+          <Image
             height="1"
             width="1"
             style={{ display: 'none' }}

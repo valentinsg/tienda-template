@@ -1,4 +1,5 @@
 // Importaciones necesarias de Redux Toolkit
+import { events } from '@/app/utils/pixel';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 // Add the cart property type to AppState
@@ -40,16 +41,19 @@ const cartSlice = createSlice({
     
     addItem: (state, action: PayloadAction<CartItem>) => {
       const existingItem = state.items.find(item => item.id === action.payload.id);
-      
+    
       if (existingItem) {
         existingItem.quantity += action.payload.quantity;
       } else {
         state.items.push(action.payload);
       }
-      
+    
       // Actualizar totales
       state.totalPrice = state.items.reduce((acc, item) => acc + item.price * item.quantity, 0);
       state.totalItems = state.items.reduce((acc, item) => acc + item.quantity, 0);
+    
+      // Disparar el evento del Pixel
+      events.addToCart(action.payload);
     },
     
     incrementItem: (state, action: PayloadAction<string>) => {
