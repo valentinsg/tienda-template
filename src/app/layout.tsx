@@ -10,6 +10,7 @@ import Footer from "./footer/Footer";
 import "./styles/globals.css";
 import { Toaster } from 'react-hot-toast';
 import NewsletterPopover from "./components/NewsletterPopover";
+import { FB_PIXEL_ID, pixelInitScript } from './utils/pixel'
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -81,6 +82,20 @@ export default function RootLayout({
             })
           }}
         />
+        <Script
+          id="fb-pixel"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{ __html: pixelInitScript }}
+        />
+        <noscript>
+          <img
+            height="1"
+            width="1"
+            style={{ display: 'none' }}
+            src={`https://www.facebook.com/tr?id=${FB_PIXEL_ID}&ev=PageView&noscript=1`}
+            alt=""
+          />
+        </noscript>
         <link rel="canonical" href="https://busy.com.ar" />
         <meta name="geo.region" content="AR" />
         <meta name="geo.placename" content="Argentina" />

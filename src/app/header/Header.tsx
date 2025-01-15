@@ -17,7 +17,7 @@ import {
   DrawerRoot,
   DrawerTrigger,
 } from "../components/ui/drawer";
-import { Sun, Moon, Menu, X, Heading } from 'lucide-react';
+import { Sun, Moon, Menu, } from 'lucide-react';
 import { useColorMode, useColorModeValue } from '../components/ui/color-mode';
 import BusyDarkMode from '../../../public/busy-logo-dark-mode.png';
 import BusyLightMode from '../../../public/busy-logo-light-mode.png';
@@ -78,7 +78,6 @@ const Header = () => {
                 fontSize="lg"
                 fontWeight={isActive(item.href) ? "bold" : "normal"}
                 color={isActive(item.href) ? activeColor : inactiveColor}
-                _hover={{ bg: useColorModeValue('gray.100', 'gray.700') }}
                 borderRadius="md"
               >
                 {item.name}
@@ -102,7 +101,6 @@ const Header = () => {
                 py={2}
                 fontSize="md"
                 color={inactiveColor}
-                _hover={{ bg: useColorModeValue('gray.100', 'gray.700') }}
                 borderRadius="md"
               >
                 {category.name}

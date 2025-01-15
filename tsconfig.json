@@ -27,7 +27,7 @@
         "./src/*"
       ],
       "@/utils/*": [
-        "./src/utils/*"
+        "./src/app/utils/*"
       ],
       "@/types/*": [
         "./src/types/*"
