@@ -1,6 +1,6 @@
 'use client';
 import { useRouter } from 'next/navigation';
-import ProductList from './components/ProductList';
+import {ProductList} from './components/ProductList';
 import { useProducts } from './context/ProductContext';
 import { Product } from '../types/Product';
 import { Box, Flex, Heading, Spinner } from '@chakra-ui/react';
@@ -22,7 +22,7 @@ export default function Home() {
 
   if (isLoading) return (
     <Box bg={colorMode === 'dark' ? 'gray.800' : 'bg.muted'} w={"100%"} h={"1000px"} display={"flex"} justifyContent={"center"} alignItems={"center"} >
-      <Spinner size="xl" />
+      <Spinner size="xl" color={colorMode === 'dark' ? 'gray.300' : 'bg.800'} />
     </Box>
   );
   if (error) return (

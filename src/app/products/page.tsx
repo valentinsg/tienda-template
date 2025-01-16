@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Product } from '../../types/Product';
-import ProductList from '../components/ProductList';
+import {ProductList} from '../components/ProductList';
 import { useProducts } from '../context/ProductContext';
 import { Box, Heading,} from '@chakra-ui/react';
 import { useColorMode, useColorModeValue } from '../components/ui/color-mode';
