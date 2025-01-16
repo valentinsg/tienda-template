@@ -11,13 +11,14 @@ import {
   HStack,
   Button,
 } from '@chakra-ui/react';
+import {MenuRoot, MenuContent, MenuTrigger, MenuItem} from '../components/ui/menu';
 import {
   DrawerContent,
   DrawerHeader,
   DrawerRoot,
   DrawerTrigger,
 } from "../components/ui/drawer";
-import { Sun, Moon, Menu, } from 'lucide-react';
+import { Sun, Moon, Menu as MenuIcon, ChevronDown } from 'lucide-react';
 import { useColorMode, useColorModeValue } from '../components/ui/color-mode';
 import BusyDarkMode from '../../../public/busy-logo-dark-mode.png';
 import BusyLightMode from '../../../public/busy-logo-light-mode.png';
@@ -42,7 +43,7 @@ const Header = () => {
 
   const navigation = [
     { name: 'Casita', href: '/' },
-    { name: 'Productos', href: '/products' },
+    { name: 'Productos', href: '/products', hasDropdown: true },
     { name: 'Sobre nosotros', href: '/about' },
     { name: 'Contacto', href: '/contact' },
     { name: "FAQ's", href: '/faqs' },
@@ -55,19 +56,18 @@ const Header = () => {
           aria-label="Open Menu"
           variant="ghost"
           colorScheme="gray"
-
         >
-          <Menu size={24} />
+          <MenuIcon size={24} />
         </Button>
       </DrawerTrigger>
       <DrawerContent className="w-[300px] sm:w-[400px]">
         <DrawerHeader>
-            <Image
-              src={colorMode === 'dark' ? BusyDarkMode : BusyLightMode}
-              alt="Busy logo"
-              width={150}
-              height={150}
-            />
+          <Image
+            src={colorMode === 'dark' ? BusyDarkMode : BusyLightMode}
+            alt="Busy logo"
+            width={150}
+            height={150}
+          />
         </DrawerHeader>
         <VStack align="stretch" gap={4} mt={6}>
           {navigation.map((item) => (
@@ -85,7 +85,7 @@ const Header = () => {
             </Link>
           ))}
 
-          <Box my={2}  />
+          <Box my={2} />
 
           <Text px={4} color={inactiveColor} fontWeight="medium" fontSize="sm">
             Categorías
@@ -159,16 +159,54 @@ const Header = () => {
         <Flex display={{ base: 'none', md: 'flex' }} align="center">
           <Flex mr="5vw" alignItems="center">
             {navigation.map((item) => (
-              <Link key={item.name} href={item.href} passHref>
-                <Text
-                  color={isActive(item.href) ? activeColor : inactiveColor}
-                  cursor="pointer"
-                  mx={4}
-                  fontWeight={isActive(item.href) ? "bold" : "normal"}
-                >
-                  {item.name}
-                </Text>
-              </Link>
+              <Box key={item.name} mx={4}>
+                {item.hasDropdown ? (
+                  <MenuRoot>
+                    <MenuTrigger asChild>
+                      <Flex
+                        align="center"
+                        cursor="pointer"
+                        color={isActive(item.href) ? activeColor : inactiveColor}
+                        fontWeight={isActive(item.href) ? "bold" : "normal"}
+                      >
+                        <Text>{item.name}</Text>
+                        <ChevronDown className="ml-1" size={16} />
+                      </Flex>
+                    </MenuTrigger>
+                    <MenuContent>
+                      <Link href="/products" passHref>
+                        <MenuItem value="all-products" className="hover:bg-accent">
+                          Todos los productos
+                        </MenuItem>
+                      </Link>
+                      {categories.map((category) => (
+                        <Link
+                          key={category.slug}
+                          href={`/products/category/${category.slug}`}
+                          passHref
+                        >
+                          <MenuItem 
+                            value={category.slug}
+                            className="hover:bg-accent"
+                          >
+                            {category.name}
+                          </MenuItem>
+                        </Link>
+                      ))}
+                    </MenuContent>
+                  </MenuRoot>
+                ) : (
+                  <Link href={item.href} passHref>
+                    <Text
+                      color={isActive(item.href) ? activeColor : inactiveColor}
+                      cursor="pointer"
+                      fontWeight={isActive(item.href) ? "bold" : "normal"}
+                    >
+                      {item.name}
+                    </Text>
+                  </Link>
+                )}
+              </Box>
             ))}
           </Flex>
 
