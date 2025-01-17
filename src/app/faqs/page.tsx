@@ -257,7 +257,7 @@ const FAQs = () => {
         </VStack>
         <Box textAlign={{base: "center",md:"end"}} mt={12}>
           <Button
-            size="lg"
+            size={{base: "md", md:"lg"}}
             fontWeight={600}
             colorPalette={"blue"}
             onClick={() => window.location.href = "/contact"}

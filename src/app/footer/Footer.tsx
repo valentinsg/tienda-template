@@ -103,7 +103,7 @@ export default function Footer() {
         color={textColor}
         px={8}
       >
-        <Text fontSize="lg" fontWeight={600} textAlign={{ base: "center", md: "left" }}>
+        <Text display={{base: "none", md: "block"}} fontSize="lg" fontWeight={600} textAlign={{ base: "center", md: "left" }}>
           Busy es un estilo de vida para quienes ocupan su tiempo en lo que realmente importa.
         </Text>
         <HStack gap={6} mt={{ base: 8, md: 0 }}>

@@ -5,21 +5,23 @@ import {
   Image,
   Text,
   Button,
-  Stack,
   Badge,
   HStack,
-  createListCollection,
+  IconButton,
 } from '@chakra-ui/react';
-import { Tooltip } from './ui/tooltip';
+import { useColorMode } from '../components/ui/color-mode';
+import { MenuRoot, MenuTrigger, MenuContent, MenuItem } from '../components/ui/menu';
+import { ChevronDownIcon, ChevronUpIcon, ChevronLeftIcon, ChevronRightIcon } from '@chakra-ui/icons';
 import { useDispatch, useSelector } from 'react-redux';
-import { useColorMode } from './ui/color-mode';
-import { keyframes } from '@emotion/react';
 import { addItem } from '../store/slices/cartSlice';
 import type { Product } from '../../types/Product';
-import { SelectContent, SelectItem, SelectRoot, SelectTrigger, SelectValueText } from './ui/select';
 import Link from 'next/link';
+import { motion } from 'framer-motion';
 
-// Define types for Redux state
+// Wrap chakra components with motion
+const MotionVStack = motion(VStack);
+const MotionBox = motion(Box);
+
 interface CartItem {
   id: string;
   quantity: number;
@@ -42,13 +44,6 @@ interface ProductContainerProps {
   categoryNames?: Record<string, string>;
 }
 
-// Animation keyframes
-const fadeIn = keyframes`
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
-`;
-
-
 export const ProductContainer: React.FC<ProductContainerProps> = ({
   product,
   onSelect,
@@ -57,9 +52,9 @@ export const ProductContainer: React.FC<ProductContainerProps> = ({
   const dispatch = useDispatch();
   const { colorMode } = useColorMode();
   const cartItems = useSelector((state: RootState) => state.cart.items);
-  const [selectedSize, setSelectedSize] = useState<string[] | null>(null);
   const [showSizes, setShowSizes] = useState(false);
   const [isAdding, setIsAdding] = useState(false);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   const handleAddToCart = (size: string) => {
     if (product.stock[size]?.stock > 0) {
@@ -76,14 +71,35 @@ export const ProductContainer: React.FC<ProductContainerProps> = ({
       setTimeout(() => {
         setIsAdding(false);
         setShowSizes(false);
-        setSelectedSize(null);
       }, 500);
     }
   };
 
+  const handleProductClick = (e: React.MouseEvent) => {
+    if (!(e.target as HTMLElement).closest('.size-selector')) {
+      onSelect(product);
+    }
+  };
+
+  const nextImage = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (product.images && product.images.length > 0) {
+      setCurrentImageIndex((prev) => (prev + 1) % product.images.length);
+    }
+  };
+
+  const prevImage = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (product.images && product.images.length > 0) {
+      setCurrentImageIndex((prev) => (prev - 1 + product.images.length) % product.images.length);
+    }
+  };
+
   return (
-    <VStack
-      animation={`${fadeIn} 0.5s ease-out`}
+    <MotionVStack
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6 }}
       gap={4}
       p={6}
       bg={colorMode === 'dark' ? 'gray.800' : 'white'}
@@ -93,191 +109,217 @@ export const ProductContainer: React.FC<ProductContainerProps> = ({
         boxShadow: '2xl',
         transform: 'translateY(-4px)',
       }}
-      transition="all 0.3s ease-in-out"
       position="relative"
       overflow="hidden"
-      role="group"
+      onClick={handleProductClick}
+      minW="300px"
+      maxW="400px"
+      w="full"
     >
+      {/* Category Badge */}
       <Link href={`/category/${product.category}`} passHref>
         <Badge
           as="a"
           position="absolute"
           top={4}
           right={4}
-          colorScheme="blue"
-          zIndex={1}
+          colorPalette="blue"
           px={3}
           py={1}
           borderRadius="full"
           cursor="pointer"
-          transition="all 0.2s"
-          _hover={{
-            transform: 'scale(1.05)',
-            bg: colorMode === 'dark' ? 'blue.500' : 'blue.600',
-          }}
+          zIndex={2}
+          _hover={{ transform: 'scale(1.05)' }}
         >
           {categoryNames[product.category] || product.category}
         </Badge>
       </Link>
 
-      <Box
+      {/* Product Image */}
+      <MotionBox
         w="full"
-        h="350px"
-        overflow="hidden"
-        borderRadius="xl"
-        bg="gray.100"
+        h="400px"
         position="relative"
-        onClick={() => onSelect(product)}
-        cursor="pointer"
+        borderRadius="xl"
+        overflow="hidden"
       >
         {product.images && product.images.length > 0 ? (
           <>
-            <Image
-              src={product.images[0].image_url}
-              alt={product.images[0].alt_text || product.name}
-              objectFit="cover"
-              h="full"
-              w="full"
-              transition="transform 0.5s"
-              _groupHover={{ transform: 'scale(1.05)' }}
+            <motion.img
+              key={currentImageIndex}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              src={product.images[currentImageIndex].image_url}
+              alt={product.images[currentImageIndex].alt_text || product.name}
+              style={{ objectFit: 'cover', height: '100%', width: '100%' }}
             />
-            <Box
-              position="absolute"
-              bottom="0"
-              left="0"
-              right="0"
-              bg="blackAlpha.700"
-              backdropFilter="blur(4px)"
-              color="white"
-              p={4}
-              transform="translateY(100%)"
-              _groupHover={{ transform: 'translateY(0)' }}
-              transition="all 0.3s ease-in-out"
-            >
-              <Text fontWeight="bold" fontSize="xl">
-                {product.name}
-              </Text>
-              <Text fontSize="2xl" fontWeight="bold" color="blue.300">
-                ${product.price.toLocaleString()}
-              </Text>
-              <Text fontSize="sm" mt={2} color="gray.200">
-                {product.description}
-              </Text>
-            </Box>
+            {product.images.length > 1 && (
+              <>
+                <Button
+                  aria-label="Previous image"
+                  position="absolute"
+                  left={2}
+                  top="50%"
+                  transform="translateY(-50%)"
+                  colorPalette="blue"
+                  variant="solid"
+                  onClick={prevImage}
+                  opacity={0.8}
+                  _hover={{ opacity: 1 }}
+                >
+                  <ChevronLeftIcon />
+                </Button>
+                <Button
+                  aria-label="Next image"
+                  position="absolute"
+                  right={2}
+                  top="50%"
+                  transform="translateY(-50%)"
+                  colorPalette="blue"
+                  variant="solid"
+                  onClick={nextImage}
+                  opacity={0.8}
+                  _hover={{ opacity: 1 }}
+                >
+                  <ChevronRightIcon />
+                </Button>
+                <HStack
+                  position="absolute"
+                  bottom={2}
+                  left="50%"
+                  transform="translateX(-50%)"
+                  gap={2}
+                >
+                  {product.images.map((_, index) => (
+                    <Box
+                      key={index}
+                      w={2}
+                      h={2}
+                      borderRadius="full"
+                      bg={index === currentImageIndex ? "blue.500" : "gray.300"}
+                    />
+                  ))}
+                </HStack>
+              </>
+            )}
           </>
         ) : (
           <Box
+            h="full"
             display="flex"
             alignItems="center"
             justifyContent="center"
-            h="full"
+            bg="gray.100"
           >
-            <Text fontSize="sm" color="gray.500">
-              Imagen no disponible
-            </Text>
+            <Text color="gray.500">Imagen no disponible</Text>
           </Box>
+        )}
+      </MotionBox>
+
+      {/* Product Info */}
+      <VStack align="stretch" gap={3} w="full">
+        <Text fontSize="2xl" fontWeight="bold" lineHeight="tight">
+          {product.name}
+        </Text>
+        
+        <Text fontSize="2xl" fontWeight="bold" colorPalette="blue">
+          ${product.price.toLocaleString()}
+        </Text>
+
+        <Text fontSize="sm" color="gray.500">
+          {product.description}
+        </Text>
+      </VStack>
+
+      {/* Size Selector */}
+      <Box w="full" className="size-selector">
+        {!showSizes ? (
+          <Button
+            w="full"
+            h="14"
+            colorPalette="blue"
+            fontSize="lg"
+            fontWeight="bold"
+            onClick={(e) => {
+              e.stopPropagation();
+              setShowSizes(true);
+            }}
+            _hover={{ transform: 'scale(1.02)' }}
+          >
+            {isAdding ? 'Añadido ✓' : 'Seleccionar Talle'}
+          </Button>
+        ) : (
+          <MenuRoot>
+            <MenuTrigger
+              as={Button}
+              w="full"
+              h="14"
+              colorPalette="blue"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <HStack justify="space-between" w="full">
+                <Text>Elige un talle</Text>
+                {showSizes ? <ChevronUpIcon /> : <ChevronDownIcon />}
+              </HStack>
+            </MenuTrigger>
+            <MenuContent
+              zIndex={1000}
+              onClick={(e) => e.stopPropagation()}
+            >
+              {Object.entries(product.stock).map(([size, data]) => {
+                const stockInfo = data as StockInfo;
+                const inCart = cartItems.find((item) => item.id === `${product.id}-${size}`)?.quantity || 0;
+                const remaining = stockInfo.stock - inCart;
+
+                return (
+                  <MenuItem
+                    key={size}
+                    value={size}
+                    disabled={remaining <= 0}
+                    onClick={() => handleAddToCart(size)}
+                  >
+                    <HStack justify="space-between" w="full">
+                      <Text fontWeight="medium">{size.toUpperCase()}</Text>
+                      <Text fontSize="sm" color={remaining > 0 ? "green.500" : "red.500"}>
+                        {remaining > 0 ? `Stock: ${remaining}` : 'Sin stock'}
+                      </Text>
+                    </HStack>
+                  </MenuItem>
+                );
+              })}
+              <MenuItem
+                value="cancel"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setShowSizes(false);
+                }}
+                color="red.500"
+              >
+                Cancelar
+              </MenuItem>
+            </MenuContent>
+          </MenuRoot>
         )}
       </Box>
 
-      <Stack gap={3} textAlign="center" w="full">
-        {product.colors && product.colors.length > 0 && (
-          <HStack justify="center" gap={2}>
-            {product.colors.map((color) => (
-              <Tooltip key={color} aria-label={color} content={undefined}>
-                <Box
-                  w="6"
-                  h="6"
-                  borderRadius="full"
-                  bg={color.toLowerCase()}
-                  border="2px solid"
-                  borderColor={colorMode === 'dark' ? 'gray.600' : 'gray.200'}
-                  transition="transform 0.2s"
-                  _hover={{ transform: 'scale(1.1)' }}
-                />
-              </Tooltip>
-            ))}
-          </HStack>
-        )}
-
-        <Box
-          opacity={showSizes ? 1 : 0}
-          transform={showSizes ? 'translateY(0)' : 'translateY(10px)'}
-          transition="all 0.3s ease-in-out"
-        >
-          {showSizes ? (
-            <SelectRoot
-              value={selectedSize || []}
-              onValueChange={(e) => setSelectedSize(e.value)}
-              collection={createListCollection(
-                { items: Object.keys(product.stock).map(size => ({ value: size, label: size.toUpperCase() })) }
-              )}
-            >
-              <SelectTrigger>
-                <SelectValueText placeholder="Selecciona talle" />
-              </SelectTrigger>
-              <SelectContent>
-                {Object.entries(product.stock).map(([size, data]) => {
-                  const stockInfo = data as StockInfo;
-                  const inCart = cartItems.find((item) => item.id === `${product.id}-${size}`)?.quantity || 0;
-                  const remaining = stockInfo.stock - inCart;
-
-                  return (
-                    <SelectItem
-                      key={size}
-                      item={size}
-                      className="flex justify-between items-center w-full"
-                    >
-                      <HStack justify="space-between" width="100%" px={2}>
-                        <Text fontWeight="medium">{size.toUpperCase()}</Text>
-                        <Button
-                          size="sm"
-                          colorScheme="blue"
-                          disabled={remaining <= 0}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleAddToCart(size);
-                          }}
-                          _hover={{
-                            transform: 'scale(1.05)',
-                          }}
-                        >
-                          Añadir al carrito
-                        </Button>
-                      </HStack>
-                    </SelectItem>
-                  );
-                })}
-              </SelectContent>
-            </SelectRoot>
-          ) : (
-            <Button
-              w="full"
-              size="lg"
-              onClick={(e) => {
-                e.stopPropagation();
-                setShowSizes(true);
-              }}
-              colorScheme="blue"
-              fontWeight="bold"
-              _hover={{
-                transform: 'scale(1.02)',
-              }}
-              transition="all 0.2s"
-            >
-              {isAdding ? 'Añadido ✓' : 'Selecciona talle'}
-            </Button>
-          )}
-        </Box>
-
-        <HStack justify="center" gap={2} opacity={0.7}>
-          <Text fontSize="sm" color={colorMode === 'dark' ? 'gray.400' : 'gray.600'}>
-            Referencia:
-          </Text>
-          <Text fontSize="sm" fontWeight="medium" color={colorMode === 'dark' ? 'gray.300' : 'gray.700'}>
-            {product.sku}
-          </Text>
+      {/* Color Options */}
+      {product.colors && product.colors.length > 0 && (
+        <HStack justify="center" gap={2}>
+          {product.colors.map((color) => (
+            <Box
+              key={color}
+              w="6"
+              h="6"
+              borderRadius="full"
+              bg={color.toLowerCase()}
+              border="2px solid"
+              borderColor={colorMode === 'dark' ? 'gray.600' : 'gray.200'}
+              transition="transform 0.2s"
+              _hover={{ transform: 'scale(1.1)' }}
+            />
+          ))}
         </HStack>
-      </Stack>
-    </VStack>
+      )}
+    </MotionVStack>
   );
 };

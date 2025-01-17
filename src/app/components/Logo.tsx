@@ -14,7 +14,7 @@ const Logo = () => {
       justifyContent="center"
       alignItems="center"
       width="100%"
-      height="100vh"
+      height={{base: "85vh", md:"100vh"}}
       bg={colorMode === 'dark' ? 'gray.800' : 'bg.muted'}
       transition="background-color 0.2s"
     >

@@ -126,18 +126,7 @@ const ProductOverview: React.FC<ProductOverviewProps> = ({
                   objectFit="cover"
                 />
               </AspectRatio>
-              <IconButton
-                aria-label="Add to favorites"
-                position="absolute"
-                top={4}
-                right={4}
-                colorScheme="gray"
-                variant="solid"
-                bg={bgColor}
-                _hover={{ bg: useColorModeValue('gray.100', 'gray.700') }}
-              >
-                <FiHeart />
-              </IconButton>
+
             </Box>
 
             {/* Thumbnail Grid */}
