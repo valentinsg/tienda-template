@@ -27,7 +27,7 @@ import { SelectContent, SelectItem, SelectRoot, SelectTrigger, SelectValueText }
 import { Product } from '../../types/Product';
 import { addItem } from '../store/slices/cartSlice';
 import { toast } from 'react-toastify';
-import { FiHeart, FiShare2 } from 'react-icons/fi';
+import { FiShare2 } from 'react-icons/fi';
 
 interface ProductOverviewProps {
   product: Product;

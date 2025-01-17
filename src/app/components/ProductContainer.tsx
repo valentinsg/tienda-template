@@ -2,16 +2,14 @@ import React, { useState } from 'react';
 import {
   VStack,
   Box,
-  Image,
   Text,
   Button,
   Badge,
   HStack,
-  IconButton,
 } from '@chakra-ui/react';
 import { useColorMode } from '../components/ui/color-mode';
 import { MenuRoot, MenuTrigger, MenuContent, MenuItem } from '../components/ui/menu';
-import { ChevronDownIcon, ChevronUpIcon, ChevronLeftIcon, ChevronRightIcon } from '@chakra-ui/icons';
+import { FaChevronDown, FaChevronUp, FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import { useDispatch, useSelector } from 'react-redux';
 import { addItem } from '../store/slices/cartSlice';
 import type { Product } from '../../types/Product';
@@ -167,7 +165,7 @@ export const ProductContainer: React.FC<ProductContainerProps> = ({
                   opacity={0.8}
                   _hover={{ opacity: 1 }}
                 >
-                  <ChevronLeftIcon />
+                  <FaChevronLeft />
                 </Button>
                 <Button
                   aria-label="Next image"
@@ -181,7 +179,7 @@ export const ProductContainer: React.FC<ProductContainerProps> = ({
                   opacity={0.8}
                   _hover={{ opacity: 1 }}
                 >
-                  <ChevronRightIcon />
+                  <FaChevronRight />
                 </Button>
                 <HStack
                   position="absolute"
@@ -259,7 +257,7 @@ export const ProductContainer: React.FC<ProductContainerProps> = ({
             >
               <HStack justify="space-between" w="full">
                 <Text>Elige un talle</Text>
-                {showSizes ? <ChevronUpIcon /> : <ChevronDownIcon />}
+                {showSizes ? <FaChevronUp /> : <FaChevronDown />}
               </HStack>
             </MenuTrigger>
             <MenuContent
