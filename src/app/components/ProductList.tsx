@@ -44,7 +44,7 @@ export const ProductList: React.FC<ProductListProps> = ({
     );
   }
   return (
-    <Box maxW="8xl" mx="auto" px={6} py={16}>
+    <Box maxW="8xl" mx="auto" px={6} py={16} >
       <MotionGrid
         variants={container}
         initial="hidden"
@@ -55,7 +55,7 @@ export const ProductList: React.FC<ProductListProps> = ({
           lg: 'repeat(3, 1fr)',
           xl: 'repeat(4, 1fr)',
         }}
-        gap={8}
+        gap={10}
       >
         {products.map((product) => (
           <ProductContainer

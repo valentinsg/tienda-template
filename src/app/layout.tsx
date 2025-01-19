@@ -8,7 +8,7 @@ import { Provider } from "./components/ui/provider";
 import Header from "./header/Header";
 import Footer from "./footer/Footer";
 import "./styles/globals.css";
-import { Toaster } from 'react-hot-toast';
+import { Toaster as ChakraToaster } from "./components/ui/toaster";
 import NewsletterPopover from "./components/NewsletterPopover";
 import { FB_PIXEL_ID, pixelInitScript } from './utils/pixel'
 import Image from 'next/image';
@@ -111,6 +111,7 @@ export default function RootLayout({
                 <Header />
                 <main>
                   {children}
+                  <ChakraToaster />
                   <NewsletterPopover />
                 </main>
                 <Footer />
@@ -118,30 +119,6 @@ export default function RootLayout({
             </Provider>
           </LanguageProvider>
         </ProductProvider>
-        <Toaster
-          position="top-right"
-          toastOptions={{
-            duration: 3000,
-            style: {
-              background: '#363636',
-              color: '#fff',
-            },
-            success: {
-              duration: 3000,
-              iconTheme: {
-                primary: '#4CAF50',
-                secondary: '#fff',
-              },
-            },
-            error: {
-              duration: 3000,
-              iconTheme: {
-                primary: '#E53E3E',
-                secondary: '#fff',
-              },
-            },
-          }}
-        />
       </body>
     </html >
   );
