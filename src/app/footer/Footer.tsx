@@ -1,8 +1,10 @@
 'use client';
+import { useState } from 'react';
 import { Flex, Heading, Input, Text, Box, Link, HStack, useBreakpointValue, Icon } from '@chakra-ui/react';
 import Image from 'next/image';
 import { useColorMode, useColorModeValue } from '../components/ui/color-mode';
 import { Button } from "../components/ui/button";
+import { toaster } from '../components/ui/toaster';
 import BusyDarkMode from '../../../public/busy-logo-dark-mode.png';
 import BusyLightMode from '../../../public/busy-logo-light-mode.png';
 import Visa from '../../../public/visa.png';
@@ -12,13 +14,97 @@ import { FaInstagram, FaTiktok } from 'react-icons/fa';
 
 export default function Footer() {
   const { colorMode } = useColorMode();
+  const [email, setEmail] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  
   const textColor = useColorModeValue('gray.700', '#D0D0D0');
   const hoverColor = useColorModeValue("gray.600", "gray.400");
   const buttonColor = useColorModeValue('blue.500', 'blue.300');
 
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!email) {
+      toaster.create({
+        title: "Error",
+        description: "Por favor ingresa tu email",
+        duration: 5000,
+        meta: {
+          closable: true,
+        },
+      });
+      return;
+    }
+
+    if (!/\S+@\S+\.\S+/.test(email)) {
+      toaster.create({
+        title: "Error",
+        description: "Por favor ingresa un email válido",
+        duration: 5000,
+        meta: {
+          closable: true,
+        },
+      });
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      const response = await fetch("/api/newsletter", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+
+      if (data.error === "exists") {
+        toaster.create({
+          title: "Email ya registrado",
+          description: "Este email ya está suscrito a nuestra newsletter",
+          duration: 5000,
+          meta: {
+            closable: true,
+          },
+        });
+      } else if (data.message === "success") {
+        toaster.create({
+          title: "¡Gracias por suscribirte!",
+          description: `Tu código de descuento es: ${data.discountCode}. Te hemos enviado un email con más información.`,
+          duration: 7000,
+          meta: {
+            closable: true,
+          },
+        });
+        setEmail("");
+      } else {
+        throw new Error(data.error || "Error desconocido");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      toaster.create({
+        title: "Error",
+        description: "Hubo un error al procesar tu solicitud. Por favor intenta nuevamente.",
+        duration: 5000,
+        meta: {
+          closable: true,
+        },
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <Flex 
-      as={"footer"} 
+      as="footer" 
       bg={colorMode === 'dark' ? 'gray.800' : '#D0D0D0'} 
       flexDir="column" 
       w="100%" 
@@ -46,24 +132,32 @@ export default function Footer() {
           >
             Sé el primero en enterarte de todas nuestras novedades
           </Heading>
-          <Flex w={{ base: "100%", md: "95%" }} alignItems="center" mt={6}>
-            <Input
-              placeholder="me@example.com"
-              variant="subtle"
-              _hover={{ borderColor: hoverColor }}
-              borderColor={useColorModeValue('gray.600', 'none')}
-              flex="1"
-              colorPalette={"blue"}
-              border={buttonColor}
-            />
-            <Button
-              colorPalette={"blue"}
-              borderRadius="lg"
-              ml={-2}
-            >
-              Suscríbete
-            </Button>
-          </Flex>
+          <form onSubmit={handleSubmit}>
+            <Flex w={{ base: "100%", md: "95%" }} alignItems="center" mt={6}>
+              <Input
+                placeholder="me@example.com"
+                variant="subtle"
+                _hover={{ borderColor: hoverColor }}
+                borderColor={useColorModeValue('gray.600', 'none')}
+                flex="1"
+                colorPalette={"blue"}
+                border={buttonColor}
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                type="email"
+                disabled={isLoading}
+              />
+              <Button
+                type="submit"
+                colorPalette={"blue"}
+                borderRadius="lg"
+                ml={-2}
+                disabled={isLoading}
+              >
+                {isLoading ? "Enviando..." : "Suscríbete"}
+              </Button>
+            </Flex>
+          </form>
         </Flex>
 
         <Box display={{ base: "none", md: "block" }}>
@@ -77,9 +171,9 @@ export default function Footer() {
         </Box>
       </Flex>
 
+      {/* Rest of the footer remains the same */}
       <Box as="hr" my={6} borderColor={useColorModeValue('gray.400', 'gray.600')} />
 
-      {/* Links de navegación */}
       <Flex flexDir={{ base: "column", md: "row" }} gap={4} >
         <Box gap={6} fontWeight={600} p={8} fontSize="lg">
           <Text color={textColor} ><Link href="/products" _hover={{ color: hoverColor }}>Productos</Link></Text>
@@ -95,7 +189,6 @@ export default function Footer() {
         </Box>
       </Flex>
 
-      {/* Información adicional */}
       <Flex
         flexDir={{ base: "column", md: "row" }}
         justifyContent="space-between"
@@ -128,7 +221,6 @@ export default function Footer() {
           <Image src={Visa} alt="Visa" width={45} height={45} />
           <Image src={Mastercard} alt="Mastercard" width={45} height={45} />
           <Image src={MercadoPago} alt="MercadoPago" width={45} height={45} />
-
         </HStack>
       </Flex>
 
