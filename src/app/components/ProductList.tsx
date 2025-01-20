@@ -50,12 +50,13 @@ export const ProductList: React.FC<ProductListProps> = ({
         initial="hidden"
         animate="show"
         templateColumns={{
-          base: 'repeat(1, 1fr)',
+          base: 'repeat(2, 1fr)',  // Changed to show 2 items on mobile
           sm: 'repeat(2, 1fr)',
+          md: 'repeat(3, 1fr)',
           lg: 'repeat(3, 1fr)',
           xl: 'repeat(4, 1fr)',
         }}
-        gap={10}
+        gap={{ base: 4, sm: 6, md: 8, lg: 10 }}  // Responsive gap
       >
         {products.map((product) => (
           <ProductContainer

@@ -52,7 +52,7 @@ const AboutUs = () => {
       </Heading>
 
       {/* Segunda sección */}
-      <Container maxW={{base: "100%", md:"65%"}} py={20}>
+      <Container maxW={{base: "100%", md:"70%"}} py={20}>
         <Grid
           templateColumns={{ base: '1fr', md: '2fr 3fr' }}
           gap={6}

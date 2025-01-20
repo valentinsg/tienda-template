@@ -27,17 +27,17 @@ const FAQs = () => {
         {
           question: "¿Qué significa Busy?",
           answer:
-            "Busy es un lifestyle en el cuál nos identificamos antes de iniciar el proyecto."
+            "Busy es el accionar constante que tiene que crear una persona en su día a dia para lograr sus objetivos, mantenerse ocupado y activo en la vida diaria indudablemente te acerca a lo que queres, si te sentís Busy vas a lograr tus resultados que van a llegar mientras estás actuando por ellos, lo que no quiere decir que no puedas disfrutarlos, al contrario, Busy es disfrutar de cada paso que das y poder mantener ese énfasis en el tiempo.",
         },
         {
           question: "¿Qué hace diferente a Busy de otras marcas?",
           answer:
-            "En Busy priorizamos calidad, diseño único y un compromiso fuerte con nuestra comunidad.",
+            "El real sentimiento de comunidad al que aspiramos y querer formar parte de la vida de nuestra gente, el querer generar un concepto de moda actualizado en Argentina, aportar diferentes productos para todo tipo de público, que las personas ocupadas sepan a donde recurrir para encontrar productos buenos y hechos por personas Busy.",
         },
         {
           question: "¿Cuál es la visión de Busy?",
           answer:
-            "No solo queremos entregar productos de calidad y contenido elaborado, sino construir algo mas allá de lo empresarial, que las personas se hallen en nuestros valores y visión. Queremos que Busy sea una experiencia auténtica, ser parte de la vida de nuestros clientes y que se sientan parte de la comunidad que estamos construyendo entre todos.",
+            "No solo queremos entregar productos de calidad y contenido elaborado, sino construir algo mas allá de lo empresarial, que las personas se hallen en nuestros valores y visión. Queremos que esto se vuelva una experiencia auténtica, ser parte de la vida de nuestros clientes y que se sientan parte de la comunidad que estamos construyendo entre todos.",
         }
       ],
     },
@@ -62,7 +62,7 @@ const FAQs = () => {
         {
           question: "¿Es seguro comprar en su sitio web?",
           answer:
-            "Sí, implementamos medidas de seguridad como certificados SSL y métodos de pago seguros.",
+            "Implementamos medidas de seguridad como certificados SSL y métodos de pago seguros.",
         },
         {
           question: "¿Cómo sé cuál es mi talla?",
@@ -196,7 +196,7 @@ const FAQs = () => {
 
   return (
     <Box bg={colorMode === 'dark' ? 'gray.800' : 'bg.muted'} py={12} color={textColor}>
-      <Container maxW={{base: "100%", md:"70%"}}>
+      <Container maxW={{ base: "100%", md: "70%" }}>
         {/* Primera sección */}
         <Heading textAlign="center" fontFamily={"Archivo Black"} as="h1" fontSize={{ base: "4xl", md: "4vw" }} letterSpacing={"tighter"} lineHeight={{ base: 1.2, md: "11vh" }} color={textColor}>
           Preguntas Frecuentes.
@@ -210,14 +210,13 @@ const FAQs = () => {
           value={searchTerm}
           colorPalette={"blue"}
           borderColor={buttonColor}
-
         />
         <VStack align="stretch">
           {filteredFAQs.map((section) => section.questions.length > 0 && (
             <Box key={section.category} py={8} borderRadius="md">
               <Heading
                 as="h2"
-                fontSize={{base:"2xl", md:"4xl"}}
+                fontSize={{ base: "2xl", md: "4xl" }}
                 textAlign={"center"}
                 fontWeight={500}
                 py={4}
@@ -231,22 +230,25 @@ const FAQs = () => {
                 {/* Sobre la Marca Busy */}
                 {section.questions.map((faq, index) => (
                   <Accordion.Item key={index} value={`item-${index}`} m={4} borderRadius="md" bg={colorMode === 'dark' ? 'gray.700' : 'white'} color={textColor}>
-                    <h2>
-                      <AccordionItemTrigger
-                        cursor={"pointer"}
-                        p={4}
-                        fontSize="xl"
-                        _hover={{ bg: colorMode === 'dark' ? 'gray.600' : 'gray.200' }}
-                        _expanded={{ bg: colorMode === 'dark' ? 'gray.600' : 'gray.200' }}
-                        transition="background-color 0.2s ease"
-                      >
-                        <Box textAlign="center" fontSize={{base:"lg", md:"xl"}} fontFamily={"Archivo Black"} fontWeight={500} letterSpacing={"tighter"} textTransform="uppercase">
-                          {faq.question}
-                        </Box>
-                      </AccordionItemTrigger>
-                    </h2>
-                    <AccordionItemContent px={4} py={4} fontSize="lg" textAlign="left" transition="max-height 1s ease in, padding 1s ease">
-                      {faq.answer}
+                    <AccordionItemTrigger
+                      cursor={"pointer"}
+                      p={4}
+                      fontSize="xl"
+                      _hover={{ bg: colorMode === 'dark' ? 'gray.600' : 'gray.200' }}
+                      _expanded={{ bg: colorMode === 'dark' ? 'gray.600' : 'gray.200' }}
+                      transition="background-color 0.2s ease"
+                    >
+                      <Box textAlign="center" fontSize={{ base: "lg", md: "xl" }} fontFamily={"Archivo Black"} fontWeight={500} letterSpacing={"tighter"} textTransform="uppercase">
+                        {faq.question}
+                      </Box>
+                    </AccordionItemTrigger>
+                    <AccordionItemContent
+                      fontSize="lg"
+                      textAlign="left"
+                    >
+                      <Box p={5}>
+                        {faq.answer}
+                      </Box>
                     </AccordionItemContent>
 
                   </Accordion.Item>
@@ -255,9 +257,9 @@ const FAQs = () => {
             </Box>
           ))}
         </VStack>
-        <Box textAlign={{base: "center",md:"end"}} mt={12}>
+        <Box textAlign={{ base: "center", md: "end" }} mt={12}>
           <Button
-            size={{base: "md", md:"lg"}}
+            size={{ base: "md", md: "lg" }}
             fontWeight={600}
             colorPalette={"blue"}
             onClick={() => window.location.href = "/contact"}

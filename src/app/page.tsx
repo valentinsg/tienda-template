@@ -36,13 +36,13 @@ export default function Home() {
       <Logo />
       <Carrousell />
       {/* Listado completo de productos */}
-      <Flex direction="column" gap={20} p={10} py={{ base: 20, md: "" }} textAlign={"center"} align={"center"}>
+      <Flex direction="column" gap={20} p={2} py={{ base: 20, md: "" }} textAlign={"center"} align={"center"}>
         <Heading fontFamily={"Archivo Black"} w={{ base: "100%", md: "80%" }} as="h2" fontSize={{ base: "4xl", md: "4vw" }} letterSpacing={"tighter"} lineHeight={{ base: 1.2, md: "11vh" }} color={colorMode === 'dark' ? '#d0d0d0' : 'gray.700'}>
           Nuestra primer cápsula ya está disponible para toda Argentina.
         </Heading>
       </Flex>
       <CategoryGrid />
-      <Flex direction="column" gap={10} p={10} align={"center"}>
+      <Flex direction="column" p={2} align={"center"}>
         <Heading fontFamily={"Archivo Black"} as="h2" fontSize={{ base: "4xl", md: "4vw" }} letterSpacing={"tighter"} color={colorMode === 'dark' ? '#d0d0d0' : 'gray.700'}>
           Nuevo
         </Heading>

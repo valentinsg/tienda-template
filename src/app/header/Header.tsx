@@ -129,13 +129,14 @@ const Header = () => {
   return (
     <Box
       as="nav"
-      bg={colorMode === 'dark' ? 'gray.800' : '#D0D0D0'}
+      bg={colorMode === 'dark' ? 'gray.900' : '#D0D0D0'}
       shadow="md"
       w="100%"
       p={2}
       position="sticky"
       top="0"
       zIndex="1000"
+      letterSpacing={"tighter"}
     >
       <Flex align="center" justify="space-between">
         {/* Mobile Menu */}
@@ -149,8 +150,8 @@ const Header = () => {
             <Image
               src={colorMode === 'dark' ? BusyDarkMode : BusyLightMode}
               alt="Busy logo"
-              width={175}
-              height={175}
+              width={185}
+              height={185}
             />
           </Link>
         </Box>
@@ -175,7 +176,7 @@ const Header = () => {
                     </MenuTrigger>
                     <MenuContent>
                       <Link href="/products" passHref>
-                        <MenuItem value="all-products" className="hover:bg-accent">
+                        <MenuItem value="all-products" >
                           Todos los productos
                         </MenuItem>
                       </Link>
@@ -187,7 +188,6 @@ const Header = () => {
                         >
                           <MenuItem 
                             value={category.slug}
-                            className="hover:bg-accent"
                           >
                             {category.name}
                           </MenuItem>

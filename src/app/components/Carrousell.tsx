@@ -51,7 +51,7 @@ const Carrousell = () => {
     setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
   };
 
-  const bgColor = useColorModeValue('#D0D0D0', "#555454");
+  const bgColor = useColorModeValue('#D0D0D0', "gray.900");
 
   return (
     <Box position="relative" width="100%" height={{ base: "auto", md: "85vh" }} bg={bgColor}>
