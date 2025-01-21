@@ -44,6 +44,14 @@ export const ProductContainer: React.FC<ProductContainerProps> = ({
           imageUrl: product.images?.[0]?.image_url || '/placeholder.jpg',
         })
       );
+      toaster.create({
+        title: "Producto añadido al BusyCarrito",
+        description: `${product.name} (Talle: ${size}) `,
+        duration: 5000,
+        meta: {
+          closable: true,
+        },
+      });
 
       toaster.create({
         title: "Producto añadido al BusyCarrito",
@@ -91,8 +99,7 @@ export const ProductContainer: React.FC<ProductContainerProps> = ({
   return (
     <VStack
       position="relative"
-      overflow="hidden"
-      minW={{ base: "100%", sm: "200px", md: "300px", lg: "450px" }}
+      minW={{ base: "100%", sm: "200px", md: "300px", lg: "500px" }}
       maxW={{ base: "100%", sm: "240px", md: "400px", lg: "500px" }}
       w="full"
       gap={0}
@@ -123,7 +130,7 @@ export const ProductContainer: React.FC<ProductContainerProps> = ({
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                transition={{ duration: 0.1 }}
+                transition={{ duration: 0.3 }}
                 src={product.images[currentImageIndex].image_url}
                 alt={product.images[currentImageIndex].alt_text || product.name}
                 style={{
@@ -194,7 +201,7 @@ export const ProductContainer: React.FC<ProductContainerProps> = ({
               {product.name}
             </Text>
             <Text
-              fontSize="lg"
+              fontSize="2xl"
               fontWeight="bold"
               letterSpacing="tighter"
               color={isDark ? 'white' : 'gray.800'}
@@ -232,7 +239,7 @@ export const ProductContainer: React.FC<ProductContainerProps> = ({
           style={{
             position: 'absolute',
             width: '100%',
-            paddingTop: '1.5rem',
+            paddingTop: '0.8rem',
           }}
         >
           <HStack gap={8} justify="center" w="full">
@@ -250,7 +257,7 @@ export const ProductContainer: React.FC<ProductContainerProps> = ({
                   <Text
                     color={isDark ? 'white' : remaining > 0 ? 'black' : 'gray.500'}
                     cursor={remaining > 0 ? 'pointer' : 'not-allowed'}
-                    fontSize="lg"
+                    fontSize="2xl"
                     opacity={remaining > 0 ? 1 : 0.6}
                     transition="all 0.3s"
                     onClick={() => remaining > 0 && handleAddToCart(size)}

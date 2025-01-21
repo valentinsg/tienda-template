@@ -19,7 +19,6 @@ export default function Footer() {
   
   const textColor = useColorModeValue('gray.700', '#D0D0D0');
   const hoverColor = useColorModeValue("gray.600", "gray.400");
-  const buttonColor = useColorModeValue('blue.500', 'blue.300');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
