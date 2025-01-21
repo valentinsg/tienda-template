@@ -44,7 +44,7 @@ export const ProductList: React.FC<ProductListProps> = ({
     );
   }
   return (
-    <Box maxW="8xl" px={20} py={20}>
+    <Box maxW="8xl" mx="auto" py={16} >
       <MotionGrid
         variants={container}
         initial="hidden"

@@ -15,7 +15,6 @@ import {
   SimpleGrid,
   Badge,
   Spinner,
-  createListCollection,
 } from '@chakra-ui/react';
 import {
   BreadcrumbCurrentLink,
@@ -23,15 +22,22 @@ import {
   BreadcrumbRoot,
 } from "../components/ui/breadcrumb";
 import { useColorModeValue } from '../components/ui/color-mode';
-import { SelectContent, SelectItem, SelectRoot, SelectTrigger, SelectValueText } from './ui/select';
 import { Product } from '../../types/Product';
 import { addItem } from '../store/slices/cartSlice';
 import { toast } from 'react-toastify';
 import { FiShare2 } from 'react-icons/fi';
+import { useColorMode } from '../components/ui/color-mode';
+import { Tooltip } from './ui/tooltip';
+import RequestSizeDialog from './RequestSizeDialog';
 
 interface ProductOverviewProps {
   product: Product;
   relatedProducts?: Product[];
+}
+
+interface StockInfo {
+  stock: number;
+  sku: string;
 }
 
 const ProductOverview: React.FC<ProductOverviewProps> = ({
@@ -39,9 +45,10 @@ const ProductOverview: React.FC<ProductOverviewProps> = ({
   relatedProducts = []
 }) => {
   const dispatch = useDispatch();
-  const [selectedSize, setSelectedSize] = useState<string[] | null>(null);
+  const [selectedSize, ] = useState<string[] | null>(null);
   const [selectedImage, setSelectedImage] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
+  const { colorMode } = useColorMode();
 
   const isSizeSelected = selectedSize && selectedSize.length > 0;
   const cartItems = useSelector((state: { cart: { items: { id: string; quantity: number; }[]; }; }) => state.cart.items);
@@ -97,12 +104,12 @@ const ProductOverview: React.FC<ProductOverviewProps> = ({
   };
 
   const mainImage = product.images?.[selectedImage]?.image_url || '/placeholder.jpg';
-  
+
   return (
-    <Box bg={useColorModeValue('gray.50', 'gray.900')} minH="100vh">
-      <Container maxW="7xl" py={8}>
+    <Box bg={colorMode === 'dark' ? 'gray.800' : 'bg.muted'} minH="100vh" letterSpacing={"tighter"} >
+      <Container py={8}>
         {/* Breadcrumb */}
-        <BreadcrumbRoot mb={6} fontSize="sm" color={mutedTextColor}>
+        <BreadcrumbRoot mb={4} fontSize="md" color={mutedTextColor} letterSpacing={"normal"} fontWeight={"bold"} >
           <BreadcrumbLink href="/">Home</BreadcrumbLink>
           <BreadcrumbLink href="/products">Products</BreadcrumbLink>
           <BreadcrumbCurrentLink>{product.name}</BreadcrumbCurrentLink>
@@ -110,6 +117,7 @@ const ProductOverview: React.FC<ProductOverviewProps> = ({
 
         {/* Main Product Section */}
         <Grid templateColumns={{ base: '1fr', lg: '1fr 1fr' }} gap={8}>
+
           {/* Image Section */}
           <VStack gap={4}>
             <Box
@@ -126,7 +134,6 @@ const ProductOverview: React.FC<ProductOverviewProps> = ({
                   objectFit="cover"
                 />
               </AspectRatio>
-
             </Box>
 
             {/* Thumbnail Grid */}
@@ -158,10 +165,14 @@ const ProductOverview: React.FC<ProductOverviewProps> = ({
           </VStack>
 
           {/* Product Details */}
-          <VStack align="stretch" gap={6}>
+          <VStack align="stretch" gap={4} w={{ base: "100%", md: "70%" }}>
             <Box>
-              <HStack justify="space-between" mb={4}>
-                <Heading as="h1" size="xl" color={textColor}>
+              <Badge fontSize="sm" p={1} bg={"black"} color={"white"} borderRadius="md">
+                {product.category}
+              </Badge>
+
+              <HStack justify="space-between">
+                <Heading letterSpacing={"tighter"} as="h1" size="xl" color={textColor}>
                   {product.name}
                 </Heading>
                 <IconButton
@@ -172,7 +183,7 @@ const ProductOverview: React.FC<ProductOverviewProps> = ({
                 </IconButton>
               </HStack>
 
-              <HStack mb={2}>
+              <HStack>
                 <Text
                   fontSize="3xl"
                   fontWeight="bold"
@@ -180,65 +191,66 @@ const ProductOverview: React.FC<ProductOverviewProps> = ({
                 >
                   ${product.price}
                 </Text>
-                <Badge colorScheme="green">In Stock</Badge>
+                <Badge >In Stock</Badge>
               </HStack>
-              <Text fontSize="sm" color={mutedTextColor}>
-                Taxes included
+              <Text fontSize="sm" color={mutedTextColor} >
+                Impuestos incluídos
               </Text>
             </Box>
 
-            <Box>
-              <Heading as="h2" size="md" mb={3}>
-                Description
-              </Heading>
-              <Text color={mutedTextColor}>
-                {product.description}
-              </Text>
-            </Box>
-
-            {/* Size Selector */}
             {/* Size Selector with Stock Information */}
             <Box>
-              <Heading as="h2" size="md" mb={3}>
-                Select Size
-              </Heading>
-              <SelectRoot
-                value={selectedSize || []}
-                onValueChange={(e) => setSelectedSize(e.value)}
-                collection={createListCollection(
-                  { items: Object.keys(product.stock).map(size => ({ value: size, label: size.toUpperCase() })) }
-                )}
-              >
-                <SelectTrigger>
-                  <SelectValueText placeholder="Choose a size" />
-                </SelectTrigger>
-                <SelectContent>
-                  {Object.entries(product.stock).map(([size, data]) => {
-                    const inCart = cartItems.find(item => item.id === `${product.id}-${size}`)?.quantity || 0;
-                    const remaining = (data as { stock: number }).stock - inCart;
-                    return (
-                      <SelectItem
-                        key={size}
-                        item={{ value: size, label: size.toUpperCase() }}
-                        _disabled={{
-                          opacity: remaining <= 0 ? 0.5 : 1,
-                          cursor: remaining <= 0 ? 'not-allowed' : 'pointer',
-                          pointerEvents: remaining <= 0 ? 'none' : 'auto'
-                        }}
-                      >
-                        <HStack justify="space-between" width="100%">
-                          <Text>{size.toUpperCase()}</Text>
-                          <Badge colorScheme={remaining > 5 ? 'green' : remaining > 0 ? 'yellow' : 'red'}>
-                            {remaining} left
-                          </Badge>
-                        </HStack>
-                      </SelectItem>
-                    );
-                  })}
-                </SelectContent>
-              </SelectRoot>
-            </Box>
 
+              <HStack fontSize="lg" justify="space-between" alignItems={"center"} mb={2}>
+                <Text color={textColor} >
+                  Selecciona un talle
+                </Text>
+                <Text
+                  color={mutedTextColor}
+                  textDecoration={"underline"}
+                  fontStyle={"italic"}
+                >
+                  Guía de talles
+                </Text>
+              </HStack>
+
+              <HStack gap={4} justify="center" w="full">
+                {Object.entries(product.stock).map(([size, data]) => {
+                  const stockInfo = data as StockInfo;
+                  const inCart = cartItems.find((item) => item.id === `${product.id}-${size}`)?.quantity || 0;
+                  const remaining = stockInfo.stock - inCart;
+
+                  return (
+                    <Tooltip
+                      key={size}
+                      aria-label={remaining > 0 ? `Quedan ${remaining} unidades` : "Sin stock"}
+                      content={undefined}
+                    >
+                      <Button
+                        disabled={remaining <= 0}
+                        size="lg"
+                        variant="outline"
+                        colorScheme={remaining > 0 ? "blue" : "gray"}
+                        _hover={{
+                          bg: remaining > 0 ? "blue.50" : "gray.100",
+                        }}
+                        _disabled={{
+                          bg: "gray.100",
+                          cursor: "not-allowed",
+                        }}
+                        borderColor={remaining > 0 ? "blue.400" : "gray.300"}
+                        color={remaining > 0 ? "blue.600" : "gray.500"}
+                        textDecoration={remaining === 0 ? "line-through" : "none"}
+                        transition="all 0.3s ease"
+                      >
+                        {size.toUpperCase()}
+                      </Button>
+                    </Tooltip>
+                  );
+                })}
+              </HStack>
+              <RequestSizeDialog />
+            </Box>
             <Button
               colorPalette={isSizeSelected && remainingStock > 0 ? 'blue' : 'gray'}
               width="100%"
@@ -259,6 +271,14 @@ const ProductOverview: React.FC<ProductOverviewProps> = ({
                 'Add to Cart'
               )}
             </Button>
+            <Box>
+              <Heading as="h2" size="md" mb={3}>
+                Description
+              </Heading>
+              <Text color={mutedTextColor}>
+                {product.description}
+              </Text>
+            </Box>
           </VStack>
         </Grid>
 

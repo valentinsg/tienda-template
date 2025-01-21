@@ -224,7 +224,7 @@ export default function Footer() {
         </HStack>
       </Flex>
 
-      <Text mt={10} mb={6} fontSize="lg" textAlign="center" color={textColor} letterSpacing={"tighter"}>
+      <Text mt={10} mb={2} fontSize="lg" textAlign="center" color={textColor} letterSpacing={"tighter"}>
         &copy; 2024 Busy. Todos los derechos reservados.
       </Text>
     </Flex>

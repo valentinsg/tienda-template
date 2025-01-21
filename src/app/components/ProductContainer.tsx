@@ -52,15 +52,6 @@ export const ProductContainer: React.FC<ProductContainerProps> = ({
           closable: true,
         },
       });
-
-      toaster.create({
-        title: "Producto añadido al BusyCarrito",
-        description: `${product.name} (${size}) `,
-        duration: 5000,
-        meta: {
-          closable: true,
-        },
-      });
     } else {
       toaster.create({
         title: "Out of Stock",
@@ -94,7 +85,6 @@ export const ProductContainer: React.FC<ProductContainerProps> = ({
 
   const isDark = colorMode === 'dark';
 
-  const aspectRatio = 4 / 3;
 
   return (
     <VStack
@@ -121,7 +111,7 @@ export const ProductContainer: React.FC<ProductContainerProps> = ({
           onClick={handleProductClick}
           onMouseEnter={() => setCurrentImageIndex(1)}
           onMouseLeave={() => setCurrentImageIndex(0)}
-          paddingBottom={{ base: "133%", md: `${(1 / aspectRatio) * 100}%` }}
+          h={{ base: "300px", sm: "400px", md: "500px", lg: "600px" }}
         >
           {product.images && product.images.length > 0 && (
             <AnimatePresence mode="wait">
@@ -254,15 +244,16 @@ export const ProductContainer: React.FC<ProductContainerProps> = ({
                   aria-label={remaining > 0 ? "Añadir al carrito" : "Sin stock"}
                   content={remaining > 0 ? `Quedan ${remaining} unidades` : "Sin stock"}
                 >
-                  <Text
-                    color={isDark ? 'white' : remaining > 0 ? 'black' : 'gray.500'}
+                    <Text
+                    color={isDark ? '#d0d0d0' : remaining > 0 ? '#555454' : '#555454'}
                     cursor={remaining > 0 ? 'pointer' : 'not-allowed'}
                     fontSize="2xl"
                     opacity={remaining > 0 ? 1 : 0.6}
                     transition="all 0.3s"
                     onClick={() => remaining > 0 && handleAddToCart(size)}
                     _hover={{ textDecoration: remaining > 0 ? 'underline' : 'none' }}
-                  >
+                    textDecoration={remaining === 0 ? 'line-through' : 'none'}
+                    >
                     {size.toUpperCase()}
                   </Text>
                 </Tooltip>

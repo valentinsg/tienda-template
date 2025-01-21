@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { decrementItem, incrementItem, clearCart, setCheckoutAllowed } from '../store/slices/cartSlice';
+import { decrementItem, incrementItem, setCheckoutAllowed } from '../store/slices/cartSlice';
 import Link from 'next/link';
 import {
   Box,
@@ -80,7 +80,6 @@ const CartDialog = () => {
   // #region Handlers
   const handleDecrement = (id: string) => dispatch(decrementItem(id));
   const handleIncrement = (id: string) => dispatch(incrementItem(id));
-  const handleClearCart = () => dispatch(clearCart());
 
   // #endregion
 
@@ -192,10 +191,6 @@ const CartDialog = () => {
                       Ir a pagar
                     </Button>
                   </Link>
-
-                  <HStack w='100%' gap='4'>
-                    <Button variant='outline' colorPalette="red" onClick={handleClearCart} flex='1'>Limpiar carrito</Button>
-                  </HStack>
                 </VStack>
               </Box>
             </VStack>
