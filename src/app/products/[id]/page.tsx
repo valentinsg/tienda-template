@@ -16,8 +16,10 @@ import {
   IconButton,
   AspectRatio,
   Badge,
+  Accordion,
   Spinner,
 } from '@chakra-ui/react';
+import { AccordionItemTrigger, AccordionItemContent } from "../../components/ui/accordion";
 import {
   BreadcrumbCurrentLink,
   BreadcrumbLink,
@@ -26,9 +28,10 @@ import {
 import { addItem } from '../../store/slices/cartSlice';
 import { toast } from 'react-toastify';
 import { FiShare2 } from 'react-icons/fi';
-import { useColorMode, useColorModeValue} from '../../components/ui/color-mode';
+import { useColorMode, useColorModeValue } from '../../components/ui/color-mode';
 import { Tooltip } from '../../components/ui/tooltip';
 import RequestSizeDialog from '../../components/RequestSizeDialog';
+import { HiCreditCard } from 'react-icons/hi';
 
 interface StockInfo {
   stock: number;
@@ -44,16 +47,16 @@ export default function ProductPage() {
   const [selectedImage, setSelectedImage] = useState(0);
   const [, setLoading] = useState(false);
   const { colorMode } = useColorMode();
-  
+
 
   // Color mode values
   const textColor = useColorModeValue('gray.800', 'white');
   const secondaryBg = useColorModeValue('gray.50', 'gray.700');
   const mutedTextColor = useColorModeValue('gray.600', 'gray.400');
-  
+
   const isSizeSelected = selectedSize && selectedSize.length > 0;
   const cartItems = useSelector((state: { cart: { items: { id: string; quantity: number; }[]; }; }) => state.cart.items);
-  
+
   const product = products.find(p => p.id === Number(params.id));
 
   if (isLoading) {
@@ -117,11 +120,30 @@ export default function ProductPage() {
     }
   };
 
+  const handleShare = () => {
+    if (navigator.share) {
+      navigator
+        .share({
+          title: product.name,
+          text: `¡Mira este producto: ${product.name}!`,
+          url: window.location.href,
+        })
+        .then(() => toast.success("Enlace compartido"))
+        .catch(() => toast.error("Error al compartir el enlace"));
+    } else {
+      // Alternativa: Copiar al portapapeles
+      navigator.clipboard
+        .writeText(window.location.href)
+        .then(() => toast.success("Enlace copiado al portapapeles"))
+        .catch(() => toast.error("No se pudo copiar el enlace"));
+    }
+  };
+
   const mainImage = product.images?.[selectedImage]?.image_url || '/placeholder.jpg';
 
   return (
-    <Box bg={colorMode === 'dark' ? 'gray.800' : 'bg.muted'} minH="100vh" letterSpacing={"tighter"} >
-      <Container py={8}>
+    <Box bg={colorMode === 'dark' ? 'gray.800' : 'bg.muted'} h={"100vh"} >
+      <Container py={10} w={"100%"}>
         {/* Breadcrumb */}
         <BreadcrumbRoot mb={4} fontSize="md" color={mutedTextColor} letterSpacing={"normal"} fontWeight={"bold"} >
           <BreadcrumbLink href="/">Home</BreadcrumbLink>
@@ -130,7 +152,7 @@ export default function ProductPage() {
         </BreadcrumbRoot>
 
         {/* Main Product Section */}
-        <Grid templateColumns={{ base: '1fr', lg: '1fr 1fr' }} gap={8}>
+        <Grid templateColumns={{ base: '1fr', lg: '2fr 1fr' }} gap={12}>
 
           {/* Image Section */}
           <HStack gap={4} align="start">
@@ -147,42 +169,31 @@ export default function ProductPage() {
                     cursor="pointer"
                     onClick={() => setSelectedImage(idx)}
                   >
-                      <Image
-                        w="130px"
-                        h="85px"
-                        src={img.image_url}
-                        alt={`${product.name} view ${idx + 1}`}
-                        objectFit="cover"
-                        transition="opacity 0.2s"
-                        _hover={{ opacity: 0.8 }}
-                      />
+                    <Image
+                      w="130px"
+                      h="85px"
+                      src={img.image_url}
+                      alt={`${product.name} view ${idx + 1}`}
+                      objectFit="cover"
+                      transition="opacity 0.2s"
+                      _hover={{ opacity: 0.8 }}
+                    />
                   </Box>
                 ))}
               </VStack>
             )}
 
             {/* Main Image */}
-            <Box
-              position="relative"
-              w="100%"
-              bg={secondaryBg}
-              borderRadius="lg"
-              overflow="hidden"
-            >
-              <AspectRatio ratio={1}>
-                <Image
-                  src={mainImage}
-                  alt={product.name}
-                  objectFit="cover"
-                />
+            <Box position="relative" w="100%" h="100%" bg={secondaryBg} borderRadius="lg" overflow="hidden">
+              <AspectRatio ratio={3 / 3}>
+                <Image src={mainImage} alt={product.name} objectFit="cover" />
               </AspectRatio>
             </Box>
           </HStack>
 
           {/* Product Details */}
-          <VStack align="stretch" gap={4} w={{ base: "100%", md: "70%" }}>
+          <VStack align="stretch" gap={3} >
             <Box>
-
               <HStack justify="space-between">
                 <Heading letterSpacing={"tighter"} as="h1" size="xl" color={textColor}>
                   {product.name}
@@ -190,6 +201,7 @@ export default function ProductPage() {
                 <IconButton
                   aria-label="Share product"
                   variant="ghost"
+                  onClick={handleShare}
                 >
                   <FiShare2 />
                 </IconButton>
@@ -213,9 +225,9 @@ export default function ProductPage() {
 
             {/* Size Selector with Stock Information */}
             <Box>
-              <HStack fontSize="lg" justify="space-between" alignItems={"center"} mt={4}>
+              <HStack fontSize="lg" justify="space-between" alignItems={"center"}>
                 <Text color={textColor} >
-                  Selecciona un talle
+                  Seleccionar talle
                 </Text>
                 <Text
                   textDecoration={"underline"}
@@ -247,10 +259,10 @@ export default function ProductPage() {
                           : `Quedan ${remaining} unidades`
                       }
                     >
-                        <Button
+                      <Button
                         disabled={isOutOfStock}
                         size="lg"
-                        p={6}
+                        p={5}
                         bg={isSelected ? (colorMode === "dark" ? "white" : "black") : (colorMode === "dark" ? "transparent" : "white")}
                         color={isSelected ? (colorMode === "dark" ? "black" : "white") : (colorMode === "dark" ? "white" : "black")}
                         textDecoration={isOutOfStock ? "line-through" : "none"}
@@ -258,21 +270,21 @@ export default function ProductPage() {
                         border={isSelected ? "1px solid" : "1px solid"}
                         _hover={
                           isSelected
-                          ? {}
-                          : {
-                            bg: isOutOfStock ? (colorMode === "dark" ? "gray.500" : "#555454") : (colorMode === "dark" ? "gray.700" : "#D0D0D0"),
-                            color: isOutOfStock ? (colorMode === "dark" ? "gray.400" : "#D0D0D0") : (colorMode === "dark" ? "white" : "#555454"),
-                            cursor: isOutOfStock ? "not-allowed" : "pointer",
-                          }
+                            ? {}
+                            : {
+                              bg: isOutOfStock ? (colorMode === "dark" ? "gray.500" : "#555454") : (colorMode === "dark" ? "gray.700" : "#D0D0D0"),
+                              color: isOutOfStock ? (colorMode === "dark" ? "gray.400" : "#D0D0D0") : (colorMode === "dark" ? "white" : "#555454"),
+                              cursor: isOutOfStock ? "not-allowed" : "pointer",
+                            }
                         }
                         _disabled={{
                           cursor: "not-allowed",
                         }}
                         transition="all 0.3s ease"
                         onClick={() => !isOutOfStock && setSelectedSize([size])}
-                        >
+                      >
                         {size.toUpperCase()}
-                        </Button>
+                      </Button>
                     </Tooltip>
                   );
                 })}
@@ -305,11 +317,63 @@ export default function ProductPage() {
                 'Añadir al carrito'
               )}
             </Button>
+
             <Box>
-              <Text color={textColor} fontSize={"lg"} mt={2} fontWeight={"700"} letterSpacing={"tighter"}
+              <Badge
+                fontSize="md"
+                borderRadius="2xl"
+                bg={colorMode === 'dark' ? 'gray.900' : 'gray.200'}
+                color={colorMode === 'dark' ? 'white' : 'gray.800'}
+                alignItems="center"
+                justifyContent="center"
+                display="flex"
+                p={5}
+                gap={2}
+              >
+                <HiCreditCard />
+                Aceptamos hasta 3 cuotas sin interés &nbsp;
+              </Badge>
+
+              <Text color={textColor} fontSize={"lg"} mt={10} fontWeight={"700"} letterSpacing={"tighter"}
               >
                 {product.description}
               </Text>
+              <VStack align="stretch" mt={6} >
+                <Accordion.Root collapsible>
+                  <Accordion.Item value="shipping"  py={2}>
+                    <AccordionItemTrigger
+                      cursor={"pointer"}
+                      borderRadius="md"
+                    >
+                      <Box as="span" flex="1" textAlign="left" color={textColor} fontWeight={"600"}>
+                        Envíos
+                      </Box>
+                    </AccordionItemTrigger>
+                    <AccordionItemContent pb={4} bg={colorMode === 'dark' ? 'gray.800' : 'gray.100'} >
+                      <Text color={textColor}>
+                        Realizamos envíos a todo el país. El costo depende de la ubicación.
+                      </Text>
+                    </AccordionItemContent>
+                  </Accordion.Item>
+
+
+                  <Accordion.Item value="payment" py={2}>
+                    <AccordionItemTrigger
+                      cursor={"pointer"}
+                      borderRadius="md"
+                    >
+                      <Box as="span" flex="1" textAlign="left" color={textColor} fontWeight={"600"}>
+                        Métodos de pago
+                      </Box>
+                    </AccordionItemTrigger>
+                    <AccordionItemContent pb={4} bg={colorMode === 'dark' ? 'gray.800' : 'gray.100'}>
+                      <Text color={textColor}>
+                        Aceptamos tarjetas de débito, crédito y transferencias bancarias.
+                      </Text>
+                    </AccordionItemContent>
+                  </Accordion.Item>
+                </Accordion.Root>
+              </VStack>
             </Box>
           </VStack>
         </Grid>
