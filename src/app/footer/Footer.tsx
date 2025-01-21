@@ -200,7 +200,7 @@ export default function Footer() {
           Busy es un estilo de vida para quienes ocupan su tiempo en lo que realmente importa.
         </Text>
         <HStack gap={8} mt={{ base: 8, md: 0 }}>
-          <Link href="#" _hover={{ color: hoverColor }}>
+            <Link href="https://www.tiktok.com/@busy.streetwear" _hover={{ color: hoverColor }} target="_blank" rel="noopener noreferrer">
             <Icon
               _hover={{ transform: "scale(1.1)" }}
               transition="all 0.5s ease"
@@ -208,8 +208,8 @@ export default function Footer() {
             >
               <FaTiktok />
             </Icon>
-          </Link>
-          <Link href="#" _hover={{ color: hoverColor }}>
+            </Link>
+            <Link href="https://www.instagram.com/busy.streetwear/" _hover={{ color: hoverColor }} target="_blank" rel="noopener noreferrer">
             <Icon
               _hover={{ transform: "scale(1.1)" }}
               transition="all 0.5s ease"

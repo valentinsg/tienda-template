@@ -142,7 +142,7 @@ export default function ProductPage() {
   const mainImage = product.images?.[selectedImage]?.image_url || '/placeholder.jpg';
 
   return (
-    <Box bg={colorMode === 'dark' ? 'gray.800' : 'bg.muted'} h={"100vh"} >
+    <Box bg={colorMode === 'dark' ? 'gray.800' : 'bg.muted'} h={{base: "auto", md:"100vh"}} >
       <Container py={10} w={"100%"}>
         {/* Breadcrumb */}
         <BreadcrumbRoot mb={4} fontSize="md" color={mutedTextColor} letterSpacing={"normal"} fontWeight={"bold"} >

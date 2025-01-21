@@ -130,7 +130,11 @@ const CategoryCard: React.FC<CategoryCardProps> = ({
 export default function CategoryGrid() {
   const router = useRouter();
   const handleCategoryClick = (category: string) => {
-    router.push(`/products/${category}`);
+    if (category === '') {
+      router.push('/products');
+    } else {
+      router.push(`/products/category/${category}`);
+    }
   };
 
   return (
