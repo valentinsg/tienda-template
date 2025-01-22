@@ -1,5 +1,5 @@
 import React from 'react'
-import { Box, Heading, Text, ListItem, Link, List } from "@chakra-ui/react";
+import { Box, Heading, Text} from "@chakra-ui/react";
 
 const Terms = () => {
   return (
