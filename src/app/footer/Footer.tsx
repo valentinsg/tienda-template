@@ -178,8 +178,8 @@ export default function Footer() {
         <Box gap={8} fontWeight={600} p={10} >
           <Text color={textColor} ><Link href="/products" _hover={{ color: hoverColor }}>Productos</Link></Text>
           <Text color={textColor} ><Link href="/about" _hover={{ color: hoverColor }}>Sobre nosotros</Link></Text>
-          <Text color={textColor} ><Link href="#" _hover={{ color: hoverColor }}>Instagram</Link></Text>
-          <Text color={textColor} ><Link href="#" _hover={{ color: hoverColor }}>TikTok</Link></Text>
+          <Text color={textColor} ><Link href="https://www.instagram.com/busy.streetwear/" target="_blank" rel="noopener noreferrer" _hover={{ color: hoverColor }}>Instagram</Link></Text>
+          <Text color={textColor} ><Link href="https://www.tiktok.com/@busy.streetwear"  target="_blank" rel="noopener noreferrer" _hover={{ color: hoverColor }}>TikTok</Link></Text>
         </Box>
         <Box gap={8} fontWeight={600} p={10}>
           <Text color={textColor} ><Link href="/contact" _hover={{ color: hoverColor }}>Contacto</Link></Text>
