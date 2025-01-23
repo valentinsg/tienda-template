@@ -165,7 +165,7 @@ export default function Footer() {
             <Image
               src={colorMode === 'dark' ? BusyDarkMode : BusyLightMode}
               alt="Busy logo"
-              width={475}
+              width={550}
             />
           </Link>
         </Box>
@@ -197,7 +197,7 @@ export default function Footer() {
         px={8}
       >
         <Text display={{base: "none", md: "block"}} fontSize="lg" fontWeight={600} textAlign={{ base: "center", md: "left" }} letterSpacing={"tighter"}>
-          Busy es un estilo de vida para quienes ocupan su tiempo en lo que realmente importa.
+          Mejor ocuparse que preocuparse.
         </Text>
         <HStack gap={8} mt={{ base: 8, md: 0 }}>
             <Link href="https://www.tiktok.com/@busy.streetwear" _hover={{ color: hoverColor }} target="_blank" rel="noopener noreferrer">

@@ -10,20 +10,14 @@ import type { Product } from '../../types/Product';
 import type { RootState } from '../store/store';
 import { motion, AnimatePresence } from 'framer-motion';
 
-interface StockInfo {
-  stock: number;
-  sku: string;
-}
-
 interface ProductContainerProps {
   product: Product;
-  onSelect: (product: Product) => void;
-  categoryNames?: Record<string, string>;
+  onSelectProduct: (product: Product) => void;
 }
 
 export const ProductContainer: React.FC<ProductContainerProps> = ({
   product,
-  onSelect,
+  onSelectProduct,
 }) => {
   const dispatch = useDispatch();
   const { colorMode } = useColorMode();
@@ -31,31 +25,33 @@ export const ProductContainer: React.FC<ProductContainerProps> = ({
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isHovering, setIsHovering] = useState(false);
 
+  const availableSizes = Object.entries(product.stock || {})
+    .filter(([_, stockInfo]) => stockInfo.stock > 0)
+    .map(([size, stockInfo]) => ({ size, stock: stockInfo.stock }));
+
   const handleAddToCart = (size: string) => {
-    if (product.stock[size]?.stock > 0) {
+    const sizeStock = product.stock[size];
+    if (sizeStock && sizeStock.stock > 0) {
       dispatch(
         addItem({
           id: `${product.id}-${size}`,
           name: product.name,
           price: product.price,
-          size,
-          sku: product.stock[size].sku,
+          sku: sizeStock.sku,
           quantity: 1,
           imageUrl: product.images?.[0]?.image_url || '/placeholder.jpg',
         })
       );
       toaster.create({
-        title: "Producto añadido al BusyCarrito",
-        description: `${product.name} (Talle: ${size}) `,
+        title: "Producto añadido al carrito",
+        description: `${product.name} (Talle: ${size})`,
         duration: 5000,
-        meta: {
-          closable: true,
-        },
+        meta: { closable: true },
       });
     } else {
       toaster.create({
-        title: "Out of Stock",
-        description: `Sorry, ${product.name} is currently out of stock in size ${size}`,
+        title: "Sin stock",
+        description: `${product.name} no tiene stock en talle ${size}`,
         duration: 5000,
       });
     }
@@ -79,18 +75,17 @@ export const ProductContainer: React.FC<ProductContainerProps> = ({
 
   const handleProductClick = (e: React.MouseEvent) => {
     if (!(e.target as HTMLElement).closest('.size-selector')) {
-      onSelect(product);
+      onSelectProduct(product);
     }
   };
 
   const isDark = colorMode === 'dark';
 
-
   return (
     <VStack
       position="relative"
-      minW={{ base: "100%", sm: "200px", md: "300px", lg: "500px" }}
-      maxW={{ base: "100%", sm: "240px", md: "400px", lg: "500px" }}
+      minW={{ base: "100%", sm: "220px", md: "325px", lg: "475px" }}
+      maxW={{ base: "100%", sm: "260px", md: "425px", lg: "550px" }}
       w="full"
       gap={0}
       onMouseEnter={() => setIsHovering(true)}
@@ -111,7 +106,7 @@ export const ProductContainer: React.FC<ProductContainerProps> = ({
           onClick={handleProductClick}
           onMouseEnter={() => setCurrentImageIndex(1)}
           onMouseLeave={() => setCurrentImageIndex(0)}
-          h={{ base: "300px", sm: "400px", md: "500px", lg: "600px" }}
+          h={{ base: "300px", sm: "400px", md: "425px", lg: "500px" }}
         >
           {product.images && product.images.length > 0 && (
             <AnimatePresence mode="wait">
@@ -198,23 +193,6 @@ export const ProductContainer: React.FC<ProductContainerProps> = ({
             >
               ${product.price.toLocaleString()}
             </Text>
-            {product.colors && product.colors.length > 0 && (
-              <HStack justify="start" gap={2} mt={1}>
-                {product.colors.map((color) => (
-                  <Box
-                    key={color}
-                    w="6"
-                    h="6"
-                    borderRadius="full"
-                    bg={color.toLowerCase()}
-                    border="2px solid"
-                    borderColor={isDark ? 'gray.600' : 'gray.200'}
-                    transition="transform 0.2s"
-                    _hover={{ transform: 'scale(1.1)' }}
-                  />
-                ))}
-              </HStack>
-            )}
           </VStack>
         </motion.div>
 
@@ -229,31 +207,28 @@ export const ProductContainer: React.FC<ProductContainerProps> = ({
           style={{
             position: 'absolute',
             width: '100%',
-            paddingTop: '0.8rem',
+            paddingTop: '1rem',
           }}
         >
           <HStack gap={8} justify="center" w="full">
-            {Object.entries(product.stock).map(([size, data]) => {
-              const stockInfo = data as StockInfo;
+            {availableSizes.map(({ size, stock }) => {
               const inCart = cartItems.find((item) => item.id === `${product.id}-${size}`)?.quantity || 0;
-              const remaining = stockInfo.stock - inCart;
+              const remaining = stock - inCart;
 
               return (
                 <Tooltip
                   key={size}
-                  aria-label={remaining > 0 ? "Añadir al carrito" : "Sin stock"}
                   content={remaining > 0 ? `Quedan ${remaining} unidades` : "Sin stock"}
                 >
-                    <Text
+                  <Text
                     color={isDark ? '#d0d0d0' : remaining > 0 ? '#555454' : '#555454'}
                     cursor={remaining > 0 ? 'pointer' : 'not-allowed'}
-                    fontSize="2xl"
+                    fontSize="xl"
                     opacity={remaining > 0 ? 1 : 0.6}
-                    transition="all 0.3s"
                     onClick={() => remaining > 0 && handleAddToCart(size)}
                     _hover={{ textDecoration: remaining > 0 ? 'underline' : 'none' }}
                     textDecoration={remaining === 0 ? 'line-through' : 'none'}
-                    >
+                  >
                     {size.toUpperCase()}
                   </Text>
                 </Tooltip>

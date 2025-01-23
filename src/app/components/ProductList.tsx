@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Grid, Text } from '@chakra-ui/react';
+import { Flex, Grid, Text } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
 import { ProductContainer } from './ProductContainer';
 import type { Product } from '../../types/Product';
@@ -44,7 +44,7 @@ export const ProductList: React.FC<ProductListProps> = ({
     );
   }
   return (
-    <Box maxW="8xl" mx="auto" py={16} >
+    <Flex px={20} pt={20} pb={20} justifyContent={"center"} >
       <MotionGrid
         variants={container}
         initial="hidden"
@@ -54,18 +54,18 @@ export const ProductList: React.FC<ProductListProps> = ({
           sm: 'repeat(2, 1fr)',
           md: 'repeat(3, 1fr)',
           lg: 'repeat(3, 1fr)',
-          xl: 'repeat(4, 1fr)',
+          xl: 'repeat(3, 1fr)',
         }}
-        gap={{ base: 4, sm: 6, md: 8, lg: 10 }}  // Responsive gap
+        gap={{ base: 4, sm: 6, md: 8, lg: 10 }}  
       >
         {products.map((product) => (
           <ProductContainer
             key={product.id}
             product={product}
-            onSelect={onSelectProduct}
+            onSelectProduct={onSelectProduct}
           />
         ))}
       </MotionGrid>
-    </Box>
+    </Flex>
   );
 };

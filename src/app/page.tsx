@@ -1,6 +1,6 @@
 'use client';
 import { useRouter } from 'next/navigation';
-import {ProductList} from './components/ProductList';
+import { ProductList } from './components/ProductList';
 import { useProducts } from './context/ProductContext';
 import { Product } from '../types/Product';
 import { Box, Flex, Heading, Spinner } from '@chakra-ui/react';
@@ -9,6 +9,7 @@ import { useColorMode } from './components/ui/color-mode';
 import Logo from './components/Logo';
 import "./styles/globals.css";
 import CategoryGrid from './components/CategoryCard';
+import PromoCarousel from './components/PromoCarrousell';
 
 export default function Home() {
   const router = useRouter();
@@ -34,7 +35,10 @@ export default function Home() {
   return (
     <Box bg={colorMode === 'dark' ? 'gray.800' : 'bg.muted'} w={"100%"} >
       <Logo />
+      <PromoCarousel text1='Envíos disponibles para toda Argentina' text2='Envíos gratis a partir de $120.000' />
       <Carrousell />
+      <PromoCarousel text1= "Suscribite a nuestro newsletter y obtené un 10% de descuento en tu primera compra." text2='Envíos gratis dentro de Mar Del Plata' />
+
       {/* Listado completo de productos */}
       <Flex direction="column" gap={20} p={2} py={{ base: 20, md: "" }} textAlign={"center"} align={"center"}>
         <Heading fontFamily={"Archivo Black"} w={{ base: "100%", md: "80%" }} as="h2" fontSize={{ base: "4xl", md: "4vw" }} letterSpacing={"tighter"} lineHeight={{ base: 1.2, md: "11vh" }} color={colorMode === 'dark' ? '#d0d0d0' : 'gray.700'}>

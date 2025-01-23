@@ -168,7 +168,7 @@ const ProductOverview: React.FC<ProductOverviewProps> = ({
           <VStack align="stretch" gap={4} w={{ base: "100%", md: "70%" }}>
             <Box>
               <Badge fontSize="sm" p={1} bg={"black"} color={"white"} borderRadius="md">
-                {product.category}
+                {product.category.toString()}
               </Badge>
 
               <HStack justify="space-between">

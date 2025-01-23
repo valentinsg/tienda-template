@@ -3,15 +3,10 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import { Product } from '../../types/Product';
 import { Category } from '../../types/Category';
 import { supabase } from '../supabase';
-import { ProductImage } from '../../types/ProductImage';
-
-interface ProductWithImages extends Product {
-  images: ProductImage[]; // Añadimos un campo para las imágenes
-}
 
 interface ProductContextProps {
   categories: Category[];
-  products: ProductWithImages[];
+  products: Product[];
   isLoading: boolean;
   error: string | null;
 }
@@ -22,59 +17,80 @@ const ProductContext = createContext<ProductContextProps>({
   isLoading: false,
   error: null,
 });
+
 export const ProductProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [products, setProducts] = useState<ProductWithImages[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  
+ 
   useEffect(() => {
     const fetchCategories = async () => {
-      setIsLoading(true);
       try {
-        const { data: categoryData, error } = await supabase.from('categories').select('*');
-        if (error) console.error(error);
-
+        const { data: categoryData, error } = await supabase
+          .from('categories')
+          .select('*');
+        
+        if (error) throw error;
         setCategories(categoryData || []);
-      } catch (error) {
-        setError((error as Error).message);
-      } finally {
-        setIsLoading(false);
+      } catch (err) {
+        setError((err as Error).message);
       }
     };
 
-    const fetchProductsAndImages = async () => {
-      setIsLoading(true);
+    const fetchProductsWithDetails = async () => {
       try {
-        // Fetch products
-        const { data: productsData, error: productError } = await supabase.from('products').select('*');
-        if (productError) console.error(productError);
+        // Fetch products with their category and images
+        const { data: productsData, error: productError } = await supabase
+          .from('products')
+          .select(`
+            *,
+            categories!inner(*),
+            product_images(*)
+          `);
+        
+        if (productError) throw productError;
 
-        // Fetch product images
-        const { data: productImageData, error: imageError } = await supabase.from('product_images').select('*');
-        if (imageError) console.error(imageError);
+        // Fetch stock information
+        const { data: stockData, error: stockError } = await supabase
+          .from('stock')
+          .select('*');
+        
+        if (stockError) throw stockError;
 
-        if (productsData && productImageData) {
-          // Combine products with their images
-          const combinedProducts = productsData.map(product => ({
+        // Process products with stock and images
+        const processedProducts = productsData.map(product => {
+          // Group stock by size
+          const productStock = stockData
+            .filter(stock => stock.product_id === product.id)
+            .reduce((acc, stock) => {
+              // Assuming you have a separate sizes table to get size name
+              acc[stock.size] = {
+                stock: stock.quantity,
+                sku: `${product.sku}-${stock.size}`
+              };
+              return acc;
+            }, {});
+
+          return {
             ...product,
-            images: productImageData.filter(image => image.product_id === product.id), // Asociar imágenes
-          }));
-          setProducts(combinedProducts);
-        } else {
-          setProducts([]);
-        }
-      } catch (error) {
-        setError((error as Error).message);
+            category: product.categories,
+            images: product.product_images,
+            stock: productStock
+          };
+        });
+
+        setProducts(processedProducts);
+      } catch (err) {
+        setError((err as Error).message);
       } finally {
         setIsLoading(false);
       }
     };
 
     fetchCategories();
-    fetchProductsAndImages();
+    fetchProductsWithDetails();
   }, []);
-
 
   return (
     <ProductContext.Provider value={{ products, categories, isLoading, error }}>

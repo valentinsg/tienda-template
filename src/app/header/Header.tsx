@@ -150,14 +150,14 @@ const Header = () => {
             <Image
               src={colorMode === 'dark' ? BusyDarkMode : BusyLightMode}
               alt="Busy logo"
-              width={185}
-              height={185}
+              width={200}
+              height={200}
             />
           </Link>
         </Box>
 
         {/* Desktop Menu */}
-        <Flex display={{ base: 'none', md: 'flex' }} align="center">
+        <Flex display={{ base: 'none', md: 'flex' }} align="center" fontSize={"lg"}>
           <Flex mr="5vw" alignItems="center">
             {navigation.map((item) => (
               <Box key={item.name} mx={4}>
@@ -171,7 +171,7 @@ const Header = () => {
                         fontWeight={isActive(item.href) ? "bold" : "normal"}
                       >
                         <Text>{item.name}</Text>
-                        <ChevronDown className="ml-1" size={16} />
+                        <ChevronDown size={16} />
                       </Flex>
                     </MenuTrigger>
                     <MenuContent>
@@ -228,6 +228,7 @@ const Header = () => {
           {pathname !== '/checkout' && <CartDialog />}
         </Box>
       </Flex>
+      
     </Box>
   );
 };

@@ -58,7 +58,7 @@ export default function ProductPage() {
   const cartItems = useSelector((state: { cart: { items: { id: string; quantity: number; }[]; }; }) => state.cart.items);
 
   const product = products.find(p => p.id === Number(params.id));
-
+  
   if (isLoading) {
     return <div>Loading...</div>;
   }
