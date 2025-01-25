@@ -132,7 +132,7 @@ const Header = () => {
       bg={colorMode === 'dark' ? 'gray.900' : '#D0D0D0'}
       shadow="md"
       w="100%"
-      p={2}
+      p={1}
       position="sticky"
       top="0"
       zIndex="1000"
@@ -157,7 +157,7 @@ const Header = () => {
         </Box>
 
         {/* Desktop Menu */}
-        <Flex display={{ base: 'none', md: 'flex' }} align="center" fontSize={"lg"}>
+        <Flex display={{ base: 'none', md: 'flex' }} fontSize={"md"}>
           <Flex mr="5vw" alignItems="center">
             {navigation.map((item) => (
               <Box key={item.name} mx={4}>

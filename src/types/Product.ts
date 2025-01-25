@@ -8,7 +8,6 @@ export interface Product {
   sku: string;
   description: string;
   price: number;
-  category_id: string;
   category: Category;
   meta_title?: string;
   meta_description?: string;

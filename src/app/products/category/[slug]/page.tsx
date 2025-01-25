@@ -21,13 +21,13 @@ const CategoryPage = () => {
   useEffect(() => {
     if (slug && categories.length > 0 && products.length > 0) {
       const currentCategory = categories.find(category => category.slug === slug);
+      
       if (currentCategory) {
-        // Filter products based on category name instead of ID
+        // Filter products based on category name
         const categoryProducts = products.filter(
           product => product.category?.toLowerCase() === currentCategory.name.toLowerCase()
         );
-        console.log('Current category:', currentCategory.name);
-        console.log('Filtered products:', categoryProducts);
+        
         setFilteredProducts(categoryProducts);
       }
     }
@@ -38,11 +38,11 @@ const CategoryPage = () => {
   };
 
   if (isLoading) return (
-      <Box bg={colorMode === 'dark' ? 'gray.800' : 'bg.muted'} w={"100%"} h={"1000px"} display={"flex"} justifyContent={"center"} alignItems={"center"} >
-        <Spinner size="xl" color={colorMode === 'dark' ? 'gray.300' : 'bg.800'} />
-      </Box>
-    );
-    
+    <Box bg={colorMode === 'dark' ? 'gray.800' : 'bg.muted'} w={"100%"} h={"1000px"} display={"flex"} justifyContent={"center"} alignItems={"center"} >
+      <Spinner size="xl" color={colorMode === 'dark' ? 'gray.300' : 'bg.800'} />
+    </Box>
+  );
+
   if (error) return <ErrorComponent message={error} />;
 
   const currentCategory = categories.find(category => category.slug === slug);
@@ -50,19 +50,19 @@ const CategoryPage = () => {
 
   return (
     <Box bg={colorMode === 'dark' ? 'gray.800' : 'bg.muted'} py={12} color={textColor}>
-      <Heading 
-        mb={10} 
-        textAlign="center" 
-        fontFamily={"Archivo Black"} 
-        as="h1" 
-        fontSize={{ base: "4xl", md: "4vw" }} 
-        letterSpacing={"tighter"} 
-        lineHeight={{ base: 1.2, md: "11vh" }} 
+      <Heading
+        mb={10}
+        textAlign="center"
+        fontFamily={"Archivo Black"}
+        as="h1"
+        fontSize={{ base: "4xl", md: "4vw" }}
+        letterSpacing={"tighter"}
+        lineHeight={{ base: 1.2, md: "11vh" }}
         color={textColor}
       >
         {currentCategory.name}
       </Heading>
-      
+
       {filteredProducts.length > 0 ? (
         <ProductList products={filteredProducts} onSelectProduct={handleSelectProduct} />
       ) : (
