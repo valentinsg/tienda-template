@@ -15,7 +15,6 @@ export const ProductList: React.FC<ProductListProps> = ({
   products,
   onSelectProduct,
 }) => {
-
   const container = {
     hidden: { opacity: 0 },
     show: {
@@ -28,35 +27,33 @@ export const ProductList: React.FC<ProductListProps> = ({
 
   if (!products?.length) {
     return (
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        style={{ textAlign: 'center', padding: '20px 4px' }}
+      <Flex 
+        justifyContent="center" 
+        alignItems="center" 
+        width="full" 
+        py={10}
       >
-        <Text
-          fontSize="xl"
-          color="gray.500"
-          fontWeight="medium"
-        >
+        <Text fontSize="xl" color="gray.500">
           No hay productos disponibles.
         </Text>
-      </motion.div>
+      </Flex>
     );
   }
+
   return (
-    <Flex px={20} pt={20} pb={20} justifyContent={"center"} >
+    <Flex px={20} pt={20} pb={20} justifyContent="center">
       <MotionGrid
         variants={container}
         initial="hidden"
         animate="show"
         templateColumns={{
-          base: 'repeat(2, 1fr)',  // Changed to show 2 items on mobile
+          base: 'repeat(2, 1fr)',
           sm: 'repeat(2, 1fr)',
           md: 'repeat(3, 1fr)',
           lg: 'repeat(3, 1fr)',
           xl: 'repeat(3, 1fr)',
         }}
-        gap={{ base: 4, sm: 6, md: 8, lg: 10 }}  
+        gap={{ base: 4, sm: 6, md: 8, lg: 10 }}
       >
         {products.map((product) => (
           <ProductContainer

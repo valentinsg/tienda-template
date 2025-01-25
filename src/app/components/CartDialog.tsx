@@ -87,7 +87,7 @@ const CartDialog = () => {
   const renderCartIcon = () => (
     <Box position="relative">
       <IconButton aria-label="Shopping Cart" variant="ghost" colorScheme="gray" _hover={{ bg: theme.hover }} h="48px" w="48px">
-        <Box as={FaShoppingCart} w="24px" h="24px" color={theme.text} />
+        <FaShoppingCart/>
       </IconButton>
       {cartItems.length > 0 && (
         <MotionBox initial={{ scale: 0.5 }} animate={{ scale: 1 }} position="absolute" top="-1" right="-1" bg={"red.500"} color="white" borderRadius="full" w="5" h="5" display="flex" alignItems="center" justifyContent="center" fontSize="sm" fontWeight="bold">

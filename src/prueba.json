@@ -1,0 +1,24 @@
+{
+  "products": [
+    {
+      "id": 1,
+      "name": "Hoodie Example",
+      "price": 50,
+      "category": {
+        "id": 2,
+        "name": "Hoodies",
+        "slug": "hoodies"
+      }
+    },
+    {
+      "id": 2,
+      "name": "T-Shirt Example",
+      "price": 20,
+      "category": {
+        "id": 1,
+        "name": "T-Shirts",
+        "slug": "remeras"
+      }
+    }
+  ]
+}

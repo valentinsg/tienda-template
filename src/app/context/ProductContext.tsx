@@ -43,7 +43,6 @@ export const ProductProvider: React.FC<{ children: React.ReactNode }> = ({ child
         const { data: sizesData, error: sizesError } = await supabase
           .from('sizes')
           .select('*');
-
         if (sizesError) throw sizesError;
 
         // Create size map from database
@@ -60,14 +59,12 @@ export const ProductProvider: React.FC<{ children: React.ReactNode }> = ({ child
             categories!inner(*),
             product_images(*)
           `);
-
         if (productError) throw productError;
 
         // Fetch stock information
         const { data: stockData, error: stockError } = await supabase
           .from('stock')
           .select('*');
-
         if (stockError) throw stockError;
 
         const processedProducts = productsData.map(product => {
@@ -84,7 +81,8 @@ export const ProductProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
           return {
             ...product,
-            category: product.categories[0]?.name, // Get category name directly
+            category: product.categories[0],  // Ensure this is set correctly
+            category_id: product.categories[0]?.id, 
             images: product.product_images,
             stock: productStock
           };
@@ -100,6 +98,7 @@ export const ProductProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
     fetchCategories();
     fetchProductsWithDetails();
+    
   }, []);
 
   return (

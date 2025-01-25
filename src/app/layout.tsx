@@ -27,11 +27,11 @@ const geistMono = localFont({
 export const metadata: Metadata = {
   metadataBase: new URL('https://busy.com.ar'),
   title: {
-    default: "Busy | Streetwear | Ropa Urbana y Streetwear en Mar Del Plata, Argentina",
+    default: "Busy Streetwear - Moda Urbana y Tendencias en Mar del Plata, Argentina",
     template: "%s | Busy Streetwear"
   },
-  description: "Tienda online de ropa urbana y streetwear en Argentina. Envíos a todo el país. Encontrá las últimas tendencias en moda urbana.",
-  keywords: ["streetwear", "ropa urbana", "moda argentina", "busy streetwear", "urban", "ropa mar del plata", "drops", "argentina", "envios", "comprar ropa mar del plata online", "comprar ropa busy", "busyto", "comprar busy since", "comprar ropa mar del plata online", "comprar ropa en mar del plata y de moda"],
+  description: "Descubre Busy Streetwear, la tienda líder en ropa urbana y streetwear en Mar del Plata. Envíos a toda Argentina. ¡Explora las últimas tendencias!",
+  keywords: ["ropa urbana en Mar del Plata", "moda urbana en la costa atlántica", "tiendas de ropa en Mar del Plata", " streetwear en Argentina", "streetwear", "ropa urbana", "moda argentina", "busy streetwear", "urban", "ropa mar del plata", "drops", "argentina", "envios", "comprar ropa mar del plata online", "comprar ropa busy", "busyto", "comprar busy since", "comprar ropa mar del plata online", "comprar ropa en mar del plata y de moda"],
   authors: [{ name: "Busy Streetwear" }],
   openGraph: {
     title: "Busy Streetwear | Ropa Urbana y Streetwear en Argentina",
@@ -65,6 +65,7 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&display=swap" rel="stylesheet" />
+
         <Script
           id="structured-data"
           type="application/ld+json"
