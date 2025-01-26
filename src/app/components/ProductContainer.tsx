@@ -26,7 +26,7 @@ export const ProductContainer: React.FC<ProductContainerProps> = ({
   const [isHovering, setIsHovering] = useState(false);
 
   const availableSizes = Object.entries(product.stock || {})
-    .filter(([_, stockInfo]) => stockInfo.stock > 0)
+    .filter(([, stockInfo]) => stockInfo.stock > 0)
     .map(([size, stockInfo]) => ({ size, stock: stockInfo.stock }));
 
   const handleAddToCart = (size: string) => {

@@ -1,5 +1,4 @@
-import { Category } from './Category';
-import { ProductImage } from './ProductImage';
+import { ProductImage } from "./ProductImage";
 
 export interface Product {
   id: number;
@@ -8,7 +7,7 @@ export interface Product {
   sku: string;
   description: string;
   price: number;
-  category: Category;
+  category: number;
   meta_title?: string;
   meta_description?: string;
   images: ProductImage[];
@@ -16,6 +15,6 @@ export interface Product {
     [size: string]: {
       stock: number;
       sku: string;
-    }
+    };
   };
 }

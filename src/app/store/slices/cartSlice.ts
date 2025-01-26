@@ -1,5 +1,3 @@
-// Importaciones necesarias de Redux Toolkit
-import { events } from '@/app/utils/pixel';
 import { Size } from '@/types/Size';
 import {Color } from '@/types/Color';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';

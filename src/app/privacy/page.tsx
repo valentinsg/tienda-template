@@ -58,7 +58,7 @@ export default function Privacy() {
         PUBLICIDAD ORIENTADA POR EL COMPORTAMIENTO
       </Heading>
       <Text>
-        Como se describió anteriormente, utilizamos su Información personal para proporcionarle anuncios publicitarios dirigidos o comunicaciones de marketing que creemos que pueden ser de su interés.  Para más información sobre cómo funciona la publicidad dirigida, puede visitar la página educativa de la Iniciativa Publicitaria en la Red ("NAI" por sus siglas en inglés) en http://www.networkadvertising.org/understanding-online-advertising/how-does-it-work.
+        Como se describió anteriormente, utilizamos su Información personal para proporcionarle anuncios publicitarios dirigidos o comunicaciones de marketing que creemos que pueden ser de su interés.  Para más información sobre cómo funciona la publicidad dirigida, puede visitar la página educativa de la Iniciativa Publicitaria en la Red (&ldquo;NAI&rdquo; por sus siglas en inglés) en http://www.networkadvertising.org/understanding-online-advertising/how-does-it-work.
       </Text>
       <Text>
         Puede darse de baja de la publicidad dirigida mediante los siguientes enlaces:

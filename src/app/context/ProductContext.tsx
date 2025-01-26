@@ -81,8 +81,7 @@ export const ProductProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
           return {
             ...product,
-            category: product.categories[0],  // Ensure this is set correctly
-            category_id: product.categories[0]?.id, 
+            category: product.category,
             images: product.product_images,
             stock: productStock
           };

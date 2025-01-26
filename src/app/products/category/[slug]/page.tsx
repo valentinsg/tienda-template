@@ -1,36 +1,66 @@
 'use client';
-
 import React from 'react';
-import prueba from '../../../../prueba.json';
+import { useProducts } from '../../../context/ProductContext';
+import { ProductList } from '../../../components/ProductList';
+import { useRouter } from 'next/navigation';
+import { Flex, Spinner, Text } from '@chakra-ui/react';
+import { Product } from '@/types/Product';
 
-export default function CategoryPage({ params }: { params: { slug: string } }) {
-  // Simulamos recibir el slug como parámetro
-  const { slug } = params;
+export default function CategoryPage({ params }: { params: Promise<{ slug: string }> }) {
+  const resolvedParams = React.use(params);
+  const { slug } = resolvedParams;
+  const { products, categories, isLoading, error } = useProducts();
+  const router = useRouter();
 
-  // Usamos el archivo prueba.json como fuente de datos
-  const categoryProducts = [...prueba.products]; // Simulamos un array de productos
+  if (isLoading) {
+    return (
+      <Flex justify="center" align="center" minH="60vh">
+        <Spinner size="xl" />
+      </Flex>
+    );
+  }
 
-  // Filtra los productos por categoría (revisando si category es un id o un slug)
-  const filteredProducts = categoryProducts.filter((product: { category: string | { slug: string } }) => {
-    if (typeof product.category === 'string') {
-      return product.category === slug; // Si category ya es un slug
-    }
-    if (typeof product.category === 'object' && 'slug' in product.category) {
-      return product.category.slug === slug; // Si category tiene un objeto con un slug
-    }
-    return false;
-  });
+  if (error) {
+    return (
+      <Flex justify="center" align="center" minH="60vh">
+        <Text>Error al cargar los productos: {error}</Text>
+      </Flex>
+    );
+  }
+
+  const category = categories.find(cat => cat.slug === slug);
+  
+  if (!category) {
+    return (
+      <Flex justify="center" align="center" minH="60vh">
+        <Text>Categoría no encontrada</Text>
+      </Flex>
+    );
+  }
+
+  const filteredProducts = products.filter(product => 
+    product.category === category.id
+  );
+
+  const handleSelectProduct = (product: Product) => {
+    router.push(`/products/${product.id}`);
+  };
 
   return (
     <div>
-      <h1>Productos en la Categoría: {slug}</h1>
-      <ul>
-        {filteredProducts.map((product) => (
-          <li key={product.id}>
-            {product.name} - ${product.price || 'No price available'}
-          </li>
-        ))}
-      </ul>
+      <Text
+        fontSize="2xl"
+        fontWeight="bold"
+        textAlign="center"
+        mt={8}
+        mb={4}
+      >
+        {category.name}
+      </Text>
+      <ProductList 
+        products={filteredProducts}
+        onSelectProduct={handleSelectProduct}
+      />
     </div>
   );
-};
+}
