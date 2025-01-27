@@ -28,9 +28,9 @@ export const metadata: Metadata = {
   metadataBase: new URL('https://busy.com.ar'),
   title: {
     default: "Busy Streetwear - Moda Urbana y Tendencias en Mar del Plata, Argentina",
-    template: "%s | Busy Streetwear"
+    template: "%s | Busy Streetwear - Mar del Plata",
   },
-  description: "Descubre Busy Streetwear, la tienda líder en ropa urbana y streetwear en Mar del Plata. Envíos a toda Argentina. ¡Explora las últimas tendencias!",
+  description: "Encuentra Busy Streetwear, tu tienda online de moda y ropa urbana en Mar del Plata. Descubrí las últimas tendencias de ropa urbana y streetwear en Argentina.",
   keywords: ["ropa urbana en Mar del Plata", "moda urbana en la costa atlántica", "tiendas de ropa en Mar del Plata", " streetwear en Argentina", "streetwear", "ropa urbana", "moda argentina", "busy streetwear", "urban", "ropa mar del plata", "drops", "argentina", "envios", "comprar ropa mar del plata online", "comprar ropa busy", "busyto", "comprar busy since", "comprar ropa mar del plata online", "comprar ropa en mar del plata y de moda"],
   authors: [{ name: "Busy Streetwear" }],
   openGraph: {
@@ -74,13 +74,22 @@ export default function RootLayout({
               "@context": "https://schema.org",
               "@type": "ClothingStore",
               "name": "Busy Streetwear",
-              "description": "Tienda online de ropa urbana y streetwear en Argentina",
+              "description": "Tienda online de ropa urbana y streetwear en Argentina.",
               "url": "https://busy.com.ar",
-              "priceRange": "$$",
               "address": {
                 "@type": "PostalAddress",
-                "addressCountry": "AR"
-              }
+                "addressLocality": "Mar del Plata",
+                "addressRegion": "Buenos Aires",
+                "addressCountry": "Argentina"
+              },
+              "geo": {
+                "@type": "GeoCoordinates",
+                "latitude": -38.0023,
+                "longitude": -57.5575
+              },
+              "sameAs": [
+                "https://www.instagram.com/busy.streetwear/"
+              ]
             })
           }}
         />
@@ -99,8 +108,9 @@ export default function RootLayout({
           />
         </noscript>
         <link rel="canonical" href="https://busy.com.ar" />
-        <meta name="geo.region" content="AR" />
-        <meta name="geo.placename" content="Argentina" />
+        <meta name="geo.position" content="-38.0023;-57.5575" />
+        <meta name="geo.placename" content="Mar del Plata, Buenos Aires, Argentina" />
+        <meta name="geo.region" content="AR-B" />
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased `}
