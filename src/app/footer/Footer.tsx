@@ -16,7 +16,7 @@ export default function Footer() {
   const { colorMode } = useColorMode();
   const [email, setEmail] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  
+
   const textColor = useColorModeValue('gray.700', '#D0D0D0');
   const hoverColor = useColorModeValue("gray.600", "gray.400");
 
@@ -102,12 +102,12 @@ export default function Footer() {
   };
 
   return (
-    <Flex 
-      as="footer" 
-      bg={colorMode === 'dark' ? 'gray.900' : '#D0D0D0'} 
-      flexDir="column" 
-      w="100%" 
-      p={8} 
+    <Flex
+      as="footer"
+      bg={colorMode === 'dark' ? 'gray.900' : '#D0D0D0'}
+      flexDir="column"
+      w="100%"
+      p={8}
       shadow="md"
       zIndex="1000"
     >
@@ -160,14 +160,12 @@ export default function Footer() {
           </form>
         </Flex>
 
-        <Box display={{ base: "none", md: "block" }}>
-          <Link href="/">
-            <Image
-              src={colorMode === 'dark' ? BusyDarkMode : BusyLightMode}
-              alt="Busy logo"
-              width={550}
-            />
-          </Link>
+        <Box display={{ base: "none", md: "block" }} userSelect={"none"}>
+          <Image
+            src={colorMode === 'dark' ? BusyDarkMode : BusyLightMode}
+            alt="Busy logo"
+            width={550}
+          />
         </Box>
       </Flex>
 
@@ -179,13 +177,13 @@ export default function Footer() {
           <Text color={textColor} ><Link href="/products" _hover={{ color: hoverColor }}>Productos</Link></Text>
           <Text color={textColor} ><Link href="/about" _hover={{ color: hoverColor }}>Sobre nosotros</Link></Text>
           <Text color={textColor} ><Link href="https://www.instagram.com/busy.streetwear/" target="_blank" rel="noopener noreferrer" _hover={{ color: hoverColor }}>Instagram</Link></Text>
-          <Text color={textColor} ><Link href="https://www.tiktok.com/@busy.streetwear"  target="_blank" rel="noopener noreferrer" _hover={{ color: hoverColor }}>TikTok</Link></Text>
+          <Text color={textColor} ><Link href="https://www.tiktok.com/@busy.streetwear" target="_blank" rel="noopener noreferrer" _hover={{ color: hoverColor }}>TikTok</Link></Text>
         </Box>
         <Box gap={8} fontWeight={600} p={10}>
           <Text color={textColor} ><Link href="/contact" _hover={{ color: hoverColor }}>Contacto</Link></Text>
           <Text color={textColor} ><Link href="/faqs" _hover={{ color: hoverColor }}>FAQs</Link></Text>
-          <Text color={textColor}  _hover={{ color: hoverColor }}> <Link href="/terms" _hover={{ color: hoverColor }}>Términos y Condiciones</Link> </Text>
-          <Text color={textColor}  _hover={{ color: hoverColor }}><Link href="/privacy" _hover={{ color: hoverColor }}>Política de Privacidad</Link> </Text>
+          <Text color={textColor} _hover={{ color: hoverColor }}> <Link href="/terms" _hover={{ color: hoverColor }}>Términos y Condiciones</Link> </Text>
+          <Text color={textColor} _hover={{ color: hoverColor }}><Link href="/privacy" _hover={{ color: hoverColor }}>Política de Privacidad</Link> </Text>
         </Box>
       </Flex>
 
@@ -196,11 +194,11 @@ export default function Footer() {
         color={textColor}
         px={8}
       >
-        <Text display={{base: "none", md: "block"}} fontSize="lg" fontWeight={600} textAlign={{ base: "center", md: "left" }} letterSpacing={"tighter"}>
+        <Text display={{ base: "none", md: "block" }} fontSize="lg" fontWeight={600} textAlign={{ base: "center", md: "left" }} letterSpacing={"tighter"}>
           Mejor ocuparse que preocuparse.
         </Text>
         <HStack gap={8} mt={{ base: 8, md: 0 }}>
-            <Link href="https://www.tiktok.com/@busy.streetwear" _hover={{ color: hoverColor }} target="_blank" rel="noopener noreferrer">
+          <Link href="https://www.tiktok.com/@busy.streetwear" _hover={{ color: hoverColor }} target="_blank" rel="noopener noreferrer">
             <Icon
               _hover={{ transform: "scale(1.1)" }}
               transition="all 0.5s ease"
@@ -208,8 +206,8 @@ export default function Footer() {
             >
               <FaTiktok />
             </Icon>
-            </Link>
-            <Link href="https://www.instagram.com/busy.streetwear/" _hover={{ color: hoverColor }} target="_blank" rel="noopener noreferrer">
+          </Link>
+          <Link href="https://www.instagram.com/busy.streetwear/" _hover={{ color: hoverColor }} target="_blank" rel="noopener noreferrer">
             <Icon
               _hover={{ transform: "scale(1.1)" }}
               transition="all 0.5s ease"
