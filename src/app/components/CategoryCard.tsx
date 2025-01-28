@@ -45,8 +45,6 @@ const CategoryCard: React.FC<CategoryCardProps> = ({
       }}
       mb={20}
     >
-
-      
       {/* Pattern overlay */}
       <Text
         position="absolute"
