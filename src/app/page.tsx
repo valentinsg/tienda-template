@@ -33,7 +33,7 @@ export default function Home() {
   );
 
   return (
-    <Box bg={colorMode === 'dark' ? 'gray.800' : 'bg.muted'} w={"100%"} >
+    <Box bg={colorMode === 'dark' ? 'gray.800' : 'bg.muted'} w={"100%"} as={"main"}>
       <Logo />
       <PromoCarousel text1='Envíos disponibles para toda Argentina' text2='Envíos gratis a partir de $120.000' />
       <Carrousell />

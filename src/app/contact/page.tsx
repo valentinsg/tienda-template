@@ -52,53 +52,56 @@ const Contact = () => {
   };
 
   return (
-    <Box bg={colorMode === 'dark' ? 'gray.800' : 'bg.muted'} py={12} color={textColor}>
-      <Container maxW={{base: "90%", md: "65%"}} >
+    <Box bg={colorMode === 'dark' ? 'gray.800' : 'bg.muted'} py={12} h={{ base: "auto", md: "90vh" }} color={textColor} as={"section"}>
+      <Container maxW={{ base: "90%", md: "65%" }} >
         <VStack gap={8} >
           <Heading textAlign="center" mb={10} fontFamily={"Archivo Black"} as="h1" fontSize={{ base: "4xl", md: "4vw" }} letterSpacing={"tighter"} lineHeight={{ base: 1.2, md: "11vh" }} color={textColor}>
             Contáctanos.
           </Heading>
-          <SimpleGrid columns={{ base: 1, md: 2 }} w="full">
+          <SimpleGrid columns={{ base: 1, md: 2 }} w="full" as={"section"} >
             {/* Información de Contacto */}
             <Box>
-              <VStack gap={6} align={{base: "center", md:"stretch"}}>
-                <Heading
-                  size="xl"
+              <VStack gap={4} align={{ base: "center", md: "stretch" }}>
+                <Text
+                  fontSize="2xl"
                   fontFamily="Archivo Black"
                   letterSpacing="tighter"
                   fontWeight={500}
+                  as={"h3"}
                 >
                   Información de Contacto
-                </Heading>
+                </Text>
 
                 <HStack gap={2}>
-                  <Icon boxSize={8} color={buttonColor}>
+                  <Icon color={buttonColor} as={"span"}>
                     <MdLocationOn />
                   </Icon>
-                  <Text fontSize={"lg"}>Nuestra casa (por ahora :D)</Text>
+                  <Text as={"span"} fontSize={"lg"}>Nuestra casa (por ahora :D)</Text>
                 </HStack>
 
                 <HStack gap={2}>
-                  <Icon boxSize={8} color={buttonColor}>
+                  <Icon color={buttonColor} as={"span"}>
                     <MdPhone />
                   </Icon>
-                  <Text fontSize={"lg"}>+54 9 1158233292 o +54 9 2236680041 </Text>
+                  <Text fontSize={"lg"} as={"span"}>+54 9 1158233292 o +54 9 2236680041 </Text>
                 </HStack>
 
-                <HStack gap={2}>
-                  <Icon boxSize={8} color={buttonColor}>
+                <HStack gap={3}>
+                  <Icon color={buttonColor} as={"span"}>
                     <MdEmail />
                   </Icon>
-                  <Text fontSize={"lg"}>busystreetwear@gmail.com</Text>
+                  <Text fontSize={"lg"} as={"span"}>busystreetwear@gmail.com</Text>
                 </HStack>
               </VStack>
             </Box>
 
             {/* Formulario de Contacto */}
-            <Box  mt={{base: 20, md: "0"}}>
+            <Box mt={{ base: 20, md: "0" }}>
               <form onSubmit={handleSubmit}>
                 <VStack gap={6}>
-                  <Text fontFamily="Archivo Black" fontWeight={500} fontSize={"lg"}>Nombre</Text>
+                  <Text fontFamily="Archivo Black" fontWeight={500} fontSize={"2xl"} as={"h2"}>
+                    Nombre
+                  </Text>
                   <Input
                     type="text"
                     value={formData.nombre}
@@ -108,9 +111,12 @@ const Contact = () => {
                     placeholder="Tu nombre"
                     colorPalette={"blue"}
                     borderColor={buttonColor}
+                    as={"input"}
                   />
 
-                  <Text fontFamily="Archivo Black" fontSize={"lg"} fontWeight={500}>Email</Text>
+                  <Text fontFamily="Archivo Black" fontWeight={500} fontSize={"2xl"} as={"h2"}>
+                    Email
+                  </Text>
                   <Input
                     type="email"
                     value={formData.email}
@@ -120,11 +126,15 @@ const Contact = () => {
                     placeholder="tu@email.com"
                     borderColor={buttonColor}
                     colorPalette={"blue"}
+                    as={"input"}
                   />
 
-                  <Text fontFamily="Archivo Black" fontSize={"lg"} fontWeight={500}>Mensaje</Text>
+                  <Text fontFamily="Archivo Black" fontWeight={500} fontSize={"2xl"} as={"h2"}>
+                    Mensaje
+                  </Text>
                   <Textarea
                     value={formData.mensaje}
+                    as={"textarea"}
                     colorPalette={"blue"}
                     onChange={(e) =>
                       setFormData({ ...formData, mensaje: e.target.value })
@@ -138,7 +148,9 @@ const Contact = () => {
                     type="submit"
                     colorPalette={"blue"}
                     w="full"
+                    as={"button"}
                     fontWeight={700}
+                    aria-label="Enviar mensaje"
                   >
                     Enviar Mensaje
                   </Button>

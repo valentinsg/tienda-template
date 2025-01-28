@@ -15,8 +15,6 @@ import {
 import { AccordionItemTrigger, AccordionItemContent } from "@chakra-ui/react";
 import { useColorMode, useColorModeValue } from '../components/ui/color-mode';
 import "../styles/globals.css";
-import Head from "next/head";
-
 
 const FAQs = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -198,117 +196,102 @@ const FAQs = () => {
     }));
 
   return (
-    <>
-      <Head>
-        <title>Preguntas Frecuentes | Busy</title>
-        <meta name="description" content="Encuentra respuestas a las preguntas más comunes sobre Busy, nuestra visión, productos, políticas de envío y mucho más." />
-        <meta name="keywords" content="Busy, preguntas frecuentes, FAQ, envío, devoluciones, calidad, compras online" />
-        <meta name="author" content="Busy streetwear" />
-        <meta property="og:title" content="Preguntas Frecuentes | Busy" />
-        <meta property="og:description" content="Resolvemos tus dudas sobre nuestra marca y productos. Descubre todo sobre Busy aquí." />
-        <meta property="og:url" content="https://www.busy.com.ar/faqs" />
-        <meta property="og:type" content="website" />
-        <meta property="og:image" content="https://tu-dominio.com/static/imagen-og.jpg" />
-        <link rel="canonical" href="https://busy.com.ar/faqs" />
-      </Head>
-
-      <Box bg={colorMode === 'dark' ? 'gray.800' : 'bg.muted'} py={12} color={textColor} as={"main"}>
-        <Script
-          id="faq-schema"
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              "@context": "https://schema.org",
-              "@type": "FAQPage",
-              "mainEntity": faqsData.flatMap(faq =>
-                faq.questions.map(question => ({
-                  "@type": "Question",
-                  "name": question.question,
-                  "acceptedAnswer": {
-                    "@type": "Answer",
-                    "text": question.answer
-                  }
-                }))
-              )
-            })
-          }}
+    <Box bg={colorMode === 'dark' ? 'gray.800' : 'bg.muted'} py={12} color={textColor} as={"main"}>
+      <Script
+        id="faq-schema"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            "mainEntity": faqsData.flatMap(faq =>
+              faq.questions.map(question => ({
+                "@type": "Question",
+                "name": question.question,
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": question.answer
+                }
+              }))
+            )
+          })
+        }}
+      />
+      <Container maxW={{ base: "100%", md: "70%" }} as={"section"}>
+        {/* Primera sección */}
+        <Heading textAlign="center" fontFamily={"Archivo Black"} as="h1" fontSize={{ base: "4xl", md: "4vw" }} letterSpacing={"tighter"} lineHeight={{ base: 1.2, md: "11vh" }} color={textColor}>
+          Preguntas Frecuentes.
+        </Heading>
+        {/* Barra de búsqueda */}
+        <Input
+          placeholder="Buscar una pregunta..."
+          mt={8}
+          size="lg"
+          onChange={(e) => setSearchTerm(e.target.value)}
+          value={searchTerm}
+          colorPalette={"blue"}
+          borderColor={buttonColor}
         />
-        <Container maxW={{ base: "100%", md: "70%" }} as={"section"}>
-          {/* Primera sección */}
-          <Heading textAlign="center" fontFamily={"Archivo Black"} as="h1" fontSize={{ base: "4xl", md: "4vw" }} letterSpacing={"tighter"} lineHeight={{ base: 1.2, md: "11vh" }} color={textColor}>
-            Preguntas Frecuentes.
-          </Heading>
-          {/* Barra de búsqueda */}
-          <Input
-            placeholder="Buscar una pregunta..."
-            mt={8}
-            size="lg"
-            onChange={(e) => setSearchTerm(e.target.value)}
-            value={searchTerm}
-            colorPalette={"blue"}
-            borderColor={buttonColor}
-          />
-          <VStack align="stretch">
-            {filteredFAQs.map((section) => section.questions.length > 0 && (
-              <Box key={section.category} py={8} borderRadius="md">
-                <Text
-                  as="h2"
-                  fontSize={{ base: "2xl", md: "4xl" }}
-                  textAlign={"center"}
-                  fontWeight={500}
-                  py={4}
-                  color={textColor}
-                  textTransform="uppercase"
-                  fontFamily={"Archivo Black"}
-                >
-                  {section.category}
-                </Text>
-                <Accordion.Root collapsible>
-                  {/* Sobre la Marca Busy */}
-                  {section.questions.map((faq, index) => (
-                    <Accordion.Item key={index} value={`item-${index}`} m={4} borderRadius="md" bg={colorMode === 'dark' ? 'gray.700' : 'white'} color={textColor}>
-                      <AccordionItemTrigger
-                        cursor={"pointer"}
-                        p={4}
-                        fontSize="xl"
-                        _hover={{ bg: colorMode === 'dark' ? 'gray.600' : 'gray.200' }}
-                        _expanded={{ bg: colorMode === 'dark' ? 'gray.600' : 'gray.200' }}
-                        transition="background-color 0.2s ease"
-                      >
-                        <Box textAlign="center" as={"h3"} fontSize={{ base: "lg", md: "xl" }} fontFamily={"Archivo Black"} fontWeight={500} letterSpacing={"tighter"} textTransform="uppercase">
-                          {faq.question}
-                        </Box>
-                      </AccordionItemTrigger>
-                      <AccordionItemContent
-                        fontSize="lg"
-                        textAlign="left"
-                      >
-                        <Box p={5} as={"p"}>
-                          {faq.answer}
-                        </Box>
-                      </AccordionItemContent>
+        <VStack align="stretch">
+          {filteredFAQs.map((section) => section.questions.length > 0 && (
+            <Box key={section.category} py={8} borderRadius="md">
+              <Text
+                as="h2"
+                fontSize={{ base: "2xl", md: "4xl" }}
+                textAlign={"center"}
+                fontWeight={500}
+                py={4}
+                color={textColor}
+                textTransform="uppercase"
+                fontFamily={"Archivo Black"}
+              >
+                {section.category}
+              </Text>
+              <Accordion.Root collapsible>
+                {/* Sobre la Marca Busy */}
+                {section.questions.map((faq, index) => (
+                  <Accordion.Item key={index} value={`item-${index}`} m={4} borderRadius="md" bg={colorMode === 'dark' ? 'gray.700' : 'white'} color={textColor}>
+                    <AccordionItemTrigger
+                      cursor={"pointer"}
+                      p={4}
+                      fontSize="xl"
+                      _hover={{ bg: colorMode === 'dark' ? 'gray.600' : 'gray.200' }}
+                      _expanded={{ bg: colorMode === 'dark' ? 'gray.600' : 'gray.200' }}
+                      transition="background-color 0.2s ease"
+                    >
+                      <Box textAlign="center" as={"h3"} fontSize={{ base: "lg", md: "xl" }} fontFamily={"Archivo Black"} fontWeight={500} letterSpacing={"tighter"} textTransform="uppercase">
+                        {faq.question}
+                      </Box>
+                    </AccordionItemTrigger>
+                    <AccordionItemContent
+                      fontSize="lg"
+                      textAlign="left"
+                    >
+                      <Box p={5} as={"p"}>
+                        {faq.answer}
+                      </Box>
+                    </AccordionItemContent>
 
-                    </Accordion.Item>
-                  ))}
-                </Accordion.Root>
-              </Box>
-            ))}
-          </VStack>
-          <Box textAlign={{ base: "center", md: "end" }} mt={12}>
-            <Button
-              size={{ base: "md", md: "lg" }}
-              fontWeight={600}
-              colorPalette={"blue"}
-              onClick={() => window.location.href = "/contact"}
-              aria-label="Contact Us"
-              as={"a"}
-            >
-              No te quedes con ninguna duda y contáctanos.
-            </Button>
-          </Box>
-        </Container>
-      </Box >
-    </>
+                  </Accordion.Item>
+                ))}
+              </Accordion.Root>
+            </Box>
+          ))}
+        </VStack>
+        <Box textAlign={{ base: "center", md: "end" }} mt={12}>
+          <Button
+            size={{ base: "md", md: "lg" }}
+            fontWeight={600}
+            colorPalette={"blue"}
+            onClick={() => window.location.href = "/contact"}
+            aria-label="Contact Us"
+            as={"a"}
+          >
+            No te quedes con ninguna duda y contáctanos.
+          </Button>
+        </Box>
+      </Container>
+    </Box >
   );
 };
 

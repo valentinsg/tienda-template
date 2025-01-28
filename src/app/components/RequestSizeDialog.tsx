@@ -76,7 +76,7 @@ const RequestSizeDialog = () => {
               onChange={(e) => setEmail(e.target.value)}
             />
 
-            <Button colorScheme="blue" onClick={handleSubmit}>
+            <Button colorScheme="blue" onClick={handleSubmit} size="lg">
               Avisame
             </Button>
           </VStack>
