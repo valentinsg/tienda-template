@@ -31,7 +31,25 @@ export const metadata: Metadata = {
     template: "%s | Busy Streetwear - Mar del Plata",
   },
   description: "Encuentra Busy Streetwear, tu tienda online de moda y ropa urbana en Mar del Plata. Descubrí las últimas tendencias de ropa urbana y streetwear en Argentina.",
-  keywords: ["ropa urbana en Mar del Plata", "moda urbana en la costa atlántica", "tiendas de ropa en Mar del Plata", " streetwear en Argentina", "streetwear", "ropa urbana", "moda argentina", "busy streetwear", "urban", "ropa mar del plata", "drops", "argentina", "envios", "comprar ropa mar del plata online", "comprar ropa busy", "busyto", "comprar busy since", "comprar ropa mar del plata online", "comprar ropa en mar del plata y de moda"],
+  keywords: [
+    "ropa urbana en Mar del Plata",
+    "moda urbana en la costa atlántica",
+    "tiendas de ropa en Mar del Plata",
+    "streetwear en Argentina",
+    "streetwear",
+    "ropa urbana",
+    "moda argentina",
+    "busy streetwear",
+    "urban",
+    "ropa mar del plata",
+    "drops",
+    "argentina",
+    "envios",
+    "comprar ropa mar del plata online",
+    "comprar ropa busy",
+    "busyto",
+    "comprar busy since"
+  ],
   authors: [{ name: "Busy Streetwear" }],
   openGraph: {
     title: "Busy Streetwear | Ropa Urbana y Streetwear en Argentina",
@@ -40,18 +58,31 @@ export const metadata: Metadata = {
     siteName: 'Busy Streetwear',
     locale: 'es_AR',
     type: 'website',
+    images: [
+      {
+        url: '[URL de tu imagen principal]',
+        width: 1200,
+        height: 630,
+        alt: 'Busy Streetwear Logo'
+      }
+    ]
   },
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: {
-      index: true,
-      follow: true,
-      'max-video-preview': -1,
-      'max-image-preview': 'large',
-      'max-snippet': -1,
-    },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Busy Streetwear',
+    description: 'Tienda online de ropa urbana y streetwear en Argentina',
+    images: ['[URL de tu imagen principal]'],
   },
+  verification: {
+    google: 'tu-codigo-de-verificacion',
+    yandex: 'tu-codigo-de-verificacion',
+  },
+  alternates: {
+    canonical: 'https://busy.com.ar',
+    languages: {
+      'es-AR': 'https://busy.com.ar',
+    }
+  }
 };
 
 export default function RootLayout({

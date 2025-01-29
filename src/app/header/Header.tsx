@@ -128,7 +128,7 @@ const Header = () => {
 
   return (
     <Box
-      as="nav"
+      as="header"
       bg={colorMode === 'dark' ? 'gray.900' : '#D0D0D0'}
       shadow="md"
       w="100%"
