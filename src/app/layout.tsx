@@ -18,6 +18,7 @@ const geistSans = localFont({
   variable: "--font-geist-sans",
   weight: "100 900",
 });
+
 const geistMono = localFont({
   src: "./fonts/GeistMonoVF.woff",
   variable: "--font-geist-mono",
@@ -38,21 +39,21 @@ export const metadata: Metadata = {
     "streetwear en Argentina",
     "streetwear",
     "ropa urbana",
-    "moda argentina",
-    "busy streetwear",
-    "urban",
+    "ropa urbana en Mar Del Plata",
     "ropa mar del plata",
+    "busy since 2024",
+    "busy streetwear",
     "drops",
     "argentina",
     "envios",
     "comprar ropa mar del plata online",
     "comprar ropa busy",
-    "busyto",
-    "comprar busy since"
+    "comprar busy since",
+    "comprar ropa streetwear",
   ],
   authors: [{ name: "Busy Streetwear" }],
   openGraph: {
-    title: "Busy Streetwear | Ropa Urbana y Streetwear en Argentina",
+    title: "Busy Streetwear | Comunidad de Ropa Urbana y Streetwear en Argentina",
     description: "Tienda online de ropa urbana y streetwear en Argentina. Envíos a todo el país.",
     url: 'https://busy.com.ar',
     siteName: 'Busy Streetwear',
@@ -60,9 +61,7 @@ export const metadata: Metadata = {
     type: 'website',
     images: [
       {
-        url: '[URL de tu imagen principal]',
-        width: 1200,
-        height: 630,
+        url: '{/public/favicon.ico}',
         alt: 'Busy Streetwear Logo'
       }
     ]
@@ -119,7 +118,8 @@ export default function RootLayout({
                 "longitude": -57.5575
               },
               "sameAs": [
-                "https://www.instagram.com/busy.streetwear/"
+                "https://www.instagram.com/busy.streetwear/",
+                "https://www.tiktok.com/@busy.streetwear"
               ]
             })
           }}

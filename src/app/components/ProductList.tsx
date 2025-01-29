@@ -53,7 +53,7 @@ export const ProductList: React.FC<ProductListProps> = ({
           lg: 'repeat(3, 1fr)',
           xl: 'repeat(3, 1fr)',
         }}
-        gap={{ base: 4, sm: 6, md: 8, lg: 10 }}
+        gap={{ base: 4, sm: 6, md: 8, lg: 14 }}
       >
         {products.map((product) => (
           <ProductContainer
