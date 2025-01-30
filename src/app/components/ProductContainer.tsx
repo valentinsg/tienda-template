@@ -84,7 +84,7 @@ export const ProductContainer: React.FC<ProductContainerProps> = ({
   return (
     <VStack
       position="relative"
-      minW={{ base: "100%", sm: "220px", md: "300px", lg: "425px" }}
+      minW={{ base: "100%", sm: "220px", md: "300px", lg: "400px" }}
       maxW={{ base: "100%", sm: "260px", md: "400px", lg: "500px" }}
       w="full"
       gap={0}

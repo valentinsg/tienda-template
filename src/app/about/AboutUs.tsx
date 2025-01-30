@@ -99,7 +99,7 @@ const AboutUs = () => {
                   <Text fontSize="2xl" lineHeight={1.5} as={"h3"}>
                     Busy pretende ser un movimiento que celebre ocuparse de lo que realmente importa. Estás BUSY en esos momentos que invertís en vos, tus sueños o lo que te moviliza, por lo que estar BUSY nos ayuda a dar pasos hacia nuestra eudaimonía, lo que se traduce en un accionar constante, y un accionar constante inevitablemente atrae buenos resultados. <br />
 
-                    <br /> Por esto todos nuestros productos van a estar intrínsecamente de este concepto que tanto nos motiva. Nuestro pequeño aporte a la cultura de la moda viene con este mensaje que esperamos se expanda y logré abrir cabezas o ayude a alguien que necesite encontrar/alcanzar su pasión.
+                    <br /> Por esto todos nuestros productos van a estar intrínsecamente cargados de este concepto que tanto nos motiva. Nuestro pequeño aporte a la cultura de la moda viene con este mensaje que esperamos se expanda y logré abrir cabezas o ayude a alguien que necesite encontrar/alcanzar su pasión.
                     <br /><br /> Emprendedores, empleados, artistas o estudiantes: no importa tú ocupación, lo que importa es ocuparse, no preocuparse, eso que realmente nos moviliza, eso que nos hace crecer es lo que pregona BUSY.
                     <br /> <br />-Keep Calm And Stay
 
