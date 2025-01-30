@@ -220,9 +220,7 @@ export default function ProductPage() {
                 </Text>
                 <Badge >In Stock</Badge>
               </HStack>
-              <Text fontSize="sm" color={textColor} as={"span"}>
-                Impuestos incluídos
-              </Text>
+            
             </Box>
 
             {/* Size Selector with Stock Information */}

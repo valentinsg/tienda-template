@@ -30,7 +30,7 @@ export const metadata: Metadata = {
   title: {
     default: "Busy Streetwear - Moda Urbana y Tendencias en Mar del Plata, Argentina",
     template: "%s | Busy Streetwear - Mar del Plata",
-  },
+  },  
   description: "Encuentra Busy Streetwear, tu tienda online de moda y ropa urbana en Mar del Plata. Descubrí las últimas tendencias de ropa urbana y streetwear en Argentina.",
   keywords: [
     "ropa urbana en Mar del Plata",

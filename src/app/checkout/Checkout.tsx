@@ -57,24 +57,42 @@ const REQUIRED_FIELDS = {
 };
 
 const Checkout: React.FC = () => {
-  // State Management
   const cartItems = useSelector(selectCartItems);
-  const [andreaniBranches, setAndreaniBranches] = useState<AndreaniBranch[]>([]);
-  const textColor = useColorModeValue('#555454', '#D0D0D0');
   const { colorMode } = useColorMode();
-  const buttonColor = useColorModeValue('blue.500', 'blue.300');
-  const cardBg = useColorModeValue('white', 'gray.700');
-  const borderColor = useColorModeValue('gray.200', 'gray.600');
+
+  // State Management
+  const [andreaniBranches, setAndreaniBranches] = useState<AndreaniBranch[]>([]);
   const [showDiscountInput, setShowDiscountInput] = useState(false);
   const [discountCode, setDiscountCode] = useState('');
   const [discountError, setDiscountError] = useState('');
   const [discountApplied, setDiscountApplied] = useState(false);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [, setFormErrors] = useState<Record<string, string>>({});
+  const [shippingMethod, setShippingMethod] = useState<'home' | 'branch'>('home');
+  const [homeShippingDetails, setHomeShippingDetails] = useState<HomeShippingDetails>({
+    address: '',
+    province: '',
+    postal_code: '',
+    city: '',
+  });
 
+  const [branchShippingDetails, setBranchShippingDetails] = useState<AndreaniBranch>({
+    address: '',
+    province: '',
+    city: '',
+    postal_code: '',
+    name: '',
+  });
+
+  // Color mode variables
+  const textColor = useColorModeValue('#555454', 'white');
+  const buttonColor = useColorModeValue('blue.500', 'blue.300');
+  const cardBg = useColorModeValue('white', 'gray.700');
+  const borderColor = useColorModeValue('gray.200', 'gray.600');
+
+  // Form Management
   const validateForm = () => {
     const errors: Record<string, string> = {};
-
     // Validar datos personales
     if (!personalInfo.name) errors.name = 'El nombre es requerido';
     if (!personalInfo.lastName) errors.lastName = 'El apellido es requerido';
@@ -108,6 +126,16 @@ const Checkout: React.FC = () => {
     return '';
   };
 
+  const [personalInfo, setPersonalInfo] = useState<PersonalInfo>({
+    name: '',
+    lastName: '',
+    email: '',
+    phone: '',
+    age: '',
+    gender: ''
+  });
+
+  // Discount Management
   const validDiscountCodes = [
     'HastaElFinDeLosTiempos',
     'KeepCalmAndStayBusy',
@@ -132,79 +160,13 @@ const Checkout: React.FC = () => {
     }
   };
 
-  const [personalInfo, setPersonalInfo] = useState<PersonalInfo>({
-    name: '',
-    lastName: '',
-    email: '',
-    phone: '',
-    age: '',
-    gender: ''
-  });
-
-  const DebugFormState = () => (
-    <Box
-      position="fixed"
-      bottom="20px"
-      right="20px"
-      p={4}
-      bg="gray.800"
-      color="white"
-      borderRadius="md"
-      maxW="400px"
-      maxH="500px"
-      overflow="auto"
-      opacity={0.9}
-      fontSize="sm"
-    >
-      <VStack align="start" gap={4}>
-        <Text fontWeight="bold">Debug - Estado del Formulario:</Text>
-        <Box>
-          <Text fontWeight="bold">Datos Personales:</Text>
-          <pre>{JSON.stringify(personalInfo, null, 2)}</pre>
-        </Box>
-        <Box>
-          <Text fontWeight="bold">Método de Envío:</Text>
-          <Text>{shippingMethod}</Text>
-        </Box>
-        <Box>
-          <Text fontWeight="bold">Detalles de Envío:</Text>
-          <pre>
-            {JSON.stringify(
-              shippingMethod === 'home'
-                ? homeShippingDetails
-                : branchShippingDetails,
-              null,
-              2
-            )}
-          </pre>
-        </Box>
-        <Box>
-          <Text fontWeight="bold">Descuento:</Text>
-          <Text>Aplicado: {discountApplied ? 'Sí' : 'No'}</Text>
-          <Text>Código: {discountCode || 'No ingresado'}</Text>
-          <Text fontWeight="bold">Productos en carrito:</Text>
-          <pre>{JSON.stringify(cartItems, null, 2)}</pre>
-        </Box>
-      </VStack>
-    </Box>
-  );
-
-  const [shippingMethod, setShippingMethod] = useState<'home' | 'branch'>('home');
-
-  const [homeShippingDetails, setHomeShippingDetails] = useState<HomeShippingDetails>({
-    address: '',
-    province: '',
-    postal_code: '',
-    city: '',
-  });
-
-  const [branchShippingDetails, setBranchShippingDetails] = useState<AndreaniBranch>({
-    address: '',
-    province: '',
-    city: '',
-    postal_code: '',
-    name: '',
-  });
+  // Price Calculation
+  const calculateTotalPrice = () => {
+    const productTotal = cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
+    const shippingCost = shippingMethod === 'home' ? 9500 : 8000;
+    const subtotal = productTotal + shippingCost;
+    return discountApplied ? subtotal * 0.9 : subtotal;
+  };
 
   // Fetch Branches
   useEffect(() => {
@@ -269,8 +231,8 @@ const Checkout: React.FC = () => {
           cartItems,
           totalPrice: calculateTotalPrice(),
           shippingMethod,
-          shippingAddress: shippingMethod === 'home' 
-            ? homeShippingDetails 
+          shippingAddress: shippingMethod === 'home'
+            ? homeShippingDetails
             : branchShippingDetails,
           orderId: paymentRecord.id
         }),
@@ -299,13 +261,53 @@ const Checkout: React.FC = () => {
     }
   };
 
-  // Price Calculation
-  const calculateTotalPrice = () => {
-    const productTotal = cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
-    const shippingCost = shippingMethod === 'home' ? 9500 : 8000;
-    const subtotal = productTotal + shippingCost;
-    return discountApplied ? subtotal * 0.9 : subtotal;
-  };
+  const DebugFormState = () => (
+    <Box
+      position="fixed"
+      bottom="20px"
+      right="20px"
+      p={4}
+      bg="gray.800"
+      color="white"
+      borderRadius="md"
+      maxW="400px"
+      maxH="500px"
+      overflow="auto"
+      opacity={0.9}
+      fontSize="sm"
+    >
+      <VStack align="start" gap={4}>
+        <Text fontWeight="bold">Debug - Estado del Formulario:</Text>
+        <Box>
+          <Text fontWeight="bold">Datos Personales:</Text>
+          <pre>{JSON.stringify(personalInfo, null, 2)}</pre>
+        </Box>
+        <Box>
+          <Text fontWeight="bold">Método de Envío:</Text>
+          <Text>{shippingMethod}</Text>
+        </Box>
+        <Box>
+          <Text fontWeight="bold">Detalles de Envío:</Text>
+          <pre>
+            {JSON.stringify(
+              shippingMethod === 'home'
+                ? homeShippingDetails
+                : branchShippingDetails,
+              null,
+              2
+            )}
+          </pre>
+        </Box>
+        <Box>
+          <Text fontWeight="bold">Descuento:</Text>
+          <Text>Aplicado: {discountApplied ? 'Sí' : 'No'}</Text>
+          <Text>Código: {discountCode || 'No ingresado'}</Text>
+          <Text fontWeight="bold">Productos en carrito:</Text>
+          <pre>{JSON.stringify(cartItems, null, 2)}</pre>
+        </Box>
+      </VStack>
+    </Box>
+  );
 
   return (
     <Box bg={colorMode === 'dark' ? 'gray.800' : 'bg.muted'} py={12} color={textColor} minH={"90vh"} w={"100%"} >
@@ -727,7 +729,6 @@ const Checkout: React.FC = () => {
           </Button>
         </Box>
       </Stack >
-      <DebugFormState />
     </Box >
   );
 };
