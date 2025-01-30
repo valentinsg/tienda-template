@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, forwardRef, useImperativeHandle } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { decrementItem, incrementItem, setCheckoutAllowed } from '../store/slices/cartSlice';
 import Link from 'next/link';
@@ -47,12 +47,14 @@ const MotionBox = chakra(motion.div);
 const MotionFlex = chakra(motion.div);
 // #endregion
 
-const CartDialog = () => {
-  // #region Hooks & State
+const CartDialog = forwardRef((props, ref) => {  
   const dispatch = useDispatch();
   const cartItems = useSelector((state: { cart: { items: CartItem[] } }) => state.cart.items);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
+  useImperativeHandle(ref, () => ({
+    setIsDialogOpen
+  }));
   // #endregion
 
   // #region Theme
@@ -199,6 +201,6 @@ const CartDialog = () => {
       </DialogContent>
     </DialogRoot>
   );
-};
+});
 
 export default CartDialog;

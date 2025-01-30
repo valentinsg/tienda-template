@@ -29,6 +29,7 @@ import { FiShare2 } from 'react-icons/fi';
 import { useColorMode } from '../components/ui/color-mode';
 import { Tooltip } from './ui/tooltip';
 import RequestSizeDialog from './RequestSizeDialog';
+import { toaster } from './ui/toaster';
 
 interface ProductOverviewProps {
   product: Product;
@@ -45,7 +46,7 @@ const ProductOverview: React.FC<ProductOverviewProps> = ({
   relatedProducts = []
 }) => {
   const dispatch = useDispatch();
-  const [selectedSize, ] = useState<string[] | null>(null);
+  const [selectedSize, setSelectedSize] = useState<string[] | null>(null);  
   const [selectedImage, setSelectedImage] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const { colorMode } = useColorMode();
@@ -59,6 +60,8 @@ const ProductOverview: React.FC<ProductOverviewProps> = ({
   const secondaryBg = useColorModeValue('gray.50', 'gray.700');
   const borderColor = useColorModeValue('gray.200', 'gray.600');
   const mutedTextColor = useColorModeValue('gray.600', 'gray.400');
+
+  const cartDialogRef = React.useRef<{ setIsDialogOpen: (open: boolean) => void }>(null);
 
   const getCurrentStock = () => {
     if (!selectedSize || selectedSize.length === 0) return 0;
@@ -76,14 +79,11 @@ const ProductOverview: React.FC<ProductOverviewProps> = ({
   const remainingStock = Math.max(0, getCurrentStock() - getCurrentCartQuantity());
 
   const handleAddToCart = async () => {
-
     if (!isSizeSelected || remainingStock <= 0) return;
-
-    if (!selectedSize || remainingStock <= 0) return;
 
     setIsLoading(true);
     try {
-      // Simulamos una carga
+      // Simulate loading
       await new Promise(resolve => setTimeout(resolve, 800));
 
       const cartItem = {
@@ -95,12 +95,35 @@ const ProductOverview: React.FC<ProductOverviewProps> = ({
       };
 
       dispatch(addItem(cartItem));
-      toast.success('Product added to cart!');
+      
+      // Show notification
+      toaster.create({
+        title: "Producto añadido al carrito",
+        description: `${product.name} (Talle: ${selectedSize[0]})`,
+        duration: 5000,
+        meta: { closable: true },
+      });
+
+      // Reset selected size
+      setSelectedSize(null);
+
+      // Open cart dialog
+      if (cartDialogRef.current) {
+        cartDialogRef.current.setIsDialogOpen(true);
+      }
     } catch {
-      toast.error('Error adding product to cart');
+      toaster.create({
+        title: "Error",
+        description: "Error adding product to cart",
+        duration: 5000,
+      });
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleSizeSelect = (size: string) => {
+    setSelectedSize([size]);
   };
 
   const mainImage = product.images?.[selectedImage]?.image_url || '/placeholder.jpg';
@@ -231,6 +254,7 @@ const ProductOverview: React.FC<ProductOverviewProps> = ({
                         size="lg"
                         variant="outline"
                         colorScheme={remaining > 0 ? "blue" : "gray"}
+                        onClick={() => handleSizeSelect(size)}
                         _hover={{
                           bg: remaining > 0 ? "blue.50" : "gray.100",
                         }}

@@ -27,6 +27,7 @@ interface PersonalInfo {
   name: string;
   lastName: string;
   email: string;
+  documentType: string;
   document: string;
   phone: string;
   age: string;
@@ -35,6 +36,7 @@ interface PersonalInfo {
 
 interface HomeShippingDetails {
   address: string;
+  apartment: string;
   province: Province | string;
   postal_code: string;
   city: string;
@@ -74,9 +76,11 @@ const Checkout: React.FC = () => {
   const [homeShippingDetails, setHomeShippingDetails] = useState<HomeShippingDetails>({
     address: '',
     province: '',
+    apartment: '',
     postal_code: '',
     city: '',
   });
+
   const [branchShippingDetails, setBranchShippingDetails] = useState<AndreaniBranch>({
     address: '',
     province: '',
@@ -110,7 +114,6 @@ const Checkout: React.FC = () => {
     } else {
       if (!branchShippingDetails.id) errors.branchId = 'Debe seleccionar una sucursal';
     }
-
     setFormErrors(errors);
     return Object.keys(errors).length === 0;
   };
@@ -131,6 +134,7 @@ const Checkout: React.FC = () => {
   const [personalInfo, setPersonalInfo] = useState<PersonalInfo>({
     name: '',
     lastName: '',
+    documentType: '',
     document: "",
     email: '',
     phone: '',
@@ -163,11 +167,17 @@ const Checkout: React.FC = () => {
     }
   };
 
-  // Price Calculation
   const calculateTotalPrice = () => {
     const productTotal = cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
-    const shippingCost = shippingMethod === 'home' ? 9500 : 8000;
+
+    // Verificar si el envío es gratis (Mar del Plata)
+    const isShippingFree =
+      (shippingMethod === 'home' && homeShippingDetails.city?.toLowerCase().trim() === 'mar del plata') ||
+      (shippingMethod === 'branch' && branchShippingDetails.city?.toLowerCase().trim() === 'mar del plata');
+
+    const shippingCost = isShippingFree ? 0 : (shippingMethod === 'home' ? 9500 : 8000);
     const subtotal = productTotal + shippingCost;
+
     return discountApplied ? subtotal * 0.9 : subtotal;
   };
 
@@ -194,6 +204,7 @@ const Checkout: React.FC = () => {
     }
   }, [shippingMethod]);
 
+  // Checkout
   const handleCheckout = async () => {
     if (!validateForm()) {
       alert('Por favor complete todos los campos requeridos');
@@ -304,7 +315,7 @@ const Checkout: React.FC = () => {
                       </Text>
                     )}
                   </Field>
-                  <Field label="Apellido" required>
+                  <Field label="Apellidos" required>
                     <Input
                       value={personalInfo.lastName}
                       placeholder='Ej: Pérez'
@@ -346,10 +357,36 @@ const Checkout: React.FC = () => {
                 </Stack>
 
                 <Stack flex={1} gap={4}>
-                  <Field label="Documento" required>
+                  <Field label="Tipo de Documento" required>
+                    <SelectRoot
+                      collection={createListCollection({
+                        items: ["DNI", "Pasaporte", "CUIL", "CUIT"],
+                      })}
+                      value={personalInfo.documentType ? [personalInfo.documentType] : []}
+                      onValueChange={(details: { value: string[] }) => setPersonalInfo({ ...personalInfo, documentType: details.value[0] })}
+                    >
+                      <SelectTrigger>
+                        <SelectValueText>
+                          {() => personalInfo.documentType || "Selecciona tipo"}
+                        </SelectValueText>
+                      </SelectTrigger>
+                      <SelectContent>
+                        {["DNI", "Pasaporte", "CUIL", "CUIT"].map((type) => (
+                          <SelectItem
+                            key={type}
+                            item={type}
+                            className={colorMode === 'dark' ? 'text-white' : 'text-gray-800'}
+                          >
+                            {type}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </SelectRoot>
+                  </Field>
+                  <Field label="Número de Documento" required>
                     <Input
                       value={personalInfo.document}
-                      placeholder="Ej: 12345678"
+                      placeholder={`Ej: ${personalInfo.documentType === 'DNI' ? '12345678' : 'XX-XXXXXXXX-X'}`}
                       onChange={(e) => setPersonalInfo({ ...personalInfo, document: e.target.value })}
                       borderColor={errors.document ? 'red.500' : colorMode === 'dark' ? 'gray.600' : 'gray.300'}
                       _dark={{
@@ -358,11 +395,6 @@ const Checkout: React.FC = () => {
                         color: 'white'
                       }}
                     />
-                    {errors.document && (
-                      <Text color="red.500" fontSize="sm" mt={1}>
-                        {errors.document}
-                      </Text>
-                    )}
                   </Field>
                 </Stack>
 
@@ -489,6 +521,7 @@ const Checkout: React.FC = () => {
                             ...homeShippingDetails,
                             province: details.value[0]
                           })}
+
                         >
                           <SelectTrigger>
                             <SelectValueText>
@@ -497,7 +530,7 @@ const Checkout: React.FC = () => {
                           </SelectTrigger>
                           <SelectContent>
                             {provinces.items.map((province) => (
-                              <SelectItem key={province} item={province}>
+                              <SelectItem key={province} item={province} color={textColor}>
                                 {province}
                               </SelectItem>
                             ))}
@@ -511,6 +544,11 @@ const Checkout: React.FC = () => {
                             ...homeShippingDetails,
                             city: e.target.value
                           })}
+                          _dark={{
+                            bg: 'gray.700',
+                            borderColor: 'gray.600',
+                            color: 'white'
+                          }}
                         />
                       </Field>
                       <Field label="Código Postal" required>
@@ -520,6 +558,11 @@ const Checkout: React.FC = () => {
                             ...homeShippingDetails,
                             postal_code: e.target.value
                           })}
+                          _dark={{
+                            bg: 'gray.700',
+                            borderColor: 'gray.600',
+                            color: 'white'
+                          }}
                         />
                       </Field>
                       <Field label="Dirección" required>
@@ -529,6 +572,26 @@ const Checkout: React.FC = () => {
                             ...homeShippingDetails,
                             address: e.target.value
                           })}
+                          _dark={{
+                            bg: 'gray.700',
+                            borderColor: 'gray.600',
+                            color: 'white'
+                          }}
+                        />
+                      </Field>
+                      <Field label="Departamento/Piso">
+                        <Input
+                          value={homeShippingDetails.apartment}
+                          placeholder="Ej: 3ro B"
+                          onChange={(e) => setHomeShippingDetails({
+                            ...homeShippingDetails,
+                            apartment: e.target.value
+                          })}
+                          _dark={{
+                            bg: 'gray.700',
+                            borderColor: 'gray.600',
+                            color: 'white'
+                          }}
                         />
                       </Field>
                     </VStack>
@@ -565,6 +628,11 @@ const Checkout: React.FC = () => {
                             ...branchShippingDetails,
                             city: e.target.value
                           })}
+                          _dark={{
+                            bg: 'gray.700',
+                            borderColor: 'gray.600',
+                            color: 'white'
+                          }}
                         />
                       </Field>
                       <Field label="Código Postal" required>
@@ -574,6 +642,11 @@ const Checkout: React.FC = () => {
                             ...branchShippingDetails,
                             postal_code: e.target.value
                           })}
+                          _dark={{
+                            bg: 'gray.700',
+                            borderColor: 'gray.600',
+                            color: 'white'
+                          }}
                         />
                       </Field>
                       <Field label="Sucursal" required>
@@ -640,14 +713,32 @@ const Checkout: React.FC = () => {
               <Text fontSize="lg" fontWeight="bold" mb={2}>
                 Resumen:
               </Text>
-              <Text>Subtotal: ${calculateTotalPrice() - (shippingMethod === 'home' ? 9500 : 8000)}</Text>
+              <Text>Subtotal: ${calculateTotalPrice() - (
+                (shippingMethod === 'home' && homeShippingDetails.city?.toLowerCase().trim() === 'mar del plata') ||
+                  (shippingMethod === 'branch' && branchShippingDetails.city?.toLowerCase().trim() === 'mar del plata')
+                  ? 0
+                  : (shippingMethod === 'home' ? 9500 : 8000)
+              )}</Text>
+
               <Text>
                 {shippingMethod === 'home'
-                  ? 'Envío a domicilio: $9500'
+                  ? homeShippingDetails.city?.toLowerCase().trim() === 'mar del plata'
+                    ? 'Envío a domicilio: ¡GRATIS!'
+                    : 'Envío a domicilio: $9500'
                   : shippingMethod === 'branch'
-                    ? 'Envío a sucursal (Andreani): $8000'
+                    ? branchShippingDetails.city?.toLowerCase().trim() === 'mar del plata'
+                      ? 'Envío a sucursal (Andreani): ¡GRATIS!'
+                      : 'Envío a sucursal (Andreani): $8000'
                     : 'Selecciona un método de envío'}
               </Text>
+
+              {((shippingMethod === 'home' && homeShippingDetails.city?.toLowerCase().trim() === 'mar del plata') ||
+                (shippingMethod === 'branch' && branchShippingDetails.city?.toLowerCase().trim() === 'mar del plata')) && (
+                  <Text color="green.500" fontWeight="bold" fontSize="sm" mt={1}>
+                    ¡Envío gratis para Mar del Plata!
+                  </Text>
+                )}
+
               <Text fontWeight="bold" mt={2}>
                 Total: ${calculateTotalPrice()}
               </Text>

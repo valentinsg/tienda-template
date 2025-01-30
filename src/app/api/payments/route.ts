@@ -29,7 +29,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Calculate shipping cost based on method
-    const shippingCost = shippingMethod === 'home' ? 1 : 1;
+    const shippingCost = shippingMethod === 'home' ? 9000 : 8000;
 
     const mercadopago = new MercadoPagoConfig({
       accessToken: process.env.MP_ACCESS_TOKEN!

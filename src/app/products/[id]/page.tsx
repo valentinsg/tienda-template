@@ -31,6 +31,7 @@ import { useColorMode, useColorModeValue } from '../../components/ui/color-mode'
 import { Tooltip } from '../../components/ui/tooltip';
 import RequestSizeDialog from '../../components/RequestSizeDialog';
 import { HiCreditCard } from 'react-icons/hi';
+import {toaster} from '../../components/ui/toaster';
 
 interface StockInfo {
   stock: number;
@@ -90,28 +91,43 @@ export default function ProductPage() {
   const remainingStock = Math.max(0, getCurrentStock() - getCurrentCartQuantity());
 
   const handleAddToCart = async () => {
-
     if (!isSizeSelected || remainingStock <= 0) return;
 
-    if (!selectedSize || remainingStock <= 0) return;
-
+    const size = selectedSize[0];
+    
     setLoading(true);
     try {
-      // Simulamos una carga
+      // Simulate loading
       await new Promise(resolve => setTimeout(resolve, 800));
 
       const cartItem = {
-        id: `${product.id}-${selectedSize[0]}`,
-        name: `${product.name} (${selectedSize[0].toUpperCase()})`,
+        id: `${product.id}-${size}`,
+        name: `${product.name} (${size.toUpperCase()})`,
         price: product.price,
         quantity: 1,
         imageUrl: product.images?.[0]?.image_url || '/placeholder.jpg',
       };
 
       dispatch(addItem(cartItem));
-      toast.success('Product added to cart!');
-    } catch {
-      toast.error('Error adding product to cart');
+      
+      // Show success toast
+      toaster.create({
+        title: "Producto añadido al carrito",
+        description: `${product.name} (Talle: ${size})`,
+        duration: 5000,
+        meta: { closable: true },
+      });
+
+      // Reset size selection
+      setSelectedSize(null);
+      
+    } catch (error) {
+      // Show error toast
+      toaster.create({
+        title: "Error",
+        description: "No se pudo añadir el producto al carrito",
+        duration: 5000,
+      });
     } finally {
       setLoading(false);
     }

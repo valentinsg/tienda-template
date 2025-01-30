@@ -35,7 +35,7 @@ export const ProductContainer: React.FC<ProductContainerProps> = ({
       dispatch(
         addItem({
           id: `${product.id}-${size}`,
-          name: product.name,
+          name: product.name + ' (' + size + ')',
           price: product.price,
           sku: sizeStock.sku,
           quantity: 1,
