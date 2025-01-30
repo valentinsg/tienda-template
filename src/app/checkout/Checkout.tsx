@@ -163,7 +163,6 @@ const Checkout: React.FC = () => {
   // Price Calculation
   const calculateTotalPrice = () => {
     const productTotal = cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
-    const shippingCost = shippingMethod === 'home' ? 9500 : 8000;
     const subtotal = productTotal + shippingCost;
     return discountApplied ? subtotal * 0.9 : subtotal;
   };
