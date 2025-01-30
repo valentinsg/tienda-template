@@ -27,6 +27,7 @@ interface PersonalInfo {
   name: string;
   lastName: string;
   email: string;
+  document: string;
   phone: string;
   age: string;
   gender?: string;
@@ -51,7 +52,7 @@ const provinces = createListCollection({
 })
 
 const REQUIRED_FIELDS = {
-  personalInfo: ['name', 'lastName', 'email', 'phone'],
+  personalInfo: ['name', 'lastName', 'email', 'phone', 'document'],
   homeShipping: ['address', 'province', 'postalCode', 'city'],
   branchShipping: ['province', 'postalCode']
 };
@@ -69,13 +70,13 @@ const Checkout: React.FC = () => {
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [, setFormErrors] = useState<Record<string, string>>({});
   const [shippingMethod, setShippingMethod] = useState<'home' | 'branch'>('home');
+
   const [homeShippingDetails, setHomeShippingDetails] = useState<HomeShippingDetails>({
     address: '',
     province: '',
     postal_code: '',
     city: '',
   });
-
   const [branchShippingDetails, setBranchShippingDetails] = useState<AndreaniBranch>({
     address: '',
     province: '',
@@ -98,6 +99,7 @@ const Checkout: React.FC = () => {
     if (!personalInfo.lastName) errors.lastName = 'El apellido es requerido';
     if (!personalInfo.email) errors.email = 'El email es requerido';
     if (!personalInfo.phone) errors.phone = 'El teléfono es requerido';
+    if (!personalInfo.document) errors.document = 'El documento es requerido';
 
     // Validar envío según método
     if (shippingMethod === 'home') {
@@ -129,6 +131,7 @@ const Checkout: React.FC = () => {
   const [personalInfo, setPersonalInfo] = useState<PersonalInfo>({
     name: '',
     lastName: '',
+    document: "",
     email: '',
     phone: '',
     age: '',
@@ -209,6 +212,7 @@ const Checkout: React.FC = () => {
           customer_name: personalInfo.name,
           customer_email: personalInfo.email,
           customer_phone: personalInfo.phone,
+          customer_document: personalInfo.document,
           shipping_method: shippingMethod,
           shipping_address: shippingMethod === 'home'
             ? homeShippingDetails
@@ -336,6 +340,27 @@ const Checkout: React.FC = () => {
                     {errors.email && (
                       <Text color="red.500" fontSize="sm" mt={1}>
                         {errors.email}
+                      </Text>
+                    )}
+                  </Field>
+                </Stack>
+
+                <Stack flex={1} gap={4}>
+                  <Field label="Documento" required>
+                    <Input
+                      value={personalInfo.document}
+                      placeholder="Ej: 12345678"
+                      onChange={(e) => setPersonalInfo({ ...personalInfo, document: e.target.value })}
+                      borderColor={errors.document ? 'red.500' : colorMode === 'dark' ? 'gray.600' : 'gray.300'}
+                      _dark={{
+                        bg: 'gray.700',
+                        borderColor: errors.document ? 'red.400' : 'gray.600',
+                        color: 'white'
+                      }}
+                    />
+                    {errors.document && (
+                      <Text color="red.500" fontSize="sm" mt={1}>
+                        {errors.document}
                       </Text>
                     )}
                   </Field>

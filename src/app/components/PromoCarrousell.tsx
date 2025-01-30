@@ -30,11 +30,11 @@ const PromoCarousel: React.FC<PromoCarouselProps> = ({ text1, text2 }) => {
       <Box
         display="flex"
         whiteSpace="nowrap"
-        animation="marquee 25s linear infinite"
+        animation="marquee 20s linear infinite"
         fontFamily={"Archivo Black"}
       >
-        <Text mx={20}>{text1}</Text>
-        <Text mx={20}>{text2}</Text>
+        <Text mx={"20%"}>{text1}</Text>
+        <Text mx={"50%"}>{text2}</Text>
       </Box>
 
       {/* CSS for animation */}
