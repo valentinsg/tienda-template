@@ -15,14 +15,23 @@ import { AccordionItemTrigger, AccordionItemContent } from "@chakra-ui/react";
 import { useColorMode, useColorModeValue } from '../components/ui/color-mode';
 import "../styles/globals.css";
 
+interface FAQ {
+  question: string;
+  answer: string;
+}
+
+interface FAQSection {
+  category: string;
+  questions: FAQ[];
+}
+
 const FAQs = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const { colorMode } = useColorMode();
   const textColor = useColorModeValue('#555454', '#D0D0D0');
   const buttonColor = useColorModeValue('blue.500', 'blue.300');
-
-  const faqsData = [
-    {
+  
+  const faqsData: FAQSection[] = [    {
       category: "Sobre Busy",
       questions: [
         {
@@ -177,100 +186,132 @@ const FAQs = () => {
       ],
     }
   ];
-
   const normalizedSearchTerm = removeDiacritics(searchTerm.toLowerCase());
-
-  const filteredFAQs = faqsData
-    .filter((section) =>
-      removeDiacritics(section.category.toLowerCase()).includes(normalizedSearchTerm) ||
-      section.questions.some((q) =>
-        removeDiacritics(q.question.toLowerCase()).includes(normalizedSearchTerm)
-      )
+  
+  const filteredFAQs = faqsData.filter((section) =>
+    removeDiacritics(section.category.toLowerCase()).includes(normalizedSearchTerm) ||
+    section.questions.some((q) =>
+      removeDiacritics(q.question.toLowerCase()).includes(normalizedSearchTerm)
     )
-    .map((section) => ({
-      ...section,
-      questions: section.questions.filter((q) =>
-        removeDiacritics(q.question.toLowerCase()).includes(normalizedSearchTerm)
-      ),
-    }));
+  ).map((section) => ({
+    ...section,
+    questions: section.questions.filter((q) =>
+      removeDiacritics(q.question.toLowerCase()).includes(normalizedSearchTerm)
+    ),
+  }));
 
   return (
-    <Box bg={colorMode === 'dark' ? 'gray.800' : 'bg.muted'} py={12} color={textColor} as={"main"}>
-      <Container maxW={{ base: "100%", md: "70%" }} as={"section"}>
-        {/* Primera sección */}
-        <Heading textAlign="center" fontFamily={"Archivo Black"} as="h1" fontSize={{ base: "4xl", md: "4vw" }} letterSpacing={"tighter"} lineHeight={{ base: 1.2, md: "11vh" }} color={textColor}>
-          Preguntas Frecuentes.
+    <Box 
+      bg={colorMode === 'dark' ? 'gray.800' : 'bg.muted'} 
+      py={12} 
+      color={textColor} 
+      as="main"
+      role="main"
+    >
+      <Container maxW={{ base: "100%", md: "70%" }} as="section">
+        <Heading 
+          textAlign="center" 
+          fontFamily="Archivo Black"
+          as="h1"
+          fontSize={{ base: "4xl", md: "4vw" }}
+          letterSpacing="tighter"
+          lineHeight={{ base: 1.2, md: "11vh" }}
+          color={textColor}
+        >
+          Preguntas Frecuentes
         </Heading>
-        {/* Barra de búsqueda */}
+
         <Input
           placeholder="Buscar una pregunta..."
           mt={8}
           size="lg"
           onChange={(e) => setSearchTerm(e.target.value)}
           value={searchTerm}
-          colorPalette={"blue"}
+          colorPalette="blue"
           borderColor={buttonColor}
+          aria-label="Buscar preguntas frecuentes"
         />
-        <VStack align="stretch">
-          {filteredFAQs.map((section) => section.questions.length > 0 && (
-            <Box key={section.category} py={8} borderRadius="md">
-              <Text
-                as="h2"
-                fontSize={{ base: "2xl", md: "4xl" }}
-                textAlign={"center"}
-                fontWeight={500}
-                py={4}
-                color={textColor}
-                textTransform="uppercase"
-                fontFamily={"Archivo Black"}
-              >
-                {section.category}
-              </Text>
-              <Accordion.Root collapsible>
-                {/* Sobre la Marca Busy */}
-                {section.questions.map((faq, index) => (
-                  <Accordion.Item key={index} value={`item-${index}`} m={4} borderRadius="md" bg={colorMode === 'dark' ? 'gray.700' : 'white'} color={textColor}>
-                    <AccordionItemTrigger
-                      cursor={"pointer"}
-                      p={4}
-                      fontSize="xl"
-                      _hover={{ bg: colorMode === 'dark' ? 'gray.600' : 'gray.200' }}
-                      _expanded={{ bg: colorMode === 'dark' ? 'gray.600' : 'gray.200' }}
-                      transition="background-color 0.2s ease"
-                    >
-                      <Box textAlign="center" as={"h3"} fontSize={{ base: "lg", md: "xl" }} fontFamily={"Archivo Black"} fontWeight={500} letterSpacing={"tighter"} textTransform="uppercase">
-                        {faq.question}
-                      </Box>
-                    </AccordionItemTrigger>
-                    <AccordionItemContent
-                      fontSize="lg"
-                      textAlign="left"
-                    >
-                      <Box p={5} as={"h3"}>
-                        {faq.answer}
-                      </Box>
-                    </AccordionItemContent>
 
-                  </Accordion.Item>
-                ))}
-              </Accordion.Root>
-            </Box>
-          ))}
+        <VStack align="stretch" gap={8}>
+          {filteredFAQs.map((section) => 
+            section.questions.length > 0 && (
+              <Box 
+                key={section.category} 
+                py={8} 
+                borderRadius="md"
+                role="region"
+                aria-labelledby={`section-${section.category}`}
+              >
+                <Text
+                  id={`section-${section.category}`}
+                  as="h2"
+                  fontSize={{ base: "2xl", md: "4xl" }}
+                  textAlign="center"
+                  fontWeight={500}
+                  py={4}
+                  color={textColor}
+                  textTransform="uppercase"
+                  fontFamily="Archivo Black"
+                >
+                  {section.category}
+                </Text>
+
+                <Accordion.Root collapsible>
+                  {section.questions.map((faq, index) => (
+                    <Accordion.Item 
+                      key={index}
+                      value={`item-${index}`}
+                      m={4}
+                      borderRadius="md"
+                      bg={colorMode === 'dark' ? 'gray.700' : 'white'}
+                      color={textColor}
+                    >
+                      <AccordionItemTrigger
+                        cursor="pointer"
+                        p={4}
+                        fontSize="xl"
+                        _hover={{ bg: colorMode === 'dark' ? 'gray.600' : 'gray.200' }}
+                        _expanded={{ bg: colorMode === 'dark' ? 'gray.600' : 'gray.200' }}
+                        transition="background-color 0.2s ease"
+                        aria-label={`Expandir pregunta: ${faq.question}`}
+                      >
+                        <Box 
+                          textAlign="center" 
+                          as="h3"
+                          fontSize={{ base: "lg", md: "xl" }}
+                          fontFamily="Archivo Black"
+                          fontWeight={500}
+                          letterSpacing="tighter"
+                          textTransform="uppercase"
+                        >
+                          {faq.question}
+                        </Box>
+                      </AccordionItemTrigger>
+                      <AccordionItemContent fontSize="lg" textAlign="left">
+                        <Box p={5}>{faq.answer}</Box>
+                      </AccordionItemContent>
+                    </Accordion.Item>
+                  ))}
+                </Accordion.Root>
+              </Box>
+            )
+          )}
         </VStack>
+
         <Box textAlign={{ base: "center", md: "end" }} mt={12}>
           <Button
+            as="a"
+            onClick={() => window.location.href = "/contact"}
             size={{ base: "md", md: "lg" }}
             fontWeight={600}
-            colorPalette={"blue"}
-            onClick={() => window.location.href = "/contact"}
-            aria-label="Contact Us"
-            as={"a"}
+            colorPalette="blue"
+            aria-label="Contactar con servicio al cliente"
           >
-            No te quedes con ninguna duda y contáctanos.
+            No te quedes con ninguna duda y contáctanos
           </Button>
         </Box>
       </Container>
-    </Box >
+    </Box>
   );
 };
 

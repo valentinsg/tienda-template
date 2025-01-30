@@ -11,7 +11,7 @@ import {
   HStack,
   Button,
 } from '@chakra-ui/react';
-import {MenuRoot, MenuContent, MenuTrigger, MenuItem} from '../components/ui/menu';
+import { MenuRoot, MenuContent, MenuTrigger, MenuItem } from '../components/ui/menu';
 import {
   DrawerContent,
   DrawerHeader,
@@ -55,12 +55,11 @@ const Header = () => {
         <Button
           aria-label="Open Menu"
           variant="ghost"
-          colorScheme="gray"
         >
           <MenuIcon size={24} />
         </Button>
       </DrawerTrigger>
-      <DrawerContent className="w-[300px] sm:w-[400px]">
+      <DrawerContent >
         <DrawerHeader>
           <Image
             src={colorMode === 'dark' ? BusyDarkMode : BusyLightMode}
@@ -157,7 +156,7 @@ const Header = () => {
         </Box>
 
         {/* Desktop Menu */}
-        <Flex display={{ base: 'none', md: 'flex' }} fontSize={"md"}>
+        <Flex display={{ base: 'none', md: 'flex' }} fontSize={"lg"}>
           <Flex mr="5vw" alignItems="center">
             {navigation.map((item) => (
               <Box key={item.name} mx={4}>
@@ -169,6 +168,7 @@ const Header = () => {
                         cursor="pointer"
                         color={isActive(item.href) ? activeColor : inactiveColor}
                         fontWeight={isActive(item.href) ? "bold" : "normal"}
+                        gap={2}
                       >
                         <Text>{item.name}</Text>
                         <ChevronDown size={16} />
@@ -176,7 +176,7 @@ const Header = () => {
                     </MenuTrigger>
                     <MenuContent>
                       <Link href="/products" passHref>
-                        <MenuItem value="all-products" >
+                        <MenuItem value="all-products" fontSize={"md"} >
                           Todos los productos
                         </MenuItem>
                       </Link>
@@ -186,8 +186,9 @@ const Header = () => {
                           href={`/products/category/${category.slug}`}
                           passHref
                         >
-                          <MenuItem 
+                          <MenuItem
                             value={category.slug}
+                            fontSize={"md"}
                           >
                             {category.name}
                           </MenuItem>
@@ -216,19 +217,24 @@ const Header = () => {
               aria-label="Toggle theme"
               onClick={toggleColorMode}
               variant="ghost"
-              colorScheme="gray"
+              _hover={
+                {
+                  bg: colorMode === 'dark' ? 'gray.600' : 'gray.50',
+                }
+              }
             >
               {colorMode === 'dark' ? <Sun /> : <Moon />}
             </Button>
           </HStack>
+
+          {/* Mobile Cart (when not in desktop view) */}
+          <Box display={{ base: 'block', md: 'none' }}>
+            {pathname !== '/checkout' && <CartDialog />}
+          </Box>
         </Flex>
 
-        {/* Mobile Cart (when not in desktop view) */}
-        <Box display={{ base: 'block', md: 'none' }}>
-          {pathname !== '/checkout' && <CartDialog />}
-        </Box>
       </Flex>
-      
+
     </Box>
   );
 };

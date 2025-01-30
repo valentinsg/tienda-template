@@ -65,19 +65,19 @@ const AboutUs = () => {
                   backgroundPosition="center"
                   borderRadius="lg"
                 >
-                  <Image src={dosAmigos} 
-                    alt="Dos amigos fundadores de Busy" 
+                  <Image src={dosAmigos}
+                    alt="Dos amigos fundadores de Busy"
                     w={"100%"}
                     h={"100%"}
                     borderRadius="lg"
-                    loading="lazy" 
+                    loading="lazy"
                   />
                 </Box>
                 <VStack gap={10}>
                   <Text textAlign={{ base: "center", md: "end" }} fontFamily={"Archivo Black"} as="h2" fontSize={{ base: "4xl", md: "4.8vw" }} letterSpacing={"tighter"} lineHeight={{ base: 1.2, md: "11vh" }} color={textColor}>
                     Dos amigos, una visión.
                   </Text>
-                  <Text textAlign={{ base: "start", md: "end" }} fontSize="xl" lineHeight={1.5} as={"h3"}>
+                  <Text textAlign={{ base: "start", md: "end" }} fontSize="2xl" lineHeight={1.5} as={"h3"}>
                     Busy nació de la conexión entre dos amigos que compartían una visión: crear algo más grande que ellos mismos. Pero no hubiéramos llegado acá si no fuera por la ayuda de nuestros amigos que dejaron su huella en el proyecto, con gestos grandes y pequeños.
                     Busy no existiría sin las personas que trabajaron y creyeron en el proyecto. Desde amigos cercanos que pusieron sus manos en los detalles, hasta los que cebaron mate los días de rodaje, aportaron energía a la distancia o compraron. TODOS esas personas queremos que sepan que forman parte de esto.
                   </Text>
@@ -92,11 +92,11 @@ const AboutUs = () => {
                 mt={40}
               >
                 {/* Texto principal */}
-                <VStack align={{ base: "center", md: "start" }} gap={10}>
+                <VStack align={{ base: "center", md: "start" }} gap={10} textAlign={{ base: "center", md: "start" }}>
                   <Text fontFamily={"Archivo Black"} as="h2" fontSize={{ base: "4xl", md: "4.8vw" }} letterSpacing={"tighter"} lineHeight={{ base: 1.2, md: "11vh" }} color={textColor}>
                     Idea central
                   </Text>
-                  <Text fontSize="xl" lineHeight={1.5} as={"h3"}>
+                  <Text fontSize="2xl" lineHeight={1.5} as={"h3"}>
                     Busy pretende ser un movimiento que celebre ocuparse de lo que realmente importa. Estás BUSY en esos momentos que invertís en vos, tus sueños o lo que te moviliza, por lo que estar BUSY nos ayuda a dar pasos hacia nuestra eudaimonía, lo que se traduce en un accionar constante, y un accionar constante inevitablemente atrae buenos resultados. <br />
 
                     <br /> Por esto todos nuestros productos van a estar intrínsecamente de este concepto que tanto nos motiva. Nuestro pequeño aporte a la cultura de la moda viene con este mensaje que esperamos se expanda y logré abrir cabezas o ayude a alguien que necesite encontrar/alcanzar su pasión.
@@ -126,21 +126,15 @@ const AboutUs = () => {
 
             {/* Texto principal */}
             <section>
-              <VStack align="center" gap={10}>
+              <VStack align="center" gap={8}>
                 <Text fontFamily={"Archivo Black"} as="h2" fontSize={{ base: "4xl", md: "5vw" }} letterSpacing={"tighter"} lineHeight={{ base: 1.2, md: "11vh" }} color={textColor}>
                   Un Movimiento Busy
                 </Text>
                 <Text fontSize="sm" lineHeight="tall">
-                  <Text fontSize="xl" mb={6} lineHeight={1.5} as={"h3"}>
+                  <Text fontSize="2xl" mb={6} lineHeight={1.5} as={"h3"}>
                     Estamos preparando eventos, lanzamientos especiales y muchas sorpresas para la comunidad que buscamos crear. Seguí nuestras redes y suscribite a nuestra newsletter para no perderte nada de lo que se viene.
 
-                    En Busy, creemos que algo tan sencillo y obvio como ocuparse de lo que importa, puede cambiar vidas y comunidades.
-
-                    Queremos colaborar con iniciativas que reflejen esta filosofía: apoyar artistas, impulsar emprendedores y expandir este movimiento.
-
-                    Creaciones por amigos en constante educación, prendas trabajadas al detalle y la intención de crear una comunidad de valor.
-
-                    Si posta compartís algo de lo que significa BUSY, cada vez que veas nuestra marca pensá en ocuparte de ESO y reafirma, por qué ESO?
+                    En Busy, creemos en que ocuparse de lo que importa, puede cambiar a las personas.
 
                   </Text>
                 </Text>
@@ -170,6 +164,15 @@ const AboutUs = () => {
                     </Box>
                   ))}
                 </Box>
+                <Text fontSize="2xl" my={6} lineHeight={1.5} as={"h3"}>
+
+                  Queremos colaborar con iniciativas que se reflejen con nosotros: apoyar tanto artistas, como deportistas, figuras o personalidades y expandir este movimiento.
+
+                  Creaciones por amigos en constante educación, prendas trabajadas al detalle y la intención de crear una comunidad de valor.
+
+                  Si posta compartís algo de lo que significa BUSY, cada vez que veas nuestra marca pensá en ocuparte de ESO y reafirma, por qué ESO?
+
+                </Text>
               </VStack>
             </section>
           </Container>
