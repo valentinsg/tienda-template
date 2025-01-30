@@ -163,7 +163,7 @@ const Checkout: React.FC = () => {
   // Price Calculation
   const calculateTotalPrice = () => {
     const productTotal = cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
-    const shippingCost = shippingMethod === 'home' ? 1 : 1;
+    const shippingCost = shippingMethod === 'home' ? 9500 : 8000;
     const subtotal = productTotal + shippingCost;
     return discountApplied ? subtotal * 0.9 : subtotal;
   };
@@ -260,7 +260,6 @@ const Checkout: React.FC = () => {
       alert('Error al procesar el pago.');
     }
   };
-
 
   return (
     <Box bg={colorMode === 'dark' ? 'gray.800' : 'bg.muted'} py={12} color={textColor} minH={"90vh"} w={"100%"} >
