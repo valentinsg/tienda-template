@@ -261,53 +261,6 @@ const Checkout: React.FC = () => {
     }
   };
 
-  const DebugFormState = () => (
-    <Box
-      position="fixed"
-      bottom="20px"
-      right="20px"
-      p={4}
-      bg="gray.800"
-      color="white"
-      borderRadius="md"
-      maxW="400px"
-      maxH="500px"
-      overflow="auto"
-      opacity={0.9}
-      fontSize="sm"
-    >
-      <VStack align="start" gap={4}>
-        <Text fontWeight="bold">Debug - Estado del Formulario:</Text>
-        <Box>
-          <Text fontWeight="bold">Datos Personales:</Text>
-          <pre>{JSON.stringify(personalInfo, null, 2)}</pre>
-        </Box>
-        <Box>
-          <Text fontWeight="bold">Método de Envío:</Text>
-          <Text>{shippingMethod}</Text>
-        </Box>
-        <Box>
-          <Text fontWeight="bold">Detalles de Envío:</Text>
-          <pre>
-            {JSON.stringify(
-              shippingMethod === 'home'
-                ? homeShippingDetails
-                : branchShippingDetails,
-              null,
-              2
-            )}
-          </pre>
-        </Box>
-        <Box>
-          <Text fontWeight="bold">Descuento:</Text>
-          <Text>Aplicado: {discountApplied ? 'Sí' : 'No'}</Text>
-          <Text>Código: {discountCode || 'No ingresado'}</Text>
-          <Text fontWeight="bold">Productos en carrito:</Text>
-          <pre>{JSON.stringify(cartItems, null, 2)}</pre>
-        </Box>
-      </VStack>
-    </Box>
-  );
 
   return (
     <Box bg={colorMode === 'dark' ? 'gray.800' : 'bg.muted'} py={12} color={textColor} minH={"90vh"} w={"100%"} >
