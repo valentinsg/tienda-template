@@ -47,7 +47,7 @@ const MotionBox = chakra(motion.div);
 const MotionFlex = chakra(motion.div);
 // #endregion
 
-const CartDialog = forwardRef((props, ref) => {  
+const CartDialog = forwardRef(( _props, ref) => {  
   const dispatch = useDispatch();
   const cartItems = useSelector((state: { cart: { items: CartItem[] } }) => state.cart.items);
   const [isDialogOpen, setIsDialogOpen] = useState(false);

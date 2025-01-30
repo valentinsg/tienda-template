@@ -118,11 +118,9 @@ export default function ProductPage() {
         meta: { closable: true },
       });
 
-      // Reset size selection
       setSelectedSize(null);
       
     } catch (error) {
-      // Show error toast
       toaster.create({
         title: "Error",
         description: "No se pudo añadir el producto al carrito",

@@ -24,7 +24,6 @@ import {
 import { useColorModeValue } from '../components/ui/color-mode';
 import { Product } from '../../types/Product';
 import { addItem } from '../store/slices/cartSlice';
-import { toast } from 'react-toastify';
 import { FiShare2 } from 'react-icons/fi';
 import { useColorMode } from '../components/ui/color-mode';
 import { Tooltip } from './ui/tooltip';
