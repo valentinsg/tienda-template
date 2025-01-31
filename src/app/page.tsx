@@ -36,19 +36,19 @@ export default function Home() {
     <Box bg={colorMode === 'dark' ? 'gray.800' : 'bg.muted'} w={"100%"} as={"main"}>
       <Logo />
       <PromoCarousel text1='Envíos disponibles para toda Argentina' text2='Envíos gratis a partir de $120.000' />
-      <Carrousell />
+        <Carrousell />
       <PromoCarousel text1= "Suscribite a nuestro newsletter y obtené un 10% de descuento en tu primera compra." text2='Envíos gratis dentro de Mar Del Plata' />
 
       {/* Listado completo de productos */}
       <Flex direction="column" gap={20} p={2} py={{ base: 20, md: "" }} textAlign={"center"} align={"center"}>
-        <Heading fontFamily={"Archivo Black"} w={{ base: "100%", md: "80%" }} as="h1" fontSize={{ base: "4xl", md: "4vw" }} letterSpacing={"tighter"} lineHeight={{ base: 1.2, md: "11vh" }} color={colorMode === 'dark' ? '#d0d0d0' : 'gray.700'}>
-          Nuestra primer cápsula ya está disponible para toda Argentina.
-        </Heading>
+        <Text fontFamily={"Archivo Black"} w={{ base: "100%", md: "80%" }} as="h2" fontSize={{ base: "4xl", md: "4vw" }} letterSpacing={"tighter"} lineHeight={{ base: 1.2, md: "11vh" }} color={colorMode === 'dark' ? '#d0d0d0' : 'gray.700'}>
+          Ya disponible nuestra primer cápsula.
+        </Text>
       </Flex>
       <CategoryGrid />
       <Flex direction="column" p={2} align={"center"}>
-        <Text fontFamily={"Archivo Black"} as="h2" fontSize={{ base: "4xl", md: "4vw" }} letterSpacing={"tighter"} color={colorMode === 'dark' ? '#d0d0d0' : 'gray.700'}>
-          Nuevo
+        <Text fontFamily={"Archivo Black"} as="h3" fontSize={{ base: "4xl", md: "4vw" }} letterSpacing={"tighter"} color={colorMode === 'dark' ? '#d0d0d0' : 'gray.700'}>
+          Nuevos productos.
         </Text>
       </Flex>
       <ProductList products={products} onSelectProduct={handleSelectProduct} />

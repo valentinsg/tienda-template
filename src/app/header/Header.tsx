@@ -52,10 +52,7 @@ const Header = () => {
   const MobileNav = () => (
     <DrawerRoot>
       <DrawerTrigger asChild>
-        <Button
-          aria-label="Open Menu"
-          variant="ghost"
-        >
+        <Button aria-label="Abrir menú de navegación" variant="ghost">
           <MenuIcon size={24} />
         </Button>
       </DrawerTrigger>
@@ -63,55 +60,67 @@ const Header = () => {
         <DrawerHeader>
           <Image
             src={colorMode === 'dark' ? BusyDarkMode : BusyLightMode}
-            alt="Busy logo"
+            alt="Busy - Ropa urbana y streetwear en Mar del Plata"
             width={150}
             height={150}
           />
         </DrawerHeader>
         <VStack align="stretch" gap={4} mt={6}>
-          {navigation.map((item) => (
-            <Link key={item.name} href={item.href} passHref>
-              <Text
-                px={4}
-                py={2}
-                fontSize="lg"
-                fontWeight={isActive(item.href) ? "bold" : "normal"}
-                color={isActive(item.href) ? activeColor : inactiveColor}
-                borderRadius="md"
-              >
-                {item.name}
-              </Text>
-            </Link>
-          ))}
+          <nav>
+            <ul>
+              {navigation.map((item) => (
+                <li key={item.name}>
+                  <Link key={item.name} href={item.href} passHref>
+                    <Text
+                      title={`Ir a ${item.name}`}
+                      px={4}
+                      py={2}
+                      fontSize="lg"
+                      fontWeight={isActive(item.href) ? "bold" : "normal"}
+                      color={isActive(item.href) ? activeColor : inactiveColor}
+                      borderRadius="md"
+                    >
+                      {item.name}
+                    </Text>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
 
           <Box my={2} />
 
           <Text px={4} color={inactiveColor} fontWeight="medium" fontSize="sm">
             Categorías
           </Text>
-          {categories.map((category) => (
-            <Link
-              key={category.slug}
-              href={`/products/category/${category.slug}`}
-              passHref
-            >
-              <Text
-                px={4}
-                py={2}
-                fontSize="md"
-                color={inactiveColor}
-                borderRadius="md"
+          {
+            categories.map((category) => (
+              <Link
+                key={category.slug}
+                href={`/products/category/${category.slug}`}
+                passHref
+                data-category={category.slug}
+                title={`Ver productos de la categoría ${category.name}`}
               >
-                {category.name}
-              </Text>
-            </Link>
-          ))}
+                <Text
+                  title={`Ir a ${category.name}`}
+                  px={4}
+                  py={2}
+                  fontSize="md"
+                  color={inactiveColor}
+                  borderRadius="md"
+                >
+                  {category.name}
+                </Text>
+              </Link>
+            ))
+          }
 
-          <Box my={2} />
+          < Box my={2} />
 
           <HStack px={4} justify="space-between">
             <Button
-              aria-label="Toggle theme"
+              aria-label="Cambiar tema"
               onClick={toggleColorMode}
               variant="ghost"
               colorScheme="gray"
@@ -122,7 +131,7 @@ const Header = () => {
           </HStack>
         </VStack>
       </DrawerContent>
-    </DrawerRoot>
+    </DrawerRoot >
   );
 
   return (
@@ -148,7 +157,7 @@ const Header = () => {
           <Link href="/" passHref>
             <Image
               src={colorMode === 'dark' ? BusyDarkMode : BusyLightMode}
-              alt="Busy logo"
+              alt="Busy - Ropa urbana y streetwear en Mar del Plata"
               width={200}
               height={200}
             />
@@ -185,10 +194,13 @@ const Header = () => {
                           key={category.slug}
                           href={`/products/category/${category.slug}`}
                           passHref
+                          data-category={category.slug}
+                          title={`Ver productos de la categoría ${category.name}`}
                         >
                           <MenuItem
                             value={category.slug}
                             fontSize={"md"}
+                            title={`Ir a ${category.name}`}
                           >
                             {category.name}
                           </MenuItem>
@@ -202,6 +214,7 @@ const Header = () => {
                       color={isActive(item.href) ? activeColor : inactiveColor}
                       cursor="pointer"
                       fontWeight={isActive(item.href) ? "bold" : "normal"}
+                      title={`Ir a ${item.name}`}
                     >
                       {item.name}
                     </Text>
@@ -214,7 +227,7 @@ const Header = () => {
           <HStack gap={4} mr="5vw">
             {pathname !== '/checkout' && <CartDialog />}
             <Button
-              aria-label="Toggle theme"
+              aria-label="Cambiar tema"
               onClick={toggleColorMode}
               variant="ghost"
               _hover={

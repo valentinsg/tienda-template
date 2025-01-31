@@ -1,7 +1,7 @@
 'use client';
 import React from 'react';
 import { Box, Image } from '@chakra-ui/react';
-import {useColorMode} from './ui/color-mode';
+import { useColorMode } from './ui/color-mode';
 import BusyDarkMode from '../../../public/busy-logo-dark-mode.png';
 import BusyLightMode from '../../../public/busy-logo-light-mode.png';
 
@@ -14,7 +14,7 @@ const Logo = () => {
       justifyContent="center"
       alignItems="center"
       width="100%"
-      height={{base: "85vh", md:"100vh"}}
+      height={{ base: "85vh", md: "100vh" }}
       bg={colorMode === 'dark' ? 'gray.800' : 'bg.muted'}
       transition="background-color 0.2s"
     >
@@ -24,6 +24,7 @@ const Logo = () => {
         transition="transform 0.3s ease"
         _hover={{ transform: 'scale(1.05)' }}
       >
+        <h1 style={{ display: "none" }}>Busy - Tienda de ropa streetwear en Mar Del Plata, Argentina</h1>
         <Image
           src={colorMode === 'dark' ? BusyDarkMode.src : BusyLightMode.src}
           alt="Busy Logo"
