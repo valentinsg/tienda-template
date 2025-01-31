@@ -203,4 +203,6 @@ const CartDialog = forwardRef(( _props, ref) => {
   );
 });
 
+CartDialog.displayName = 'CartDialog'; 
+
 export default CartDialog;

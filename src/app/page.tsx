@@ -3,7 +3,7 @@ import { useRouter } from 'next/navigation';
 import { ProductList } from './components/ProductList';
 import { useProducts } from './context/ProductContext';
 import { Product } from '../types/Product';
-import { Box, Flex, Heading, Spinner, Text } from '@chakra-ui/react';
+import { Box, Flex, Spinner, Text } from '@chakra-ui/react';
 import Carrousell from './components/Carrousell';
 import { useColorMode } from './components/ui/color-mode';
 import Logo from './components/Logo';

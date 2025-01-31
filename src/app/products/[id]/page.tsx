@@ -31,7 +31,7 @@ import { useColorMode, useColorModeValue } from '../../components/ui/color-mode'
 import { Tooltip } from '../../components/ui/tooltip';
 import RequestSizeDialog from '../../components/RequestSizeDialog';
 import { HiCreditCard } from 'react-icons/hi';
-import {toaster} from '../../components/ui/toaster';
+import { toaster } from '../../components/ui/toaster';
 
 interface StockInfo {
   stock: number;
@@ -94,7 +94,7 @@ export default function ProductPage() {
     if (!isSizeSelected || remainingStock <= 0) return;
 
     const size = selectedSize[0];
-    
+
     setLoading(true);
     try {
       // Simulate loading
@@ -109,7 +109,6 @@ export default function ProductPage() {
       };
 
       dispatch(addItem(cartItem));
-      
       // Show success toast
       toaster.create({
         title: "Producto añadido al carrito",
@@ -119,14 +118,9 @@ export default function ProductPage() {
       });
 
       setSelectedSize(null);
-      
-    } catch (error) {
-      toaster.create({
-        title: "Error",
-        description: "No se pudo añadir el producto al carrito",
-        duration: 5000,
-      });
-    } finally {
+
+    }
+    finally {
       setLoading(false);
     }
   };
@@ -234,7 +228,7 @@ export default function ProductPage() {
                 </Text>
                 <Badge >In Stock</Badge>
               </HStack>
-            
+
             </Box>
 
             {/* Size Selector with Stock Information */}
@@ -354,7 +348,7 @@ export default function ProductPage() {
                 Aceptamos hasta 3 cuotas sin interés &nbsp;
               </Badge>
             </Box>
-            
+
             {/* Description and Shipping */}
             <Box>
               <Text color={textColor} fontSize={"lg"} mt={5} letterSpacing={"tighter"} as={"p"}>
