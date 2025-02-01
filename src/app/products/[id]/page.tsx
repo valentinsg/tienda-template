@@ -2,6 +2,8 @@ import React from 'react';
 import Product from './Product';
 import { Metadata } from 'next';
 import { supabase } from "../../supabase";
+import type { InferGetServerSidePropsType } from 'next';
+import { getServerSideProps } from 'next/dist/build/templates/pages';
 
 async function getProductById(id: string) {
   const { data: product, error } = await supabase
@@ -19,9 +21,7 @@ async function getProductById(id: string) {
   return product;
 }
 
-type Props = {
-  params: { id: string }
-};
+type Props = InferGetServerSidePropsType<typeof getServerSideProps>;
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const product = await getProductById(params.id);

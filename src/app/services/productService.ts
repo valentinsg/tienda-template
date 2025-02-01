@@ -1,4 +1,3 @@
-// services/productService.ts
 import { supabase } from '../supabase';
 import { Product } from '../../types/Product';
 import { Category } from '../../types/Category';
