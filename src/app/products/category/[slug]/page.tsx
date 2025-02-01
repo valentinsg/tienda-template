@@ -1,7 +1,7 @@
 'use client';
 import React from 'react';
 import { useProducts } from '../../../context/ProductContext';
-import { ProductList } from '../../../components/ProductList';
+import ProductList from '../../../components/ProductList';
 import { useRouter } from 'next/navigation';
 import { Flex, Spinner, Text, Heading, Box } from '@chakra-ui/react';
 import { Product } from '@/types/Product';

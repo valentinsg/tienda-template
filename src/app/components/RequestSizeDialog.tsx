@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Flex, HStack, Input, Text, VStack} from '@chakra-ui/react';
+import { Flex, HStack, Input, Text, VStack } from '@chakra-ui/react';
+import { Checkbox } from './ui/checkbox';
 import {
   DialogRoot,
   DialogTrigger,
@@ -16,17 +17,42 @@ import { FiMail } from 'react-icons/fi';
 const RequestSizeDialog = () => {
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const [email, setEmail] = useState("");
+  const [acceptPromotions, setAcceptPromotions] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!selectedSize || !email) {
       alert("Por favor selecciona un talle y escribe tu email.");
       return;
     }
-    alert(`Talle: ${selectedSize}, Email: ${email}`);
-    setIsOpen(false);
+
+    setIsLoading(true);
+    try {
+      const response = await fetch('/api/requestSize', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, size: selectedSize, acceptPromotions }),
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        alert("Solicitud enviada correctamente. Te avisaremos cuando esté disponible.");
+        setIsOpen(false);
+      } else {
+        alert(data.error || "Error al enviar la solicitud.");
+      }
+    } catch (error) {
+      alert("Error al enviar la solicitud.");
+    } finally {
+      setIsLoading(false);
+    }
   };
- const mutedTextColor = useColorModeValue('gray.800', 'white');
+
+  const mutedTextColor = useColorModeValue('gray.800', 'white');
+
   return (
     <DialogRoot open={isOpen} onOpenChange={details => setIsOpen(details.open)}>
       <DialogTrigger asChild>
@@ -76,7 +102,17 @@ const RequestSizeDialog = () => {
               onChange={(e) => setEmail(e.target.value)}
             />
 
-            <Button colorScheme="blue" onClick={handleSubmit} size="lg">
+            <Text fontSize="sm" color={mutedTextColor}>
+              No te enviaremos publicidad ni nuestras fabulosas promociones por esto...
+            </Text>
+            <Checkbox
+              checked={acceptPromotions}
+              onChange={(e) => setAcceptPromotions((e.target as HTMLInputElement).checked)}
+              >
+              A menos que quieras ;)
+            </Checkbox>
+
+            <Button colorScheme="blue" onClick={handleSubmit} size="lg" loading={isLoading}>
               Avisame
             </Button>
           </VStack>

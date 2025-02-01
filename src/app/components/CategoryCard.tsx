@@ -39,8 +39,9 @@ const CategoryCard: React.FC<CategoryCardProps> = ({
       onClick={onClick}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
+      border={colorMode === 'dark' ? '2px solid #555454' : '2px solid #D0D0D0'}
       _hover={{
-        transform: 'scale(1.02)',
+        transform: 'scale(1.025)',
         shadow: 'xl'
       }}
       mb={20}
@@ -67,8 +68,9 @@ const CategoryCard: React.FC<CategoryCardProps> = ({
         right="0"
         bottom="0"
         bgSize="cover"
-        bgRepeat="no-repeat"
         bgImage={colorMode === 'dark' ? `url(${lightImage})` : `url(${darkImage})`}
+        transform={isHovered ? 'scale(1.15)' : 'scale(1)'}
+        transition={'transform 10s ease-in-out'}
         opacity={0.9}
       />
 

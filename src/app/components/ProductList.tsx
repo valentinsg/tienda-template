@@ -2,6 +2,7 @@ import React from 'react';
 import { Flex, Grid, Text } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
 import { ProductContainer } from './ProductContainer';
+import LazyLoadComponent from '../hooks/LazyLoadComponent'; 
 import type { Product } from '../../types/Product';
 
 const MotionGrid = motion(Grid);
@@ -11,7 +12,7 @@ interface ProductListProps {
   onSelectProduct: (product: Product) => void;
 }
 
-export const ProductList: React.FC<ProductListProps> = ({
+const ProductList: React.FC<ProductListProps> = ({
   products,
   onSelectProduct,
 }) => {
@@ -20,17 +21,17 @@ export const ProductList: React.FC<ProductListProps> = ({
     show: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.1
-      }
-    }
+        staggerChildren: 0.1,
+      },
+    },
   };
 
   if (!products?.length) {
     return (
-      <Flex 
-        justifyContent="center" 
-        alignItems="center" 
-        width="full" 
+      <Flex
+        justifyContent="center"
+        alignItems="center"
+        width="full"
         py={10}
       >
         <Text fontSize="xl" color="gray.500">
@@ -56,13 +57,16 @@ export const ProductList: React.FC<ProductListProps> = ({
         gap={{ base: 4, sm: 6, md: 8, lg: 14 }}
       >
         {products.map((product) => (
-          <ProductContainer
-            key={product.id}
-            product={product}
-            onSelectProduct={onSelectProduct}
-          />
+          <LazyLoadComponent key={product.id}>
+            <ProductContainer
+              product={product}
+              onSelectProduct={onSelectProduct}
+            />
+          </LazyLoadComponent>
         ))}
       </MotionGrid>
     </Flex>
   );
 };
+
+export default ProductList;
