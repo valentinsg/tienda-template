@@ -194,24 +194,23 @@ const RequestSizeDialog = () => {
 
             <Text fontSize="sm" color={mutedTextColor}>
               Al registrarte, aceptas los{' '}
-              <Link href="/terminos-y-condiciones" color="blue.500" textDecoration="underline">
+              <Link href="/terms" color="blue.500" textDecoration="underline">
                 Términos y Condiciones
               </Link>{' '}
               y la{' '}
-              <Link href="/politica-de-privacidad" color="blue.500" textDecoration="underline">
+              <Link href="/privacy" color="blue.500" textDecoration="underline">
                 Política de Privacidad y Cookies
               </Link>{' '}
               de Busy.
             </Text>
 
             <Button
-              colorScheme="blue"
+              colorPalette="blue"
               onClick={handleSubmit}
               size="lg"
               width="100%"
               loading={isLoading}
               loadingText="Enviando..."
-              _hover={{ bg: 'blue.600' }}
             >
               Avisame
             </Button>

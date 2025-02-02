@@ -191,10 +191,22 @@ export default function Product() {
             )}
 
             {/* Main Image */}
-            <Box position="relative" w="100%" h="100%" bg={secondaryBg} borderRadius="lg" overflow="hidden">
-              <AspectRatio ratio={3 / 3}>
-                <Image src={mainImage} alt={product.name} objectFit="cover" as={"img"} />
-              </AspectRatio>
+            <Box
+              position="relative"
+              flex="1"
+              h={{ base: "400px", md: "750px" }}
+              bg={secondaryBg}
+              borderRadius="lg"
+              overflow="hidden"
+            >
+              <Image
+                src={mainImage}
+                alt={product.name}
+                objectFit="cover"
+                w="100%"
+                h="100%"
+                as={"img"}
+              />
             </Box>
           </HStack>
 
@@ -350,78 +362,71 @@ export default function Product() {
             </Box>
 
             {/* Description and Shipping */}
-            <Box >
-              <Text color={textColor} fontSize={"lg"} mt={5} letterSpacing={"tighter"} as={"p"}>
+            <Box>
+              <Text
+                color={textColor}
+                fontSize="lg"
+                mt={5}
+                letterSpacing="tighter"
+                mb={8}
+                lineHeight="tall"
+                as="p"
+              >
                 {product.description}
               </Text>
-              <VStack mt={6} as={"section"}>
-                <Accordion.Root collapsible >
-
-                  <Accordion.Item value="measures" py={2}>
-                    <AccordionItemTrigger
-                      cursor={"pointer"}
-                      borderRadius="md"
+              
+              <VStack mt={6} gap={4} as="section"  w="full">
+                <Accordion.Root collapsible>
+                  {[
+                    { value: "measures", title: "Medidas", content: "Imagen de medidas" },
+                    { value: "shipping", title: "Envíos", content: "Realizamos envíos a todo el país. El costo depende de la ubicación." },
+                    { value: "payment", title: "Métodos de pago", content: "Aceptamos tarjetas de débito, crédito y transferencias bancarias." },
+                    { value: "returns", title: "Devoluciones", content: "Devoluciones en menos de 14 dias." }
+                  ].map((item) => (
+                    <Accordion.Item
+                      key={item.value}
+                      value={item.value}
+                      borderBottomWidth="1px"
+                      borderColor={useColorModeValue('gray.200', 'gray.700')}
+                      _last={{ borderBottom: 'none' }}
                     >
-                      <Box as="span" flex="1" textAlign="left" color={textColor} fontWeight={"600"}>
-                        Medidas
-                      </Box>
-                    </AccordionItemTrigger>
-                    <AccordionItemContent pb={4} bg={colorMode === 'dark' ? 'gray.800' : 'gray.100'} overflow="hidden">                      
-                      <Text color={textColor} as={"p"}>
-                        Imagen de medidas
-                      </Text>
-                    </AccordionItemContent>
-                  </Accordion.Item>
-
-                  <Accordion.Item value="shipping" py={2}>
-                    <AccordionItemTrigger
-                      cursor={"pointer"}
-                      borderRadius="md"
-                    >
-                      <Box as="span" flex="1" textAlign="left" color={textColor} fontWeight={"600"}>
-                        Envíos
-                      </Box>
-                    </AccordionItemTrigger>
-                    <AccordionItemContent pb={4} bg={colorMode === 'dark' ? 'gray.800' : 'gray.100'} overflow="hidden">                      
-                      <Text color={textColor} as={"p"}>
-                        Realizamos envíos a todo el país. El costo depende de la ubicación.
-                      </Text>
-                    </AccordionItemContent>
-                  </Accordion.Item>
-
-
-                  <Accordion.Item value="payment" py={2}>
-                    <AccordionItemTrigger
-                      cursor={"pointer"}
-                      borderRadius="md"
-                    >
-                      <Box as="span" flex="1" textAlign="left" color={textColor} fontWeight={"600"}>
-                        Métodos de pago
-                      </Box>
-                    </AccordionItemTrigger>
-                    <AccordionItemContent pb={4} bg={colorMode === 'dark' ? 'gray.800' : 'gray.100'} overflow="hidden">                      
-                      <Text color={textColor} as={"p"}>
-                        Aceptamos tarjetas de débito, crédito y transferencias bancarias.
-                      </Text>
-                    </AccordionItemContent>
-                  </Accordion.Item>
-
-                  <Accordion.Item value="returns" py={2}>
-                    <AccordionItemTrigger
-                      cursor={"pointer"}
-                      borderRadius="md"
-                    >
-                      <Box as="span" flex="1" textAlign="left" color={textColor} fontWeight={"600"}>
-                        Devoluciones
-                      </Box>
-                    </AccordionItemTrigger>
-                    <AccordionItemContent pb={4} bg={colorMode === 'dark' ? 'gray.800' : 'gray.100'} overflow="hidden">                      
-                      <Text color={textColor} as={"p"}>
-                        Devoluciones en menos de 14 dias.
-                      </Text>
-                    </AccordionItemContent>
-                  </Accordion.Item>
-                  
+                      <AccordionItemTrigger
+                        w="full"
+                        py={4}
+                        transition="all 0.2s"
+                        _hover={{ bg: useColorModeValue('gray.50', 'gray.800') }}
+                        borderRadius="md"
+                      >
+                        <Box
+                          as="span"
+                          flex="1"
+                          textAlign="left"
+                          color={textColor}
+                          fontWeight="600"
+                          fontSize="md"
+                          display="flex"
+                          alignItems="center"
+                          justifyContent="space-between"
+                        >
+                          {item.title}
+                        </Box>
+                      </AccordionItemTrigger>
+                      <AccordionItemContent
+                        pb={4}
+                        pt={2}
+                      >
+                        <Text
+                          color={textColor}
+                          fontSize="md"
+                          lineHeight="tall"
+                          opacity="0.9"
+                          as="p"
+                        >
+                          {item.content}
+                        </Text>
+                      </AccordionItemContent>
+                    </Accordion.Item>
+                  ))}
                 </Accordion.Root>
               </VStack>
             </Box>

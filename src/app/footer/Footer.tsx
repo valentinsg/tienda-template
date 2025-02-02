@@ -170,61 +170,56 @@ export default function Footer() {
       </Flex>
 
       {/* Rest of the footer remains the same */}
-      <Box as="hr" my={8} borderColor={useColorModeValue('gray.400', 'gray.600')} />
+      <Box as="hr" my={10} borderColor={useColorModeValue('gray.400', 'gray.600')} />
 
       <Flex flexDir={{ base: "column", md: "row" }} gap={10} fontSize={"lg"} letterSpacing={"tighter"}>
-        <Box gap={8} fontWeight={600} p={10} >
-          <Text color={textColor} ><Link href="/products" _hover={{ color: hoverColor }}>Productos</Link></Text>
-          <Text color={textColor} ><Link href="/about" _hover={{ color: hoverColor }}>Sobre nosotros</Link></Text>
-          <Text color={textColor} ><Link href="https://www.instagram.com/busy.streetwear/" target="_blank" rel="noopener noreferrer" _hover={{ color: hoverColor }}>Instagram</Link></Text>
-          <Text color={textColor} ><Link href="https://www.tiktok.com/@busy.streetwear" target="_blank" rel="noopener noreferrer" _hover={{ color: hoverColor }}>TikTok</Link></Text>
+        <Box gap={8} p={8} >
+          <Text color={textColor}><Link href="/products" _hover={{ color: hoverColor }}>Todos los productos</Link></Text>
+          <Text color={textColor}><Link href="/products/hoodies" _hover={{ color: hoverColor }}>Buzos</Link></Text>
+          <Text color={textColor}><Link href="/products/remeras" _hover={{ color: hoverColor }}>Remeras</Link></Text>
+          <Text color={textColor}><Link href="/about" _hover={{ color: hoverColor }}>Sobre nosotros</Link></Text>
         </Box>
-        <Box gap={8} fontWeight={600} p={10}>
-          <Text color={textColor} ><Link href="/contact" _hover={{ color: hoverColor }}>Contacto</Link></Text>
-          <Text color={textColor} ><Link href="/faqs" _hover={{ color: hoverColor }}>FAQs</Link></Text>
-          <Text color={textColor} _hover={{ color: hoverColor }}> <Link href="/terms" _hover={{ color: hoverColor }}>Términos y Condiciones</Link> </Text>
-          <Text color={textColor} _hover={{ color: hoverColor }}><Link href="/privacy" _hover={{ color: hoverColor }}>Política de Privacidad</Link> </Text>
+        <Box gap={8} p={8}>
+          <Text color={textColor}><Link href="/contact" _hover={{ color: hoverColor }}>Contacto</Link></Text>
+          <Text color={textColor}><Link href="/faqs" _hover={{ color: hoverColor }}>FAQs</Link></Text>
+          <Text color={textColor}><Link href="https://www.instagram.com/busy.streetwear/" target="_blank" rel="noopener noreferrer" _hover={{ color: hoverColor }}>Instagram</Link></Text>
+          <Text color={textColor}><Link href="https://www.tiktok.com/@busy.streetwear" target="_blank" rel="noopener noreferrer" _hover={{ color: hoverColor }}>TikTok</Link></Text>
         </Box>
       </Flex>
 
-      <Flex
-        flexDir={{ base: "column", md: "row" }}
-        justifyContent="space-between"
-        alignItems="center"
-        color={textColor}
+      <Text
         px={8}
-      >
-        <Text display={{ base: "none", md: "block" }} fontSize="lg" fontWeight={600} textAlign={{ base: "center", md: "left" }} letterSpacing={"tighter"}>
-          Mejor ocuparse que preocuparse.
-        </Text>
-        <HStack gap={8} mt={{ base: 8, md: 0 }}>
-          <Link href="https://www.tiktok.com/@busy.streetwear" _hover={{ color: hoverColor }} target="_blank" rel="noopener noreferrer">
-            <Icon
-              _hover={{ transform: "scale(1.1)" }}
-              transition="all 0.5s ease"
-              size={"xl"}
-            >
-              <FaTiktok />
-            </Icon>
-          </Link>
-          <Link href="https://www.instagram.com/busy.streetwear/" _hover={{ color: hoverColor }} target="_blank" rel="noopener noreferrer">
-            <Icon
-              _hover={{ transform: "scale(1.1)" }}
-              transition="all 0.5s ease"
-              size={"xl"}
-            >
-              <FaInstagram />
-            </Icon>
-          </Link>
-          <Image src={Visa} alt="Visa" width={50} height={50} />
-          <Image src={Mastercard} alt="Mastercard" width={50} height={50} />
-          <Image src={MercadoPago} alt="MercadoPago" width={45} height={45} />
-        </HStack>
-      </Flex>
-
-      <Text mt={10} mb={2} fontSize="lg" textAlign="center" color={textColor} letterSpacing={"tighter"}>
-        &copy; 2024 Busy. Todos los derechos reservados.
+        mt={4}
+        color={textColor}
+        display={{ base: "none", md: "block" }} fontSize="lg" fontWeight={600} textAlign={{ base: "center", md: "left" }} letterSpacing={"tighter"}>
+        Mejor ocuparse que preocuparse.
       </Text>
+
+      <HStack justifyContent={"space-between"} mt={8} gap={2} px={8} fontSize="sm" color={useColorModeValue('gray.600', 'gray.400')} alignItems="center">
+        <Box display={{ base: "none", md: "flex" }} gap={4}>
+          <Link href="/terms" _hover={{ color: hoverColor }}>Términos</Link>
+          <Text>•</Text>
+          <Link href="/privacy" _hover={{ color: hoverColor }}>Privacidad</Link>
+        </Box>
+
+        <Text fontSize="lg" textAlign="center" color={textColor} letterSpacing={"tighter"} ml={{base: "auto", md: 20}} mr={{base: "auto", md: 0}}>
+          &copy; 2024 Busy. Todos los derechos reservados.
+        </Text>
+
+        <Flex display={{ base: "none", md: "flex" }} gap={4}>
+          <HStack gap={4}>
+            <Link href="https://www.tiktok.com/@busy.streetwear" _hover={{ color: hoverColor }} target="_blank" rel="noopener noreferrer">
+              <Icon _hover={{ transform: "scale(1.1)" }} transition="all 0.5s ease" size={"xl"}><FaTiktok /></Icon>
+            </Link>
+            <Link href="https://www.instagram.com/busy.streetwear/" _hover={{ color: hoverColor }} target="_blank" rel="noopener noreferrer">
+              <Icon _hover={{ transform: "scale(1.1)" }} transition="all 0.5s ease" size={"xl"}><FaInstagram /></Icon>
+            </Link>
+            <Image src={Visa} alt="Visa" width={50} height={50} />
+            <Image src={Mastercard} alt="Mastercard" width={50} height={50} />
+            <Image src={MercadoPago} alt="MercadoPago" width={45} height={45} />
+          </HStack>
+        </Flex>
+      </HStack>
     </Flex>
   );
 }
