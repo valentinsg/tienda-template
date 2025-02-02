@@ -147,8 +147,8 @@ export default function Product() {
   const mainImage = product.images?.[selectedImage]?.image_url || '/placeholder.jpg';
 
   return (
-    <Box bg={colorMode === 'dark' ? 'gray.800' : 'bg.muted'} h={{ base: "auto", md: "100vh" }} as={"section"}>
-      <Container py={10} w={"100%"}>
+    <Box bg={colorMode === 'dark' ? 'gray.800' : 'bg.muted'} h={{ base: "auto", md: "100%" }} w={"100%"} as={"section"}>
+      <Container py={14} w={"100%"}>
         {/* Breadcrumb */}
         <BreadcrumbRoot mb={4} fontSize="md" color={mutedTextColor} letterSpacing={"normal"} fontWeight={"bold"} as={"nav"}>
           <BreadcrumbLink href="/">Home</BreadcrumbLink>
@@ -157,13 +157,13 @@ export default function Product() {
         </BreadcrumbRoot>
 
         {/* Main Product Section */}
-        <Grid templateColumns={{ base: '1fr', lg: '1.5fr 1fr' }} gap={10}>
+        <Grid templateColumns={{ base: '1fr', lg: '1.5fr 1fr' }} gap={14}>
 
           {/* Image Section */}
           <HStack gap={4} align="start">
             {/* Thumbnails on the side */}
             {product.images && product.images.length > 1 && (
-              <VStack gap={2}>
+              <VStack gap={4}>
                 {product.images.map((img, idx) => (
                   <Box
                     key={idx}
@@ -350,12 +350,29 @@ export default function Product() {
             </Box>
 
             {/* Description and Shipping */}
-            <Box>
+            <Box >
               <Text color={textColor} fontSize={"lg"} mt={5} letterSpacing={"tighter"} as={"p"}>
                 {product.description}
               </Text>
-              <VStack align="stretch" mt={6} as={"section"}>
-                <Accordion.Root collapsible>
+              <VStack mt={6} as={"section"}>
+                <Accordion.Root collapsible >
+
+                  <Accordion.Item value="measures" py={2}>
+                    <AccordionItemTrigger
+                      cursor={"pointer"}
+                      borderRadius="md"
+                    >
+                      <Box as="span" flex="1" textAlign="left" color={textColor} fontWeight={"600"}>
+                        Medidas
+                      </Box>
+                    </AccordionItemTrigger>
+                    <AccordionItemContent pb={4} bg={colorMode === 'dark' ? 'gray.800' : 'gray.100'} overflow="hidden">                      
+                      <Text color={textColor} as={"p"}>
+                        Imagen de medidas
+                      </Text>
+                    </AccordionItemContent>
+                  </Accordion.Item>
+
                   <Accordion.Item value="shipping" py={2}>
                     <AccordionItemTrigger
                       cursor={"pointer"}
@@ -365,7 +382,7 @@ export default function Product() {
                         Envíos
                       </Box>
                     </AccordionItemTrigger>
-                    <AccordionItemContent pb={4} bg={colorMode === 'dark' ? 'gray.800' : 'gray.100'} >
+                    <AccordionItemContent pb={4} bg={colorMode === 'dark' ? 'gray.800' : 'gray.100'} overflow="hidden">                      
                       <Text color={textColor} as={"p"}>
                         Realizamos envíos a todo el país. El costo depende de la ubicación.
                       </Text>
@@ -382,12 +399,29 @@ export default function Product() {
                         Métodos de pago
                       </Box>
                     </AccordionItemTrigger>
-                    <AccordionItemContent pb={4} bg={colorMode === 'dark' ? 'gray.800' : 'gray.100'}>
+                    <AccordionItemContent pb={4} bg={colorMode === 'dark' ? 'gray.800' : 'gray.100'} overflow="hidden">                      
                       <Text color={textColor} as={"p"}>
                         Aceptamos tarjetas de débito, crédito y transferencias bancarias.
                       </Text>
                     </AccordionItemContent>
                   </Accordion.Item>
+
+                  <Accordion.Item value="returns" py={2}>
+                    <AccordionItemTrigger
+                      cursor={"pointer"}
+                      borderRadius="md"
+                    >
+                      <Box as="span" flex="1" textAlign="left" color={textColor} fontWeight={"600"}>
+                        Devoluciones
+                      </Box>
+                    </AccordionItemTrigger>
+                    <AccordionItemContent pb={4} bg={colorMode === 'dark' ? 'gray.800' : 'gray.100'} overflow="hidden">                      
+                      <Text color={textColor} as={"p"}>
+                        Devoluciones en menos de 14 dias.
+                      </Text>
+                    </AccordionItemContent>
+                  </Accordion.Item>
+                  
                 </Accordion.Root>
               </VStack>
             </Box>

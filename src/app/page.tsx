@@ -1,6 +1,5 @@
 'use client';
-import { Suspense, lazy } from 'react';
-import { motion } from 'framer-motion';
+import { lazy } from 'react';
 import { useRouter } from 'next/navigation';
 import { useProducts } from './context/ProductContext';
 import { Product } from '../types/Product';

@@ -3,6 +3,11 @@ import Product from './Product';
 import { Metadata } from 'next';
 import { supabase } from "../../supabase";
 
+type GenerateMetadataProps = {
+  params: Promise<{ id: string }>,
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
+}
+
 async function getProductById(id: string) {
   const { data: product, error } = await supabase
     .from('products')
@@ -14,13 +19,15 @@ async function getProductById(id: string) {
     `)
     .eq('id', id)
     .single();
-
   if (error || !product) return null;
   return product;
 }
 
-export async function generateMetadata({ params }: { params: { id: string } }): Promise<Metadata> {
-  const product = await getProductById((await params).id);
+
+
+export async function generateMetadata({ params: paramsPromise, }: GenerateMetadataProps): Promise<Metadata> {
+  const params = await paramsPromise;
+  const product = await getProductById(params.id);
 
   if (!product) {
     return {

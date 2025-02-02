@@ -4,11 +4,11 @@ import { Box, Heading, Text} from "@chakra-ui/react";
 const Terms = () => {
   return (
     <Box maxWidth="800px" mx="auto" p="8" bg="white" color="gray.800" borderRadius="md" boxShadow="md">
-      <Heading letterSpacing={"tighter"} as="h3" size="2xl" mb="6" textAlign="center" color="gray.800" fontFamily={"Archivo Black"}>
+      <Heading letterSpacing={"tighter"} as="h1" size="2xl" mb="6" textAlign="center" color="gray.800" fontFamily={"Archivo Black"}>
         TÉRMINOS DEL SERVICIO
       </Heading>
       ----
-      <Text as={"h4"}>
+      <Text as={"h2"}>
         GENERALIDADES
       </Text>
 
@@ -21,7 +21,7 @@ const Terms = () => {
         Las nuevas funciones o herramientas que se agreguen a la tienda actual también estarán sujetas a los Términos del servicio. Puede revisar la versión más reciente de los Términos del servicio en cualquier momento en esta página. Nos reservamos el derecho de actualizar, cambiar o reemplazar cualquier parte de los presentes Términos del servicio mediante la publicación de actualizaciones o cambios en nuestra página web. Es su responsabilidad revisar esta página periódicamente para ver los cambios. Su uso de la página web o el acceso a ella de forma continuada después de la publicación de cualquier cambio constituye la aceptación de dichos cambios.
         Nos proporcionan la plataforma de comercio electrónico en línea que nos permite venderle nuestros productos y servicios.
       </Text>
-      <Text as={"h5"}>
+      <Text as={"h3"}>
         SECCIÓN 1: TÉRMINOS DE LA TIENDA ONLINE
       </Text>
       <Text as={"p"}>        

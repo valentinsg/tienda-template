@@ -3,14 +3,14 @@ import { Box, Heading, Text, ListItem, Link, List } from "@chakra-ui/react";
 export default function Privacy() {
   return (
     <Box maxWidth="800px" mx="auto" p="8" bg="white" color="gray.800" borderRadius="md" boxShadow="md">
-      <Heading letterSpacing={"tighter"} as="h2" size="2xl" mb="6" textAlign="center" color="gray.800" fontFamily={"Archivo Black"}>
+      <Heading letterSpacing={"tighter"} as="h1" size="2xl" mb="6" textAlign="center" color="gray.800" fontFamily={"Archivo Black"}>
         Política de privacidad de Busy
       </Heading>
       <Text>
         Esta Política de privacidad describe cómo se recopila, utiliza y comparte su información personal cuando visita o hace una compra en https://www.busy.com.ar/ (denominado en lo sucesivo el “Sitio”).
       </Text>
 
-      <Heading as="h3" size="lg" mt="8" mb="4" color="gray.800" >
+      <Heading as="h2" size="lg" mt="8" mb="4" color="gray.800" >
         INFORMACIÓN PERSONAL QUE RECOPILAMOS.
       </Heading>
       <Text mb="4">
