@@ -5,8 +5,8 @@ export interface OrderDetails {
   id: string;
   status: string;
   tracking_code?: string;
-  shipping_address: any;
-  cart_items: any[];
+  shipping_address: string;
+  cart_items: string[];
   payment_status?: string;
   customer_name: string;
   total_amount: number;

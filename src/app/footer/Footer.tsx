@@ -4,7 +4,6 @@ import { Flex, Heading, Input, Text, Box, Link, HStack, useBreakpointValue, Icon
 import Image from 'next/image';
 import { useColorMode, useColorModeValue } from '../components/ui/color-mode';
 import { Button } from "../components/ui/button";
-import { toaster } from '../components/ui/toaster';
 import BusyDarkMode from '../../../public/busy-logo-dark-mode.png';
 import BusyLightMode from '../../../public/busy-logo-light-mode.png';
 import Visa from '../../../public/visa.png';

@@ -34,7 +34,7 @@ export async function POST(request: NextRequest) {
       const cartItems = paymentRecord.cart_items;
       
       // Usar una transacción para actualizar el stock
-      const stockUpdates = cartItems.map(async (item: { id: any; size: string | number; quantity: number; }) => {
+      const stockUpdates = cartItems.map(async (item: { id: string; size: string | number; quantity: number; }) => {
         // Primero verificar el stock actual
         const { data: currentProduct } = await supabase
           .from('products')
