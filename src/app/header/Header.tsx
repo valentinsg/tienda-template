@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { useProducts } from '../context/ProductContext';
+import { useProducts } from '../hooks/useProducts';
 import {
   Box,
   Flex,

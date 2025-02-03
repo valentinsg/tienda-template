@@ -1,6 +1,6 @@
 'use client';
-import React from 'react';
-import { useProducts } from '../../../context/ProductContext';
+import React, { useEffect, useState } from 'react';
+import { useProducts } from '../../../hooks/useProducts';
 import ProductList from '../../../components/ProductList';
 import { useRouter } from 'next/navigation';
 import { Flex, Spinner, Text, Heading, Box } from '@chakra-ui/react';
@@ -14,7 +14,12 @@ export default function CategoryPage({ params }: { params: Promise<{ slug: strin
   const router = useRouter();
   const textColor = useColorModeValue('#555454', '#D0D0D0');
   const { colorMode } = useColorMode();
-  
+  const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
+
+  useEffect(() => {
+    setFilteredProducts(products);
+  }, [products]);
+
   if (isLoading) {
     return (
       <Flex justify="center" align="center" minH="60vh">
@@ -32,7 +37,7 @@ export default function CategoryPage({ params }: { params: Promise<{ slug: strin
   }
 
   const category = categories.find(cat => cat.slug === slug);
-  
+
   if (!category) {
     return (
       <Flex justify="center" align="center" minH="60vh">
@@ -41,20 +46,16 @@ export default function CategoryPage({ params }: { params: Promise<{ slug: strin
     );
   }
 
-  const filteredProducts = products.filter(product => 
-    product.category === category.id
-  );
-
   const handleSelectProduct = (product: Product) => {
     router.push(`/products/${product.id}`);
   };
 
   return (
-    <Box bg={colorMode === 'dark' ? 'gray.800' : 'bg.muted'} py={12}  color={textColor} as={"section"}>
+    <Box bg={colorMode === 'dark' ? 'gray.800' : 'bg.muted'} py={12} color={textColor} as={"section"}>
       <Heading as="h1" mb={10} textAlign="center" fontFamily={"Archivo Black"} fontSize={{ base: "4xl", md: "4vw" }} letterSpacing={"tighter"} lineHeight={{ base: 1.2, md: "11vh" }} color={textColor}>
         {category.name}
       </Heading>
-      <ProductList 
+      <ProductList
         products={filteredProducts}
         onSelectProduct={handleSelectProduct}
       />

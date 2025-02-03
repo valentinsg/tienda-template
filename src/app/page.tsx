@@ -1,7 +1,7 @@
 'use client';
 import { lazy } from 'react';
 import { useRouter } from 'next/navigation';
-import { useProducts } from './context/ProductContext';
+import { useProducts } from './hooks/useProducts';
 import { Product } from '../types/Product';
 import { Box, Flex, Spinner, Text } from '@chakra-ui/react';
 import { useColorMode } from './components/ui/color-mode';

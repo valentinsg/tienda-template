@@ -1,6 +1,6 @@
 'use client';
 import { useParams } from 'next/navigation';
-import { useProducts } from '../../context/ProductContext';
+import { useProducts } from '../../hooks/useProducts';
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {

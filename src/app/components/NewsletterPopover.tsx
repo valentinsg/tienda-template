@@ -9,7 +9,6 @@ import {
   DialogActionTrigger,
 } from "../components/ui/dialog";
 import {
-  Button,
   Input,
   Text,
   Box,
@@ -17,101 +16,51 @@ import {
   Grid,
   GridItem,
   Image,
+  useBreakpointValue,
 } from "@chakra-ui/react";
-import { toast } from "react-toastify";
+import { Button } from "../components/ui/button";
 import { useColorModeValue } from "../components/ui/color-mode";
+import { useNewsletter } from '../hooks/useNewsletter';
 
 export default function NewsletterDialog() {
   const [isOpen, setIsOpen] = useState(false);
-  const [email, setEmail] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-  const [hasCheckedSubscription, setHasCheckedSubscription] = useState(false);
-  const [discountCode, setDiscountCode] = useState("");
   const [showSuccess, setShowSuccess] = useState(false);
+  const { email, setEmail, isLoading, isSubscribed, hasCheckedSubscription, handleSubscribe } = useNewsletter();
 
+  // Responsive values
+  const gridTemplateColumns = useBreakpointValue({
+    base: "1fr",
+    sm: "1fr",
+    md: "1fr 1.2fr"
+  });
+  const padding = useBreakpointValue({ base: "1rem", md: "2rem" });
+  const imageDisplay = useBreakpointValue({ base: "none", sm: "block" });
+  const dialogMaxWidth = useBreakpointValue({ base: "95vw", sm: "600px", md: "700px" });
+
+  // Theme values
   const borderColor = useColorModeValue("gray.100", "gray.700");
   const textColor = useColorModeValue("#555454", "#D0D0D0");
   const inputBg = useColorModeValue("white", "gray.800");
+  const successBg = useColorModeValue("green.50", "green.900");
+  const successBorder = useColorModeValue("green.200", "green.700");
+  const successText = useColorModeValue("green.800", "green.100");
 
-  const lucas =
-    "https://tfufdiayyhcndcgncylf.supabase.co/storage/v1/object/sign/imagenes%20web/DSC06719(2).png?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJpbWFnZW5lcyB3ZWIvRFNDMDY3MTkoMikucG5nIiwiaWF0IjoxNzM1OTU1MDY1LCJleHAiOjE3Njc0OTEwNjV9.PtjZT7MChCXucfFuPbubX8HtiP4IQxE-z_cyrY7E2OY&t=2025-01-04T01%3A44%3A25.739Z";
+  const lucas = "https://tfufdiayyhcndcgncylf.supabase.co/storage/v1/object/sign/imagenes%20web/DSC06719(2).png?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJpbWFnZW5lcyB3ZWIvRFNDMDY3MTkoMikucG5nIiwiaWF0IjoxNzM1OTU1MDY1LCJleHAiOjE3Njc0OTEwNjV9.PtjZT7MChCXucfFuPbubX8HtiP4IQxE-z_cyrY7E2OY&t=2025-01-04T01%3A44%3A25.739Z";
 
   useEffect(() => {
-    const checkSubscriptionStatus = async () => {
-      try {
-        const response = await fetch("/api/newsletter/check-status", {
-          method: "GET",
-        });
+    if (!isSubscribed && hasCheckedSubscription) {
+      const timer = setTimeout(() => {
+        setIsOpen(true);
+      }, 20000);
+      return () => clearTimeout(timer);
+    }
+  }, [isSubscribed, hasCheckedSubscription]);
 
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        const data = await response.json();
-
-        if (!data.isSubscribed) {
-          const timer = setTimeout(() => {
-            setIsOpen(true);
-          }, 20000);
-          return () => clearTimeout(timer);
-        }
-      } catch (error) {
-        console.error("Error checking subscription status:", error);
-      } finally {
-        setHasCheckedSubscription(true);
-      }
-    };
-
-    checkSubscriptionStatus();
-  }, []);
-
-  const handleSubmit = async (e: React.FormEvent) => {
+  const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    if (!email) {
-      toast.error("Por favor ingresa tu email");
-      return;
-    }
-
-    if (!/\S+@\S+\.\S+/.test(email)) {
-      toast.error("Por favor ingresa un email válido");
-      return;
-    }
-
-    setIsLoading(true);
-
-    try {
-      const response = await fetch("/api/newsletter", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email }),
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const data = await response.json();
-
-      if (data.error === "exists") {
-        toast.info("Este email ya está suscrito a nuestra newsletter");
-        setIsOpen(false);
-      } else if (data.message === "success") {
-        setDiscountCode(data.discountCode);
-        setShowSuccess(true);
-        toast.success("¡Gracias por suscribirte!");
-      } else {
-        throw new Error(data.error || "Error desconocido");
-      }
-    } catch (error) {
-      console.error("Error:", error);
-      toast.error(
-        "Hubo un error al procesar tu solicitud. Por favor intenta nuevamente."
-      );
-    } finally {
-      setIsLoading(false);
+    const result = await handleSubscribe(e);
+    if (result === undefined) {
+      setShowSuccess(true);
     }
   };
 
@@ -125,28 +74,38 @@ export default function NewsletterDialog() {
         style={{
           border: `1px solid ${borderColor}`,
           borderRadius: "1rem",
-          padding: "2rem",
-          boxShadow: "0 0 10px rgba(0, 0, 0, 0.5)",
-          maxWidth: "700px",
+          padding,
+          boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)",
+          maxWidth: dialogMaxWidth,
+          width: "100%",
           margin: "auto",
           backgroundColor: inputBg,
         }}
       >
-        <Grid templateColumns={{ base: "1fr", md: "1fr 1.2fr" }} gap={8}>
-          <GridItem>
-            <Box borderRadius="lg" overflow="hidden" position="relative">
-              <Image src={lucas} alt="Lucas" />
+        <Grid templateColumns={gridTemplateColumns} gap={6}>
+          <GridItem display={imageDisplay}>
+            <Box 
+              borderRadius="lg" 
+              overflow="hidden" 
+              position="relative"
+              height={{ base: "200px", md: "auto" }}
+            >
+              <Image 
+                src={lucas} 
+                alt="Lucas" 
+                style={{ objectFit: "cover", width: "100%", height: "100%" }}
+              />
             </Box>
           </GridItem>
 
           <GridItem>
-            <VStack gap={6} align="stretch">
+            <VStack gap={4} align="stretch">
               <DialogHeader>
                 <DialogTitle
-                  fontSize="2xl"
+                  fontSize={{ base: "xl", md: "2xl" }}
                   color={textColor}
-                  fontFamily={"Archivo Black"}
-                  letterSpacing={"tighter"}
+                  fontFamily="Archivo Black"
+                  letterSpacing="tighter"
                   fontWeight={500}
                 >
                   ¡Obtené un 10% de descuento!
@@ -156,54 +115,60 @@ export default function NewsletterDialog() {
               <DialogBody>
                 {showSuccess ? (
                   <Box
-                    bg="green.100"
-                    p={6}
+                    bg={successBg}
+                    p={{ base: 4, md: 6 }}
                     rounded="md"
                     textAlign="center"
                     border="1px solid"
-                    borderColor="green.300"
+                    borderColor={successBorder}
                   >
-                    <Text fontSize="lg" fontWeight="bold" color="green.800">
+                    <Text fontSize="lg" fontWeight="bold" color={successText}>
                       ¡Suscripción exitosa!
                     </Text>
-                    <Text mt={4}>
+                    <Text mt={4} color={successText}>
                       Tu código de descuento es:
                       <Box
                         fontSize="xl"
                         fontWeight="bold"
                         mt={2}
                         p={2}
-                        bg="white"
+                        bg={inputBg}
                         border="1px solid"
-                        borderColor="gray.300"
+                        borderColor={borderColor}
                         borderRadius="md"
                       >
-                        {discountCode}
+                        {email} {/* Replace with actual discount code from API response */}
                       </Box>
                     </Text>
-                    <Text mt={2} fontSize="sm" color="green.700">
+                    <Text mt={2} fontSize="sm" color={successText}>
                       Te hemos enviado un email con el código y más información.
                     </Text>
                     <Button
                       mt={4}
                       colorScheme="green"
                       onClick={() => setIsOpen(false)}
+                      width={{ base: "full", md: "auto" }}
                     >
                       Cerrar
                     </Button>
                   </Box>
                 ) : (
-                  <form onSubmit={handleSubmit}>
+                  <form onSubmit={onSubmit}>
                     <VStack gap={4} align="stretch">
-                      <Text fontSize="md" color={textColor}>
-                        Suscribite a nuestra newsletter y recibí un cupón de descuento para tu primera compra.
+                      <Text 
+                        fontSize={{ base: "sm", md: "md" }} 
+                        color={textColor}
+                        lineHeight="tall"
+                      >
+                        Suscribite a nuestra newsletter y recibí un cupón de descuento 
+                        para tu primera compra.
                       </Text>
 
                       <Input
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         placeholder="tucorreo@email.com"
-                        size="lg"
+                        size={{ base: "md", md: "lg" }}
                         type="email"
                         required
                         bg={inputBg}
@@ -218,17 +183,18 @@ export default function NewsletterDialog() {
                       />
 
                       <Button
-                        colorPalette={"blue"}
+                        colorScheme="blue"
                         width="full"
-                        size="lg"
+                        size={{ base: "md", md: "lg" }}
                         type="submit"
+                        loading={isLoading}
                       >
-                        {isLoading ? "Enviando..." : "Obtener descuento"}
+                        Obtener descuento
                       </Button>
 
                       <DialogActionTrigger asChild>
                         <Button
-                          size="lg"
+                          size={{ base: "md", md: "lg" }}
                           variant="outline"
                           width="full"
                           onClick={() => setIsOpen(false)}

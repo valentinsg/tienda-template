@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { toaster } from '../components/ui/toaster';
 
 interface NewsletterResponse {
@@ -10,10 +10,35 @@ interface NewsletterResponse {
 export const useNewsletter = () => {
   const [email, setEmail] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isSubscribed, setIsSubscribed] = useState(false);
+  const [hasCheckedSubscription, setHasCheckedSubscription] = useState(false);
 
   const validateEmail = (email: string): boolean => {
     return /\S+@\S+\.\S+/.test(email);
   };
+
+  const checkSubscriptionStatus = async () => {
+    try {
+      const response = await fetch("/api/newsletter/check-status", {
+        method: "GET",
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      setIsSubscribed(data.isSubscribed);
+    } catch (error) {
+      console.error("Error checking subscription status:", error);
+    } finally {
+      setHasCheckedSubscription(true);
+    }
+  };
+
+  useEffect(() => {
+    checkSubscriptionStatus();
+  }, []);
 
   const handleSubscribe = async (e?: React.FormEvent) => {
     if (e) {
@@ -80,6 +105,7 @@ export const useNewsletter = () => {
           },
         });
         setEmail("");
+        setIsSubscribed(true);
       } else {
         throw new Error(data.error || "Error desconocido");
       }
@@ -102,6 +128,8 @@ export const useNewsletter = () => {
     email,
     setEmail,
     isLoading,
-    handleSubscribe
+    isSubscribed,
+    hasCheckedSubscription,
+    handleSubscribe,
   };
 };

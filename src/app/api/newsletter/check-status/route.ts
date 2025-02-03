@@ -1,29 +1,7 @@
 import { NextResponse } from 'next/server';
-import { headers } from 'next/headers';
+import { getClientIP } from '@/app/utils/ClientIp';
 import { supabase } from '@/app/supabase';
 
-async function getClientIP(): Promise<string> {
-  const headersList = await headers();
-  
-  // Check for Vercel-specific headers first
-  const vercelForwardedFor = headersList.get('x-vercel-forwarded-for');
-  if (vercelForwardedFor) {
-    return vercelForwardedFor;
-  }
-  
-  // Then check standard headers
-  const forwardedFor = headersList.get('x-forwarded-for');
-  if (forwardedFor) {
-    return forwardedFor.split(',')[0].trim();
-  }
-  
-  const realIP = headersList.get('x-real-ip');
-  if (realIP) {
-    return realIP;
-  }
-  
-  return 'unknown';
-}
 
 export async function GET() {
   try {
