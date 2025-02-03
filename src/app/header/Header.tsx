@@ -47,6 +47,7 @@ const Header = () => {
     { name: 'Sobre nosotros', href: '/about' },
     { name: 'Contacto', href: '/contact' },
     { name: "FAQ's", href: '/faqs' },
+    { name: 'Blog', href: '/blog' },
   ];
 
   const MobileNav = () => (

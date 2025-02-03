@@ -11,95 +11,14 @@ import Visa from '../../../public/visa.png';
 import Mastercard from '../../../public/mastercard.png';
 import MercadoPago from '../../../public/mercadopagop.png';
 import { FaInstagram, FaTiktok } from 'react-icons/fa';
+import { useNewsletter } from '../hooks/useNewsletter';
 
 export default function Footer() {
   const { colorMode } = useColorMode();
-  const [email, setEmail] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-
+  const { email, setEmail, handleSubscribe } = useNewsletter();
+  const [isLoading,] = useState(false);
   const textColor = useColorModeValue('gray.700', '#D0D0D0');
   const hoverColor = useColorModeValue("gray.600", "gray.400");
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (!email) {
-      toaster.create({
-        title: "Error",
-        description: "Por favor ingresa tu email",
-        duration: 5000,
-        meta: {
-          closable: true,
-        },
-      });
-      return;
-    }
-
-    if (!/\S+@\S+\.\S+/.test(email)) {
-      toaster.create({
-        title: "Error",
-        description: "Por favor ingresa un email válido",
-        duration: 5000,
-        meta: {
-          closable: true,
-        },
-      });
-      return;
-    }
-
-    setIsLoading(true);
-
-    try {
-      const response = await fetch("/api/newsletter", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email }),
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const data = await response.json();
-
-      if (data.error === "exists") {
-        toaster.create({
-          title: "Email ya registrado",
-          description: "Este email ya está suscrito a nuestra newsletter",
-          duration: 5000,
-          meta: {
-            closable: true,
-          },
-        });
-      } else if (data.message === "success") {
-        toaster.create({
-          title: "¡Gracias por suscribirte!",
-          description: `Tu código de descuento es: ${data.discountCode}. Te hemos enviado un email con más información.`,
-          duration: 7000,
-          meta: {
-            closable: true,
-          },
-        });
-        setEmail("");
-      } else {
-        throw new Error(data.error || "Error desconocido");
-      }
-    } catch (error) {
-      console.error("Error:", error);
-      toaster.create({
-        title: "Error",
-        description: "Hubo un error al procesar tu solicitud. Por favor intenta nuevamente.",
-        duration: 5000,
-        meta: {
-          closable: true,
-        },
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   return (
     <Flex
@@ -131,28 +50,28 @@ export default function Footer() {
           >
             Sé el primero en enterarte de todas nuestras novedades
           </Heading>
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleSubscribe}>
             <Flex w={{ base: "100%", md: "95%" }} alignItems="center" mt={10}>
               <Input
                 placeholder="me@example.com"
                 borderColor={useColorModeValue('gray.400', 'gray.600')}
-                colorPalette={"blue"}
+                colorPalette="blue"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 type="email"
                 color={textColor}
                 disabled={isLoading}
-                fontSize={"md"}
-                letterSpacing={"tighter"}
-                borderRadius="0 0 0 0"
+                fontSize="md"
+                letterSpacing="tighter"
+                borderRadius="0"
               />
               <Button
                 type="submit"
-                colorPalette={"blue"}
+                colorPalette="blue"
                 fontWeight={600}
                 disabled={isLoading}
-                letterSpacing={"tighter"}
-                borderRadius="0 0 0 0"
+                letterSpacing="tighter"
+                borderRadius="0"
               >
                 {isLoading ? "Enviando..." : "Suscríbete"}
               </Button>
@@ -202,7 +121,7 @@ export default function Footer() {
           <Link href="/privacy" _hover={{ color: hoverColor }}>Privacidad</Link>
         </Box>
 
-        <Text fontSize="lg" textAlign="center" color={textColor} letterSpacing={"tighter"} ml={{base: "auto", md: 20}} mr={{base: "auto", md: 0}}>
+        <Text fontSize="lg" textAlign="center" color={textColor} letterSpacing={"tighter"} ml={{ base: "auto", md: 20 }} mr={{ base: "auto", md: 0 }}>
           &copy; 2024 Busy. Todos los derechos reservados.
         </Text>
 
