@@ -47,17 +47,58 @@ export default function Home() {
       </LazyLoadComponent >
 
       <Box
-        gap={20}
-        p={2}
-        py={{ base: 20, md: "" }}
         textAlign={"center"}
-        background="linear-gradient(to bottom, transparent, rgba(128, 128, 128, 0.42) 25%, rgba(128, 128, 128, 0.28) 50%, rgba(128, 128, 128, 0.12))"
+        background={`
+          linear-gradient(to bottom, 
+            transparent, 
+            rgba(128, 128, 128, 0.08) 25%, 
+            rgba(128, 128, 128, 0.12) 50%, 
+            rgba(128, 128, 128, 0.06) 75%),
+          radial-gradient(
+            circle at bottom right, 
+            ${colorMode === 'dark'
+            ? 'rgba(100, 100, 100, 0.1)'
+            : 'rgba(180, 180, 180, 0.07)'} 0%, 
+            transparent 60%
+          )
+        `}
       >
 
         <LazyLoadComponent>
-          <Flex direction="column" gap={20} p={2} py={{ base: 20, md: "" }} textAlign={"center"} align={"center"}>
-            <Text fontFamily={"Archivo Black"} w={{ base: "100%", md: "80%" }} as="h2" fontSize={{ base: "4xl", md: "4vw" }} letterSpacing={"tighter"} lineHeight={{ base: 1.2, md: "11vh" }} color={colorMode === 'dark' ? '#d0d0d0' : 'gray.700'}>
-              Ya disponible nuestra primer cápsula.
+          <Flex mt={10} direction="column" gap={20} p={2} py={{ base: 20, md: "" }} textAlign={"center"} align={"center"}>
+            <Text
+              fontFamily={"Archivo Black"}
+              w={{ base: "100%", md: "80%" }}
+              as="h2"
+              fontSize={{ base: "4xl", md: "4vw" }}
+              letterSpacing={"tighter"}
+              lineHeight={{ base: 1.2, md: "11vh" }}
+              color={colorMode === 'dark' ? '#d0d0d0' : 'gray.700'}
+              textShadow={
+                colorMode === 'dark'
+                  ? "0 0 10px rgba(255,255,255,0.2), 0 0 20px rgba(255,255,255,0.1)"
+                  : "0 0 8px rgba(0,0,0,0.2)"
+              }
+              position="relative"
+              _after={{
+                content: '""',
+                position: "absolute",
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                background: "linear-gradient(90deg, transparent, rgba(255,255,255,0), transparent)",
+                animation: "shimmer 2s infinite",
+                pointerEvents: "none"
+              }}
+              css={{
+                "@keyframes shimmer": {
+                  "0%": { transform: "translateX(-100%)" },
+                  "100%": { transform: "translateX(100%)" }
+                }
+              }}
+            >
+              Ya disponible nuestra primer cápsula
             </Text>
           </Flex>
         </LazyLoadComponent>
@@ -68,8 +109,38 @@ export default function Home() {
 
         <Flex direction="column" p={2} align={"center"}>
           <LazyLoadComponent>
-            <Text fontFamily={"Archivo Black"} as="h3" fontSize={{ base: "4xl", md: "4vw" }} letterSpacing={"tighter"} color={colorMode === 'dark' ? '#d0d0d0' : 'gray.700'}>
-              Nuevos productos.
+            <Text
+              fontFamily={"Archivo Black"}
+              as="h2"
+              fontSize={{ base: "4xl", md: "4vw" }}
+              letterSpacing={"tighter"}
+              lineHeight={{ base: 1.2, md: "11vh" }}
+              color={colorMode === 'dark' ? '#d0d0d0' : 'gray.700'}
+              textShadow={
+                colorMode === 'dark'
+                  ? "0 0 10px rgba(255,255,255,0.2), 0 0 20px rgba(255,255,255,0.1)"
+                  : "0 0 8px rgba(0,0,0,0.2)"
+              }
+              position="relative"
+              _after={{
+                content: '""',
+                position: "absolute",
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                background: "linear-gradient(90deg, transparent, rgba(255,255,255,0), transparent)",
+                animation: "shimmer 2s infinite",
+                pointerEvents: "none"
+              }}
+              css={{
+                "@keyframes shimmer": {
+                  "0%": { transform: "translateX(-100%)" },
+                  "100%": { transform: "translateX(100%)" }
+                }
+              }}
+            >
+              Nuevos productos
             </Text>
           </LazyLoadComponent>
           <ProductList products={products} onSelectProduct={handleSelectProduct} />

@@ -193,50 +193,57 @@ export const ProductContainer: React.FC<ProductContainerProps> = ({
             >
               ${product.price.toLocaleString()}
             </Text>
-          </VStack>
-        </motion.div>
+            <Box
+              w="16px"
+              h="16px"
+              borderRadius="50%"
+              backgroundColor={product.color}
+              mr="8px"
+            />
+        </VStack>
+      </motion.div>
 
-        {/* Sizes */}
-        <motion.div
-          initial={false}
-          animate={{
-            y: isHovering ? 0 : 20,
-            opacity: isHovering ? 1 : 0,
-          }}
-          transition={{ duration: 0.3 }}
-          style={{
-            position: 'absolute',
-            width: '100%',
-            paddingTop: '1rem',
-          }}
-        >
-          <HStack gap={8} justify="center" w="full">
-            {availableSizes.map(({ size, stock }) => {
-              const inCart = cartItems.find((item) => item.id === `${product.id}-${size}`)?.quantity || 0;
-              const remaining = stock - inCart;
+      {/* Sizes */}
+      <motion.div
+        initial={false}
+        animate={{
+          y: isHovering ? 0 : 20,
+          opacity: isHovering ? 1 : 0,
+        }}
+        transition={{ duration: 0.3 }}
+        style={{
+          position: 'absolute',
+          width: '100%',
+          paddingTop: '1rem',
+        }}
+      >
+        <HStack gap={8} justify="center" w="full">
+          {availableSizes.map(({ size, stock }) => {
+            const inCart = cartItems.find((item) => item.id === `${product.id}-${size}`)?.quantity || 0;
+            const remaining = stock - inCart;
 
-              return (
-                <Tooltip
-                  key={size}
-                  content={remaining > 0 ? `Quedan ${remaining} unidades` : "Sin stock"}
+            return (
+              <Tooltip
+                key={size}
+                content={remaining > 0 ? `Quedan ${remaining} unidades` : "Sin stock"}
+              >
+                <Text
+                  color={isDark ? '#d0d0d0' : remaining > 0 ? '#555454' : '#555454'}
+                  cursor={remaining > 0 ? 'pointer' : 'not-allowed'}
+                  fontSize="xl"
+                  opacity={remaining > 0 ? 1 : 0.6}
+                  onClick={() => remaining > 0 && handleAddToCart(size)}
+                  _hover={{ textDecoration: remaining > 0 ? 'underline' : 'none' }}
+                  textDecoration={remaining === 0 ? 'line-through' : 'none'}
                 >
-                  <Text
-                    color={isDark ? '#d0d0d0' : remaining > 0 ? '#555454' : '#555454'}
-                    cursor={remaining > 0 ? 'pointer' : 'not-allowed'}
-                    fontSize="xl"
-                    opacity={remaining > 0 ? 1 : 0.6}
-                    onClick={() => remaining > 0 && handleAddToCart(size)}
-                    _hover={{ textDecoration: remaining > 0 ? 'underline' : 'none' }}
-                    textDecoration={remaining === 0 ? 'line-through' : 'none'}
-                  >
-                    {size.toUpperCase()}
-                  </Text>
-                </Tooltip>
-              );
-            })}
-          </HStack>
-        </motion.div>
-      </Box>
-    </VStack>
+                  {size.toUpperCase()}
+                </Text>
+              </Tooltip>
+            );
+          })}
+        </HStack>
+      </motion.div>
+    </Box>
+    </VStack >
   );
 };

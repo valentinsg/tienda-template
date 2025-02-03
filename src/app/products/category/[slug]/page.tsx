@@ -49,14 +49,33 @@ export default function CategoryPage({ params }: { params: Promise<{ slug: strin
   };
 
   return (
-    <Box bg={colorMode === 'dark' ? 'gray.800' : 'bg.muted'} py={12} color={textColor} as={"section"}>
-      <Heading as="h1" mb={10} textAlign="center" fontFamily={"Archivo Black"} fontSize={{ base: "4xl", md: "4vw" }} letterSpacing={"tighter"} lineHeight={{ base: 1.2, md: "11vh" }} color={textColor}>
-        {category.name}
-      </Heading>
-      <ProductList
-        products={filteredProducts}
-        onSelectProduct={handleSelectProduct}
-      />
+    <Box bg={colorMode === 'dark' ? 'gray.800' : 'bg.muted'} color={textColor} as={"section"}>
+      <Box
+        textAlign={"center"}
+        background={`
+          linear-gradient(to bottom, 
+            transparent, 
+            rgba(128, 128, 128, 0.08) 25%, 
+            rgba(128, 128, 128, 0.12) 50%, 
+            rgba(128, 128, 128, 0.06) 75%),
+          radial-gradient(
+            circle at bottom right, 
+            ${colorMode === 'dark'
+            ? 'rgba(100, 100, 100, 0.1)'
+            : 'rgba(180, 180, 180, 0.07)'} 0%, 
+            transparent 60%
+          )
+        `}
+        py={12}
+      >
+        <Heading as="h1" mb={10} textAlign="center" fontFamily={"Archivo Black"} fontSize={{ base: "4xl", md: "4vw" }} letterSpacing={"tighter"} lineHeight={{ base: 1.2, md: "11vh" }} color={textColor}>
+          {category.name}
+        </Heading>
+        <ProductList
+          products={filteredProducts}
+          onSelectProduct={handleSelectProduct}
+        />
+      </Box>
     </Box>
   );
 }

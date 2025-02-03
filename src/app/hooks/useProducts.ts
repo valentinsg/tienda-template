@@ -38,7 +38,7 @@ const fetchProductsWithDetails = async (): Promise<ProductResponse> => {
 
     const { data: productsData, error: productError } = await supabase
       .from("products")
-      .select(`*, categories!inner(*), product_images(*)`);
+      .select(`*, categories!inner(*), product_images(*), color`);
     if (productError) throw productError;
 
     const { data: stockData, error: stockError } = await supabase
@@ -78,6 +78,7 @@ const fetchProductsWithDetails = async (): Promise<ProductResponse> => {
         ...product,
         category: product.categories,
         images: product.product_images,
+        color: product.color,
         stock: sortedStock,
       };
     });
