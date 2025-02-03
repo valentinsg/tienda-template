@@ -1,5 +1,5 @@
 'use client';
-import React from 'react';
+import React, { Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import {
   Box,
@@ -11,11 +11,11 @@ import {
 } from '@chakra-ui/react';
 import { useColorModeValue } from '../components/ui/color-mode';
 
-export default function CheckoutFailure() {
+function FailureContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const orderId = searchParams.get('order');
-  
+  const orderId = searchParams?.get("order") || "Desconocido";
+
   const bgColor = useColorModeValue('white', 'gray.800');
   const borderColor = useColorModeValue('gray.200', 'gray.700');
 
@@ -34,21 +34,23 @@ export default function CheckoutFailure() {
           <Text>Número de orden: {orderId}</Text>
 
           <Box display="flex" gap={4}>
-            <Button
-              onClick={() => router.push('/cart')}
-              variant="outline"
-            >
+            <Button onClick={() => router.push('/cart')} variant="outline">
               Volver al carrito
             </Button>
-            <Button
-              onClick={() => router.push('/checkout')}
-              colorScheme="blue"
-            >
+            <Button onClick={() => router.push('/checkout')} colorScheme="blue">
               Intentar nuevamente
             </Button>
           </Box>
         </VStack>
       </Box>
     </Container>
+  );
+}
+
+export default function CheckoutFailure() {
+  return (
+    <Suspense fallback={<Text>Cargando...</Text>}>
+      <FailureContent />
+    </Suspense>
   );
 }

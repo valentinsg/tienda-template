@@ -18,24 +18,11 @@
  * This interface can be used to ensure that objects representing home shipping details have a consistent structure and contain all necessary information.
  */
 
+
 export interface HomeShippingDetails {
-  /**
-   * The shipping method, which is always 'home' for home shipping.
-   */
-  city: string;
-
-  /**
-   * The address where the shipment will be delivered.
-   */
   address: string;
-
-  /**
-   * The province where the shipment will be delivered.
-   */
+  apartment: string;
   province: string;
-
-  /**
-   * The postal code of the delivery address.
-   */
-  postalCode: string;
+  postal_code: string;
+  city: string;
 }

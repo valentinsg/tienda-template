@@ -1,6 +1,6 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { Size } from '@/types/Size';
-import { Color } from '@/types/Color';
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { Size } from "@/types/Size";
+import { Color } from "@/types/Color";
 
 // Interfaces
 type CartItem = {
@@ -24,7 +24,7 @@ interface CartState {
 // Funciones auxiliares para localStorage
 const loadCartFromStorage = (): CartItem[] => {
   if (typeof window !== "undefined") {
-    const storedCart = localStorage.getItem('cartItems');
+    const storedCart = localStorage.getItem("cartItems");
     return storedCart ? JSON.parse(storedCart) : [];
   }
   return [];
@@ -32,7 +32,7 @@ const loadCartFromStorage = (): CartItem[] => {
 
 const saveCartToStorage = (cartItems: CartItem[]) => {
   if (typeof window !== "undefined") {
-    localStorage.setItem('cartItems', JSON.stringify(cartItems));
+    localStorage.setItem("cartItems", JSON.stringify(cartItems));
   }
 };
 
@@ -45,7 +45,7 @@ const initialState: CartState = {
 };
 
 const cartSlice = createSlice({
-  name: 'cart',
+  name: "cart",
   initialState,
   reducers: {
     setCheckoutAllowed: (state, action: PayloadAction<boolean>) => {
@@ -53,15 +53,27 @@ const cartSlice = createSlice({
     },
 
     addItem: (state, action: PayloadAction<CartItem>) => {
-      const existingItem = state.items.find(item => item.id === action.payload.id);
-      existingItem ? existingItem.quantity += action.payload.quantity : state.items.push(action.payload);
+      const existingItem = state.items.find(
+        (item) => item.id === action.payload.id
+      );
+      if (existingItem) {
+        existingItem.quantity += action.payload.quantity;
+      } else {
+        state.items.push(action.payload);
+      }
       saveCartToStorage(state.items);
-      state.totalPrice = state.items.reduce((acc, item) => acc + item.price * item.quantity, 0);
-      state.totalItems = state.items.reduce((acc, item) => acc + item.quantity, 0);
+      state.totalPrice = state.items.reduce(
+        (acc, item) => acc + item.price * item.quantity,
+        0
+      );
+      state.totalItems = state.items.reduce(
+        (acc, item) => acc + item.quantity,
+        0
+      );
     },
 
     incrementItem: (state, action: PayloadAction<string>) => {
-      const item = state.items.find(item => item.id === action.payload);
+      const item = state.items.find((item) => item.id === action.payload);
       if (item) {
         item.quantity += 1;
         saveCartToStorage(state.items);
@@ -71,7 +83,9 @@ const cartSlice = createSlice({
     },
 
     decrementItem: (state, action: PayloadAction<string>) => {
-      const itemIndex = state.items.findIndex(item => item.id === action.payload);
+      const itemIndex = state.items.findIndex(
+        (item) => item.id === action.payload
+      );
       if (itemIndex !== -1) {
         if (state.items[itemIndex].quantity > 1) {
           state.items[itemIndex].quantity -= 1;
@@ -91,16 +105,25 @@ const cartSlice = createSlice({
       state.isCheckoutAllowed = false;
       saveCartToStorage([]);
     },
-  }
+  },
 });
 
 // Exports
-export const { addItem, incrementItem, decrementItem, clearCart, setCheckoutAllowed } = cartSlice.actions;
+export const {
+  addItem,
+  incrementItem,
+  decrementItem,
+  clearCart,
+  setCheckoutAllowed,
+} = cartSlice.actions;
 
 // Selectors
 export const selectCartItems = (state: { cart: CartState }) => state.cart.items;
-export const selectCartTotalPrice = (state: { cart: CartState }) => state.cart.totalPrice;
-export const selectCartTotalItems = (state: { cart: CartState }) => state.cart.totalItems;
-export const selectIsCheckoutAllowed = (state: { cart: CartState }) => state.cart.isCheckoutAllowed;
+export const selectCartTotalPrice = (state: { cart: CartState }) =>
+  state.cart.totalPrice;
+export const selectCartTotalItems = (state: { cart: CartState }) =>
+  state.cart.totalItems;
+export const selectIsCheckoutAllowed = (state: { cart: CartState }) =>
+  state.cart.isCheckoutAllowed;
 
 export default cartSlice.reducer;

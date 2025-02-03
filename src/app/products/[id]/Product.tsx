@@ -13,7 +13,6 @@ import {
   Button,
   HStack,
   VStack,
-  AspectRatio,
   Badge,
   Accordion,
   Spinner,
@@ -387,14 +386,12 @@ export default function Product() {
                       key={item.value}
                       value={item.value}
                       borderBottomWidth="1px"
-                      borderColor={useColorModeValue('gray.200', 'gray.700')}
-                      _last={{ borderBottom: 'none' }}
                     >
                       <AccordionItemTrigger
                         w="full"
                         py={4}
                         transition="all 0.2s"
-                        _hover={{ bg: useColorModeValue('gray.50', 'gray.800') }}
+                        _hover={{ bg: colorMode === "dark" ? "gray.700" : "gray.100" }}
                         borderRadius="md"
                       >
                         <Box

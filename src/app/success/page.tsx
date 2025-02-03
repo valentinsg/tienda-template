@@ -1,5 +1,5 @@
 'use client';
-import React from 'react';
+import React, { Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import {
   Box,
@@ -11,7 +11,7 @@ import {
 import { useOrderTracking } from '../hooks/useOrderTracking';
 import { useColorModeValue } from '../components/ui/color-mode';
 
-export default function CheckoutSuccess() {
+function CheckoutSuccessContent() {
   const searchParams = useSearchParams();
   const orderId = searchParams.get('order');
   const { orderDetails, isLoading, error } = useOrderTracking(orderId);
@@ -77,5 +77,13 @@ export default function CheckoutSuccess() {
         </VStack>
       </Box>
     </Container>
+  );
+}
+
+export default function CheckoutSuccess() {
+  return (
+    <Suspense fallback={<div>Cargando...</div>}>
+      <CheckoutSuccessContent />
+    </Suspense>
   );
 }

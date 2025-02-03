@@ -20,16 +20,8 @@ import { LuBuilding2 } from "react-icons/lu"
 import { AndreaniBranch } from "../../types/checkout/shipping/AndreaniBranch"
 import { supabase } from '../supabase';
 import { useColorMode, useColorModeValue } from '../components/ui/color-mode';
-import { Province } from '@/types/checkout/shipping/Province';
 import { PersonalInfo } from '@/types/client/PersonalInfo';
-
-interface HomeShippingDetails {
-  address: string;
-  apartment: string;
-  province: Province | string;
-  postal_code: string;
-  city: string;
-}
+import { HomeShippingDetails } from '@/types/checkout/shipping/HomeShipping';
 
 // Constants
 const provinces = createListCollection({

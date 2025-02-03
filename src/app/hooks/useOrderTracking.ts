@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '../supabase';
+import { AndreaniBranch } from '@/types/checkout/shipping/AndreaniBranch';
+import { HomeShippingDetails } from '@/types/checkout/shipping/HomeShipping';
 
 export interface OrderDetails {
   id: string;
   status: string;
   tracking_code?: string;
-  shipping_address: string;
+  shipping_address: HomeShippingDetails | AndreaniBranch;
   cart_items: string[];
   payment_status?: string;
   customer_name: string;
