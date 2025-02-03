@@ -46,26 +46,36 @@ export default function Home() {
         <PromoCarousel text1="Suscribite a nuestro newsletter y obtené un 10% de descuento en tu primera compra." text2='Envíos gratis dentro de Mar Del Plata' />
       </LazyLoadComponent >
 
-      <LazyLoadComponent>
-        <Flex direction="column" gap={20} p={2} py={{ base: 20, md: "" }} textAlign={"center"} align={"center"}>
-          <Text fontFamily={"Archivo Black"} w={{ base: "100%", md: "80%" }} as="h2" fontSize={{ base: "4xl", md: "4vw" }} letterSpacing={"tighter"} lineHeight={{ base: 1.2, md: "11vh" }} color={colorMode === 'dark' ? '#d0d0d0' : 'gray.700'}>
-            Ya disponible nuestra primer cápsula.
-          </Text>
-        </Flex>
-      </LazyLoadComponent>
+      <Box
+        gap={20}
+        p={2}
+        py={{ base: 20, md: "" }}
+        textAlign={"center"}
+        background="linear-gradient(to bottom, transparent, rgba(128, 128, 128, 0.42) 25%, rgba(128, 128, 128, 0.28) 50%, rgba(128, 128, 128, 0.12))"
+      >
 
-      <LazyLoadComponent>
-        <CategoryGrid />
-      </LazyLoadComponent>
-
-      <Flex direction="column" p={2} align={"center"}>
         <LazyLoadComponent>
-          <Text fontFamily={"Archivo Black"} as="h3" fontSize={{ base: "4xl", md: "4vw" }} letterSpacing={"tighter"} color={colorMode === 'dark' ? '#d0d0d0' : 'gray.700'}>
-            Nuevos productos.
-          </Text>
+          <Flex direction="column" gap={20} p={2} py={{ base: 20, md: "" }} textAlign={"center"} align={"center"}>
+            <Text fontFamily={"Archivo Black"} w={{ base: "100%", md: "80%" }} as="h2" fontSize={{ base: "4xl", md: "4vw" }} letterSpacing={"tighter"} lineHeight={{ base: 1.2, md: "11vh" }} color={colorMode === 'dark' ? '#d0d0d0' : 'gray.700'}>
+              Ya disponible nuestra primer cápsula.
+            </Text>
+          </Flex>
         </LazyLoadComponent>
-        <ProductList products={products} onSelectProduct={handleSelectProduct} />
-      </Flex>
+
+        <LazyLoadComponent>
+          <CategoryGrid />
+        </LazyLoadComponent>
+
+        <Flex direction="column" p={2} align={"center"}>
+          <LazyLoadComponent>
+            <Text fontFamily={"Archivo Black"} as="h3" fontSize={{ base: "4xl", md: "4vw" }} letterSpacing={"tighter"} color={colorMode === 'dark' ? '#d0d0d0' : 'gray.700'}>
+              Nuevos productos.
+            </Text>
+          </LazyLoadComponent>
+          <ProductList products={products} onSelectProduct={handleSelectProduct} />
+        </Flex>
+
+      </Box>
 
     </Box >
   );

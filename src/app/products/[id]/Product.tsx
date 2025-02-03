@@ -58,10 +58,12 @@ export default function Product() {
 
   const product = products.find(p => p.id === Number(params.id));
 
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
-
+  if (isLoading) return (
+    <Box bg={colorMode === 'dark' ? 'gray.800' : 'bg.muted'} w={"100%"} h={"1000px"} display={"flex"} justifyContent={"center"} alignItems={"center"} >
+      <Spinner size="xl" color={colorMode === 'dark' ? 'gray.300' : 'bg.800'} />
+    </Box>
+  );
+  
   if (error) {
     return <div>Error loading product</div>;
   }

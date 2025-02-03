@@ -4,7 +4,7 @@
   import { Product } from '../../types/Product';
   import ProductList from '../components/ProductList';
   import { useProducts } from '../hooks/useProducts';
-  import { Box, Heading,} from '@chakra-ui/react';
+  import { Box, Heading, Spinner,} from '@chakra-ui/react';
   import { useColorMode, useColorModeValue } from '../components/ui/color-mode';
 
   const Products = () => {
@@ -22,7 +22,11 @@
       router.push(`/products/${product.id}`);
     };
 
-    if (isLoading) return <div>Loading...</div>;
+    if (isLoading) return (
+        <Box bg={colorMode === 'dark' ? 'gray.800' : 'bg.muted'} w={"100%"} h={"1000px"} display={"flex"} justifyContent={"center"} alignItems={"center"} >
+          <Spinner size="xl" color={colorMode === 'dark' ? 'gray.300' : 'bg.800'} />
+        </Box>
+      );
     if (error) return <div>Error loading products</div>;
 
 
