@@ -1,8 +1,8 @@
 // src/app/api/requestSize/route.ts
 import { NextResponse } from "next/server";
 import { supabase } from "@/app/supabase";
-import { getRandomDiscountCode } from "@/app/hooks/DiscountCode";
-import { getClientIP } from "@/app/hooks/ClientIp";
+import { getRandomDiscountCode } from "@/app/utils/DiscountCode";
+import { getClientIP } from "@/app/utils/ClientIp";
 
 export async function POST(request: Request) {
   try {

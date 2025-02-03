@@ -1,4 +1,4 @@
-import { ClientPersonalInfo } from '../client/ClientData';
+import { PersonalInfo } from '../client/PersonalInfo';
 import { ShippingDetails } from './shipping/ShippingDetails';
 import { PaymentMethod } from './payment/PaymentMethod';
 import { CartItem } from '../CartItem'; 
@@ -45,7 +45,7 @@ export interface CheckoutData {
   /**
    * The personal information of the client.
    */
-  personalInfo: ClientPersonalInfo;
+  personalInfo: PersonalInfo;
   /**
    * The details of the shipping method.
    */

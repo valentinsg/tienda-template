@@ -1,64 +1,81 @@
 'use client';
+import React from 'react';
+import { useSearchParams } from 'next/navigation';
 import {
   Box,
   Container,
   VStack,
-  Heading,
   Text,
-  Button,
+  Heading,
 } from '@chakra-ui/react';
-import { useColorModeValue } from '@/app/components/ui/color-mode';
-import { FaCheckCircle } from 'react-icons/fa';
+import { useOrderTracking } from '../hooks/useOrderTracking';
+import { useColorModeValue } from '../components/ui/color-mode';
 
-export default function PaymentSuccess() {
-  const bgColor = useColorModeValue('gray.50', 'gray.800');
-  const cardBg = useColorModeValue('white', 'gray.700');
-  const textColor = useColorModeValue('gray.600', 'gray.200');
-  const headingColor = useColorModeValue('gray.900', 'white');
+export default function CheckoutSuccess() {
+  const searchParams = useSearchParams();
+  const orderId = searchParams.get('order');
+  const { orderDetails, isLoading, error } = useOrderTracking(orderId);
+  
+  const bgColor = useColorModeValue('white', 'gray.800');
+  const borderColor = useColorModeValue('gray.200', 'gray.700');
+
+  if (isLoading) {
+    return (
+      <Container maxW="container.md" py={8}>
+        <Text>Cargando detalles de la orden...</Text>
+      </Container>
+    );
+  }
+
+  if (error) {
+    return (
+      <Container maxW="container.md" py={8}>
+        <Text color="red.500">{error}</Text>
+      </Container>
+    );
+  }
 
   return (
-    <Box minH="100vh" bg={bgColor} display="flex" alignItems="center" justifyContent="center" p={4}>
-      <Container 
-        maxW="md" 
-        bg={cardBg} 
-        p={8} 
-        borderRadius="lg" 
-        boxShadow="lg" 
-        textAlign="center"
-      >
-        <VStack gap={4}>
-          <Box color="green.500">
-            <FaCheckCircle size={48} />
-          </Box>
-
-          <Heading 
-            as="h1" 
-            size="lg" 
-            color={headingColor}
-          >
-            ¡Pago Exitoso!
+    <Container maxW="container.md" py={8}>
+      <Box bg={bgColor} p={8} borderRadius="lg" borderWidth="1px" borderColor={borderColor}>
+        <VStack gap={6} align="stretch">
+          <Heading textAlign="center" color="green.500">
+            ¡Gracias por tu compra!
           </Heading>
+          
+          {orderDetails && (
+            <>
+              <Box>
+                <Text fontSize="lg" fontWeight="bold">Número de orden:</Text>
+                <Text>{orderId}</Text>
+              </Box>
 
-          <Text color={textColor}>
-            Gracias por tu compra. Hemos enviado un email con los detalles de tu pedido
-            y el código de seguimiento.
-          </Text>
+              <Box>
+                <Text fontSize="lg" fontWeight="bold">Estado:</Text>
+                <Text>{orderDetails.status}</Text>
+              </Box>
 
-          <Text fontSize="sm" color="gray.500">
-            Revisa tu bandeja de entrada para ver los detalles completos.
-          </Text>
+              {orderDetails.tracking_code && (
+                <Box>
+                  <Text fontSize="lg" fontWeight="bold">Código de seguimiento:</Text>
+                  <Text>{orderDetails.tracking_code}</Text>
+                </Box>
+              )}
 
-          <Button
-            onClick={() => window.location.href = '/'}
-            colorScheme="blue"
-            size="lg"
-            w="full"
-            _hover={{ opacity: 0.9 }}
-          >
-            Volver al inicio
-          </Button>
+              <Box my={4} color="green.500" />
+
+              <Box>
+                <Text fontSize="lg" fontWeight="bold" mb={2}>Detalles del envío:</Text>
+                <Text>{orderDetails.shipping_address.address}</Text>
+                <Text>
+                  {orderDetails.shipping_address.city}, {orderDetails.shipping_address.province}
+                </Text>
+                <Text>CP: {orderDetails.shipping_address.postal_code}</Text>
+              </Box>
+            </>
+          )}
         </VStack>
-      </Container>
-    </Box>
+      </Box>
+    </Container>
   );
 }

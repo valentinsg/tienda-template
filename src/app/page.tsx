@@ -7,7 +7,7 @@ import { Box, Flex, Spinner, Text } from '@chakra-ui/react';
 import { useColorMode } from './components/ui/color-mode';
 import Logo from './components/Logo';
 import "./styles/globals.css";
-import LazyLoadComponent from './hooks/LazyLoadComponent';
+import LazyLoadComponent from './components/LazyLoadComponent';
 import ProductList from './components/ProductList';
 
 const Carrousell = lazy(() => import('./components/Carrousell'));

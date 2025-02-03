@@ -21,18 +21,7 @@ import { AndreaniBranch } from "../../types/checkout/shipping/AndreaniBranch"
 import { supabase } from '../supabase';
 import { useColorMode, useColorModeValue } from '../components/ui/color-mode';
 import { Province } from '@/types/checkout/shipping/Province';
-
-// Types
-interface PersonalInfo {
-  name: string;
-  lastName: string;
-  email: string;
-  documentType: string;
-  document: string;
-  phone: string;
-  age: string;
-  gender?: string;
-}
+import { PersonalInfo } from '@/types/client/PersonalInfo';
 
 interface HomeShippingDetails {
   address: string;

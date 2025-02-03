@@ -4,6 +4,7 @@ export function getRandomDiscountCode(): string {
     "KeepCalmAndStayBusy",
     "DosAmigosUnaVision",
   ];
+  
   const randomIndex = Math.floor(Math.random() * DISCOUNT_CODES.length);
   return DISCOUNT_CODES[randomIndex];
 }

@@ -1,63 +1,54 @@
 'use client';
+import React from 'react';
+import { useSearchParams, useRouter } from 'next/navigation';
 import {
   Box,
   Container,
   VStack,
-  Heading,
   Text,
+  Heading,
   Button,
 } from '@chakra-ui/react';
-import { useColorModeValue } from '@/app/components/ui/color-mode';
-import { FaTimesCircle } from 'react-icons/fa';
+import { useColorModeValue } from '../components/ui/color-mode';
 
-export default function PaymentFailure() {
-  const bgColor = useColorModeValue('gray.50', 'gray.800');
-  const cardBg = useColorModeValue('white', 'gray.700');
-  const textColor = useColorModeValue('gray.600', 'gray.200');
-  const headingColor = useColorModeValue('gray.900', 'white');
+export default function CheckoutFailure() {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const orderId = searchParams.get('order');
+  
+  const bgColor = useColorModeValue('white', 'gray.800');
+  const borderColor = useColorModeValue('gray.200', 'gray.700');
 
   return (
-    <Box minH="100vh" bg={bgColor} display="flex" alignItems="center" justifyContent="center" p={4}>
-      <Container 
-        maxW="md" 
-        bg={cardBg} 
-        p={8} 
-        borderRadius="lg" 
-        boxShadow="lg" 
-        textAlign="center"
-      >
-        <VStack gap={4}>
-          <Box color="red.500">
-            <FaTimesCircle size={48} />
-          </Box>
-
-          <Heading 
-            as="h1" 
-            size="lg" 
-            color={headingColor}
-          >
-            ¡Pago Fallido!
+    <Container maxW="container.md" py={8}>
+      <Box bg={bgColor} p={8} borderRadius="lg" borderWidth="1px" borderColor={borderColor}>
+        <VStack gap={6}>
+          <Heading color="red.500" textAlign="center">
+            Hubo un problema con tu pago
           </Heading>
 
-          <Text color={textColor}>
-            Lo sentimos, ha ocurrido un error con tu pago. Por favor, intenta nuevamente.
+          <Text fontSize="lg" textAlign="center">
+            Lo sentimos, pero no pudimos procesar tu pago correctamente.
           </Text>
 
-          <Text fontSize="sm" color="gray.500">
-            Si el problema persiste, contacta a nuestro soporte.
-          </Text>
+          <Text>Número de orden: {orderId}</Text>
 
-          <Button
-            onClick={() => window.location.href = '/'}
-            colorScheme="red"
-            size="lg"
-            w="full"
-            _hover={{ opacity: 0.9 }}
-          >
-            Volver al inicio
-          </Button>
+          <Box display="flex" gap={4}>
+            <Button
+              onClick={() => router.push('/cart')}
+              variant="outline"
+            >
+              Volver al carrito
+            </Button>
+            <Button
+              onClick={() => router.push('/checkout')}
+              colorScheme="blue"
+            >
+              Intentar nuevamente
+            </Button>
+          </Box>
         </VStack>
-      </Container>
-    </Box>
+      </Box>
+    </Container>
   );
 }

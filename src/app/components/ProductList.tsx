@@ -2,7 +2,7 @@ import React from 'react';
 import { Flex, Grid, Text } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
 import { ProductContainer } from './ProductContainer';
-import LazyLoadComponent from '../hooks/LazyLoadComponent'; 
+import LazyLoadComponent from './LazyLoadComponent';
 import type { Product } from '../../types/Product';
 
 const MotionGrid = motion(Grid);
