@@ -1,4 +1,5 @@
 'use client';
+
 import React, { Suspense, useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 import {
@@ -7,13 +8,12 @@ import {
   VStack,
   Text,
   Heading,
-  Button,
 } from '@chakra-ui/react';
 import { useColorModeValue } from '../../components/ui/color-mode';
 import { supabase } from '@/app/supabase';
 import { PaymentRecord } from '@/types/checkout/payment/PaymentRecord';
 
-function CheckoutFailureContent() {
+function CheckoutPendingContent() {
   const searchParams = useSearchParams();
   const [paymentDetails, setPaymentDetails] = useState<PaymentRecord | null>(null);
   const orderId = searchParams.get('order');
@@ -31,7 +31,7 @@ function CheckoutFailureContent() {
         .single();
 
       if (error) {
-        setError('No se pudo recuperar la información del pago.');
+        setError('Error al obtener los detalles del pago');
       } else {
         setPaymentDetails(data);
       }
@@ -64,36 +64,37 @@ function CheckoutFailureContent() {
     <Container maxW="container.md" py={8}>
       <Box bg={bgColor} p={8} borderRadius="lg" borderWidth="1px" borderColor={borderColor}>
         <VStack gap={6} align="stretch">
-          <Heading textAlign="center" color="red.500">
-            Error en el pago
+          <Heading textAlign="center" color="yellow.500">
+            Pago Pendiente
           </Heading>
-          <Text textAlign="center" color="gray.600">
-            Lo sentimos, hubo un problema con tu pago. Por favor, intenta nuevamente.
-          </Text>
 
-          {paymentDetails && (
+          {paymentDetails && (<>
             <Box>
               <Text fontSize="lg" fontWeight="bold">Número de orden:</Text>
               <Text>{orderId}</Text>
             </Box>
-          )}
 
-          <Button
-            colorScheme="blue"
-            onClick={() => window.location.href = '/checkout'}
-          >
-            Volver al checkout
-          </Button>
+            <Box my={4} color="yellow.500" />
+
+            <Box>
+              <Text fontSize="lg" fontWeight="bold" mb={2}>Detalles del envío:</Text>
+              <Text>{paymentDetails.shipping_address.address}</Text>
+              <Text>
+                {paymentDetails.shipping_address.city}, {paymentDetails.shipping_address.province}
+              </Text>
+              <Text>CP: {paymentDetails.shipping_address.postal_code}</Text>
+            </Box>
+          </>)}
         </VStack>
       </Box>
     </Container>
   );
 }
 
-export default function CheckoutFailure() {
+export default function CheckoutPending() {
   return (
     <Suspense fallback={<div>Cargando...</div>}>
-      <CheckoutFailureContent />
+      <CheckoutPendingContent />
     </Suspense>
   );
 }

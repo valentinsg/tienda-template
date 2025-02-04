@@ -44,7 +44,6 @@ const Checkout: React.FC = () => {
   const cartItems = useSelector(selectCartItems);
   const { colorMode } = useColorMode();
 
-  // State Management
   const [andreaniBranches, setAndreaniBranches] = useState<AndreaniBranch[]>([]);
   const [showDiscountInput, setShowDiscountInput] = useState(false);
   const [discountCode, setDiscountCode] = useState('');

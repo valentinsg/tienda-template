@@ -18,88 +18,76 @@ export async function POST(request: NextRequest) {
     const payment = await new Payment(mercadopago).get({ id: body.data.id });
     const orderId = payment.external_reference;
 
+    // Fetch payment record
     const { data: paymentRecord, error: recordError } = await supabase
       .from('payment_records')
       .select('*')
       .eq('id', orderId)
-      .eq('status', 'pending') 
       .single();
 
-    if (recordError) {
+    if (recordError || !paymentRecord) {
       console.error('Error fetching payment record:', recordError);
-      return NextResponse.json({ error: 'Payment record not found or already processed' }, { status: 404 });
+      return NextResponse.json({ error: 'Payment record not found' }, { status: 404 });
     }
 
     if (payment.status === 'approved') {
       const cartItems = paymentRecord.cart_items;
       
-      // Usar una transacción para actualizar el stock
-      const stockUpdates = cartItems.map(async (item: { id: string; size: string | number; quantity: number; }) => {
-        // Primero verificar el stock actual
-        const { data: currentProduct } = await supabase
-          .from('products')
-          .select('stock')
-          .eq('id', item.id)
+      // Update stock for each item
+      for (const item of cartItems) {
+        // Fetch current stock
+        const { data: stockData, error: stockError } = await supabase
+          .from('stock')
+          .select('*')
+          .eq('product_id', item.id)
+          .eq('size', item.size)
           .single();
 
-        if (!currentProduct?.stock?.[item.size]?.stock) {
-          throw new Error(`No stock available for product ${item.id} size ${item.size}`);
+        if (stockError || !stockData) {
+          throw new Error(`Stock not found for product ${item.id} size ${item.size}`);
         }
 
-        const currentStock = currentProduct.stock[item.size].stock;
-        if (currentStock < item.quantity) {
+        // Verify sufficient stock
+        if (stockData.quantity < item.quantity) {
           throw new Error(`Insufficient stock for product ${item.id} size ${item.size}`);
         }
 
-        // Actualizar el stock
-        const newStock = {
-          ...currentProduct.stock,
-          [item.size]: {
-            ...currentProduct.stock[item.size],
-            stock: currentStock - item.quantity
-          }
-        };
-
-        return supabase
-          .from('products')
-          .update({ stock: newStock })
-          .eq('id', item.id);
-      });
-
-      try {
-        await Promise.all(stockUpdates);
-        
-        // Actualizar el estado del pago
-        await supabase
-          .from('payment_records')
-          .update({
-            status: 'success',
-            tracking_code: generateTrackingCode(),
-            payment_id: payment.id,
-            payment_status: payment.status,
-            notes: `Pago aprobado - ID: ${payment.id}`
+        // Update stock
+        const { error: updateError } = await supabase
+          .from('stock')
+          .update({ 
+            quantity: stockData.quantity - item.quantity,
+            updated_at: new Date().toISOString()
           })
-          .eq('id', orderId);
+          .eq('product_id', item.id)
+          .eq('size', item.size);
 
-      } catch (error) {
-        console.error('Error updating stock:', error);
-        // Marcar el pago como problemático pero aprobado
-        await supabase
-          .from('payment_records')
-          .update({
-            status: 'success_with_errors',
-            notes: `Pago aprobado pero con errores en stock - ID: ${payment.id}`
-          })
-          .eq('id', orderId);
+        if (updateError) {
+          throw new Error(`Failed to update stock for product ${item.id}: ${updateError.message}`);
+        }
       }
+
+      // Update payment record
+      await supabase
+        .from('payment_records')
+        .update({
+          status: 'success',
+          tracking_code: generateTrackingCode(),
+          payment_id: payment.id,
+          payment_status: payment.status,
+          notes: `Payment approved - ID: ${payment.id}`
+        })
+        .eq('id', orderId);
+
     } else {
+      // Handle failed payment
       await supabase
         .from('payment_records')
         .update({
           status: 'failure',
           payment_id: payment.id,
           payment_status: payment.status,
-          notes: `Pago no aprobado - Estado: ${payment.status}`
+          notes: `Payment not approved - Status: ${payment.status}`
         })
         .eq('id', orderId);
     }
@@ -107,9 +95,6 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error('Webhook error:', error);
-    return NextResponse.json(
-      { error: 'Webhook processing failed' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Webhook processing failed' }, { status: 500 });
   }
 }
