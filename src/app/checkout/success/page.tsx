@@ -7,6 +7,7 @@ import {
   VStack,
   Text,
   Heading,
+  Button,
 } from '@chakra-ui/react';
 import { useColorModeValue } from '../../components/ui/color-mode';
 import { supabase } from '@/app/supabase';
@@ -19,6 +20,7 @@ function CheckoutSuccessContent() {
   const orderId = searchParams.get('order');
   const [isLoading] = useState(true);
   const [error] = useState<string | null>(null);
+  const textColor = useColorModeValue('#555454', 'white');
 
   useEffect(() => {
     async function fetchPaymentDetails() {
@@ -43,9 +45,43 @@ function CheckoutSuccessContent() {
 
   if (isLoading) {
     return (
-      <Container maxW="container.md" py={8}>
-        <Text>Cargando detalles de la orden...</Text>
-      </Container>
+      <Box bg={bgColor} p={8} borderRadius="lg" borderWidth="1px" borderColor={borderColor}>
+        <Text textAlign="center" color={textColor}>
+          ¡Gracias por tu compra!
+        </Text>
+        <Text textAlign="center" color={textColor}>
+          Pronto vas a recibir un correo con los detalles de tu compra.
+        </Text>
+        <Text>
+          <Text>
+            Recibimos estos datos:
+          </Text>
+          {paymentDetails && (<>
+            <Box>
+              <Text fontSize="lg" fontWeight="bold">Número de orden:</Text>
+              <Text>{orderId}</Text>
+            </Box>
+
+            <Box my={4} color="green.500" />
+
+            <Box>
+              <Text fontSize="lg" fontWeight="bold" mb={2}>Detalles del envío:</Text>
+              <Text>{paymentDetails.shipping_address.address}</Text>
+              <Text>
+                {paymentDetails.shipping_address.city}, {paymentDetails.shipping_address.province}
+              </Text>
+              <Text>CP: {paymentDetails.shipping_address.postal_code}</Text>
+            </Box>
+          </>
+          )}
+        </Text>
+        <Button
+          colorScheme="blue"
+          onClick={() => window.location.href = '/'}
+        >
+          Volver al inicio
+        </Button>
+      </Box>
     );
   }
 
@@ -84,6 +120,12 @@ function CheckoutSuccessContent() {
           </>
           )}
         </VStack>
+        <Button
+          colorScheme="blue"
+          onClick={() => window.location.href = '/'}
+        >
+          Volver al inicio
+        </Button>
       </Box>
     </Container>
   );

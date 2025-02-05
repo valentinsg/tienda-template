@@ -8,14 +8,14 @@ import {
   VStack,
   Input,
   Textarea,
-  Button,
   Icon,
   Text,
   HStack,
 } from '@chakra-ui/react';
 import { useColorMode, useColorModeValue } from '../components/ui/color-mode';
 import { MdEmail, MdPhone, MdLocationOn } from 'react-icons/md';
-import toast from 'react-hot-toast';
+import { toaster } from '../components/ui/toaster';
+import { Button } from '../components/ui/button';
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -23,36 +23,81 @@ const Contact = () => {
     email: '',
     mensaje: ''
   });
+  
+  const [errors, setErrors] = useState({
+    nombre: '',
+    email: '',
+    mensaje: ''
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const textColor = useColorModeValue('#555454', '#D0D0D0');
   const { colorMode } = useColorMode();
   const buttonColor = useColorModeValue('blue.500', 'blue.300');
 
+  // Form validation function
+  const validateForm = () => {
+    const newErrors = {
+      nombre: !formData.nombre ? 'El nombre es obligatorio' : '',
+      email: !formData.email ? 'El email es obligatorio' : 
+             !/\S+@\S+\.\S+/.test(formData.email) ? 'Email inválido' : '',
+      mensaje: !formData.mensaje ? 'El mensaje es obligatorio' : 
+               formData.mensaje.length < 10 ? 'El mensaje es muy corto' : ''
+    };
+
+    setErrors(newErrors);
+    return !Object.values(newErrors).some(error => error !== '');
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const loadingToast = toast.loading('Enviando mensaje...');
+    // Validate form before submission
+    if (!validateForm()) {
+      toaster.create({
+        title: "Error de Validación",
+        description: "Por favor, revisa los campos del formulario",
+        duration: 5000,
+      });
+      return;
+    }
+
+    setIsSubmitting(true);
 
     try {
-      await new Promise(resolve => setTimeout(resolve, 1500));
-
-      toast.success('¡Mensaje enviado con éxito!', {
-        id: loadingToast,
-        icon: '👏',
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
       });
-
-      setFormData({ nombre: '', email: '', mensaje: '' }); // Limpiar formulario
+  
+      const result = await response.json();
+  
+      if (!response.ok) throw new Error(result.error || 'Error desconocido');
+  
+      toaster.create({
+        title: "Mensaje Enviado",
+        description: "Tu mensaje ha sido enviado con éxito",
+        duration: 5000,
+      });
+  
+      // Reset form
+      setFormData({ nombre: '', email: '', mensaje: '' });
+      setErrors({ nombre: '', email: '', mensaje: '' });
     } catch (error) {
-      toast.error('Hubo un error al enviar el mensaje', {
-        id: loadingToast,
-        icon: '😕',
+      toaster.create({
+        title: "Error al Enviar",
+        description: "Hubo un problema al enviar tu mensaje",
+        duration: 5000,
       });
-      console.log(error);
+      console.error('Error en el envío:', error);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   return (
-    <Box bg={colorMode === 'dark' ? 'gray.800' : 'bg.muted'} py={12} h={{ base: "auto", md: "90vh" }} color={textColor} as={"section"}>
+    <Box bg={colorMode === 'dark' ? 'gray.800' : 'bg.muted'} py={12} h={{ base: "auto", md: "100%" }} color={textColor} as={"section"}>
       <Container maxW={{ base: "90%", md: "65%" }} >
         <VStack gap={8} >
           <Heading textAlign="center" mb={10} fontFamily={"Archivo Black"} as="h2" fontSize={{ base: "4xl", md: "4vw" }} letterSpacing={"tighter"} lineHeight={{ base: 1.2, md: "11vh" }} color={textColor}>
@@ -113,6 +158,7 @@ const Contact = () => {
                     borderColor={buttonColor}
                     as={"input"}
                   />
+                  {errors.nombre && <Text color="red.500" fontSize="sm">{errors.nombre}</Text>}
 
                   <Text fontFamily="Archivo Black" fontWeight={500} fontSize={"2xl"} as={"h2"}>
                     Email
@@ -128,6 +174,7 @@ const Contact = () => {
                     colorPalette={"blue"}
                     as={"input"}
                   />
+                  {errors.email && <Text color="red.500" fontSize="sm">{errors.email}</Text>}
 
                   <Text fontFamily="Archivo Black" fontWeight={500} fontSize={"2xl"} as={"h2"}>
                     Mensaje
@@ -143,6 +190,7 @@ const Contact = () => {
                     borderColor={buttonColor}
                     rows={4}
                   />
+                  {errors.mensaje && <Text color="red.500" fontSize="sm">{errors.mensaje}</Text>}
 
                   <Button
                     type="submit"
@@ -151,6 +199,8 @@ const Contact = () => {
                     as={"button"}
                     fontWeight={700}
                     aria-label="Enviar mensaje"
+                    loading={isSubmitting}
+                    loadingText="Enviando..."
                   >
                     Enviar Mensaje
                   </Button>
