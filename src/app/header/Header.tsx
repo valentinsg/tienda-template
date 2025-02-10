@@ -59,6 +59,7 @@ const Header = () => {
       </DrawerTrigger>
       <DrawerContent >
         <DrawerHeader>
+
           <Image
             src={colorMode === 'dark' ? BusyDarkMode : BusyLightMode}
             alt="Busy - Ropa urbana y streetwear en Mar del Plata"
@@ -86,36 +87,34 @@ const Header = () => {
                   </Link>
                 </li>
               ))}
+              <Text mt={10} mb={2} px={4} color={inactiveColor} fontWeight="light" fontSt fontSize="md">
+                Categorías
+              </Text>
+              {
+                categories.map((category) => (
+                  <Link
+                    key={category.slug}
+                    href={`/products/category/${category.slug}`}
+                    passHref
+                    data-category={category.slug}
+                    title={`Ver productos de la categoría ${category.name}`}
+                  >
+                    <Text
+                      title={`Ir a ${category.name}`}
+                      px={4}
+                      py={2}
+                      fontSize="md"
+                      color={inactiveColor}
+                      borderRadius="md"
+                    >
+                      {category.name}
+                    </Text>
+                  </Link>
+                ))
+              }
+
             </ul>
           </nav>
-
-          <Box my={2} />
-
-          <Text px={4} color={inactiveColor} fontWeight="medium" fontSize="sm">
-            Categorías
-          </Text>
-          {
-            categories.map((category) => (
-              <Link
-                key={category.slug}
-                href={`/products/category/${category.slug}`}
-                passHref
-                data-category={category.slug}
-                title={`Ver productos de la categoría ${category.name}`}
-              >
-                <Text
-                  title={`Ir a ${category.name}`}
-                  px={4}
-                  py={2}
-                  fontSize="md"
-                  color={inactiveColor}
-                  borderRadius="md"
-                >
-                  {category.name}
-                </Text>
-              </Link>
-            ))
-          }
 
           < Box my={2} />
 

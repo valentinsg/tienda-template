@@ -266,7 +266,7 @@ const Checkout: React.FC = () => {
         {/* Checkout Form */}
         <Box w={{ base: "100%", md: "52%" }} minH={{ base: "100vh", md: "80vh" }}>
 
-          <Text fontSize="3xl" textAlign="left" m={4} fontFamily={"Archivo Black"} letterSpacing={"tighter"}>Datos Personales</Text>
+          <Text fontSize="3xl" textAlign={{ base: "center", md: "left" }} m={4} fontFamily={"Archivo Black"} letterSpacing={"tighter"}>Datos Personales</Text>
 
           <Fieldset.Root>
             <Stack w={"100%"} mt={4}>
@@ -275,7 +275,14 @@ const Checkout: React.FC = () => {
               <Flex
                 bg={cardBg}
                 borderColor={borderColor}
-                gap={6} direction={{ base: 'column', md: 'row' }} w="100%" borderRadius="lg" borderWidth="1px" py={10} px={6}>
+                gap={{ base: 10, md: 6 }}
+                direction={{ base: 'column', md: 'row' }}
+                w="100%"
+                borderRadius="lg"
+                borderWidth="1px"
+                py={{ base: 6, md: 10 }}
+                px={6}
+              >
                 <Stack flex={1} gap={4}>
                   <Field label="Nombre" required>
                     <Input

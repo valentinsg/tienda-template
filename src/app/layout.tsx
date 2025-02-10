@@ -28,10 +28,10 @@ const geistMono = localFont({
 export const metadata: Metadata = {
   metadataBase: new URL('https://busy.com.ar'),
   title: {
-    default: "Busy Streetwear - Moda Urbana y Tendencias en Mar del Plata, Argentina",
+    default: "Busy | Streetwear - Ropa Urbana y en Tendencia en Mar del Plata, Argentina",
     template: "%s | Busy Streetwear - Mar del Plata",
   },  
-  description: "Encuentra Busy Streetwear, tu tienda online de moda y ropa urbana en Mar del Plata. Descubrí las últimas tendencias de ropa urbana y streetwear en Argentina.",
+  description: "Busy Streetwear, tu tienda online de moda y ropa urbana en Mar del Plata. Descubrí las últimas tendencias de ropa urbana y streetwear en Argentina.",
   keywords: [
     "ropa urbana en Mar del Plata",
     "moda urbana en la costa atlántica",

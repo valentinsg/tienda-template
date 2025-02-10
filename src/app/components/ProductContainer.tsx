@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { VStack, Box, Text, HStack, Button } from '@chakra-ui/react';
+import { VStack, Box, Text, HStack, Button, useBreakpointValue } from '@chakra-ui/react';
 import { toaster } from './ui/toaster';
 import { Tooltip } from './ui/tooltip';
 import { useColorMode } from '../components/ui/color-mode';
@@ -24,6 +24,10 @@ export const ProductContainer: React.FC<ProductContainerProps> = ({
   const cartItems = useSelector((state: RootState) => state.cart.items);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isHovering, setIsHovering] = useState(false);
+  const position = useBreakpointValue<"relative" | "absolute">({
+    base: "relative",
+    md: "absolute",
+  });
 
   const availableSizes = Object.entries(product.stock || {})
     .filter(([, stockInfo]) => stockInfo.stock > 0)
@@ -84,8 +88,8 @@ export const ProductContainer: React.FC<ProductContainerProps> = ({
   return (
     <VStack
       position="relative"
-      minW={{ base: "100%", sm: "220px", md: "300px", lg: "400px" }}
-      maxW={{ base: "100%", sm: "260px", md: "400px", lg: "500px" }}
+      minW={{ base: "160px", sm: "220px", md: "300px", lg: "400px" }}
+      maxW={{ base: "200px", sm: "260px", md: "400px", lg: "500px" }}
       w="full"
       gap={0}
       onMouseEnter={() => setIsHovering(true)}
@@ -106,7 +110,7 @@ export const ProductContainer: React.FC<ProductContainerProps> = ({
           onClick={handleProductClick}
           onMouseEnter={() => setCurrentImageIndex(1)}
           onMouseLeave={() => setCurrentImageIndex(0)}
-          h={{ base: "300px", sm: "400px", md: "425px", lg: "500px" }}
+          h={{ base: "240px", sm: "400px", md: "425px", lg: "500px" }}
         >
           {product.images && product.images.length > 0 && (
             <AnimatePresence mode="wait">
@@ -119,12 +123,12 @@ export const ProductContainer: React.FC<ProductContainerProps> = ({
                 src={product.images[currentImageIndex].image_url}
                 alt={product.images[currentImageIndex].alt_text || product.name}
                 style={{
-                  position: 'absolute',
+                  position: position as "relative" | "absolute",
                   top: 0,
                   left: 0,
-                  width: '100%',
-                  height: '100%',
-                  objectFit: 'cover',
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "cover",
                 }}
               />
             </AnimatePresence>
@@ -176,9 +180,9 @@ export const ProductContainer: React.FC<ProductContainerProps> = ({
             paddingTop: '0.5rem',
           }}
         >
-          <VStack alignItems="start" w="full" gap={0}>
+          <VStack alignItems={{ base: "center", md: "start" }} w="full" gap={0}>
             <Text
-              fontSize="lg"
+              fontSize={{ base: "sm", md: "lg" }}
               letterSpacing="tighter"
               color={isDark ? 'white' : 'gray.800'}
               lineHeight={1.2}
@@ -186,7 +190,7 @@ export const ProductContainer: React.FC<ProductContainerProps> = ({
               {product.name}
             </Text>
             <Text
-              fontSize="2xl"
+              fontSize={{ base: "md", md: "2xl" }}
               fontWeight="bold"
               letterSpacing="tighter"
               color={isDark ? 'white' : 'gray.800'}
@@ -198,52 +202,53 @@ export const ProductContainer: React.FC<ProductContainerProps> = ({
               h="16px"
               borderRadius="50%"
               backgroundColor={product.color}
-              mr="8px"
+              mr={"8px"}
+              display={{ base: 'none', sm: 'block' }}
             />
-        </VStack>
-      </motion.div>
+          </VStack>
+        </motion.div>
 
-      {/* Sizes */}
-      <motion.div
-        initial={false}
-        animate={{
-          y: isHovering ? 0 : 20,
-          opacity: isHovering ? 1 : 0,
-        }}
-        transition={{ duration: 0.3 }}
-        style={{
-          position: 'absolute',
-          width: '100%',
-          paddingTop: '1rem',
-        }}
-      >
-        <HStack gap={8} justify="center" w="full">
-          {availableSizes.map(({ size, stock }) => {
-            const inCart = cartItems.find((item) => item.id === `${product.id}-${size}`)?.quantity || 0;
-            const remaining = stock - inCart;
+        {/* Sizes */}
+        <motion.div
+          initial={false}
+          animate={{
+            y: isHovering ? 0 : 20,
+            opacity: isHovering ? 1 : 0,
+          }}
+          transition={{ duration: 0.3 }}
+          style={{
+            position: 'absolute',
+            width: '100%',
+            paddingTop: '1rem',
+          }}
+        >
+          <HStack gap={8} justify="center" w="full">
+            {availableSizes.map(({ size, stock }) => {
+              const inCart = cartItems.find((item) => item.id === `${product.id}-${size}`)?.quantity || 0;
+              const remaining = stock - inCart;
 
-            return (
-              <Tooltip
-                key={size}
-                content={remaining > 0 ? `Quedan ${remaining} unidades` : "Sin stock"}
-              >
-                <Text
-                  color={isDark ? '#d0d0d0' : remaining > 0 ? '#555454' : '#555454'}
-                  cursor={remaining > 0 ? 'pointer' : 'not-allowed'}
-                  fontSize="xl"
-                  opacity={remaining > 0 ? 1 : 0.6}
-                  onClick={() => remaining > 0 && handleAddToCart(size)}
-                  _hover={{ textDecoration: remaining > 0 ? 'underline' : 'none' }}
-                  textDecoration={remaining === 0 ? 'line-through' : 'none'}
+              return (
+                <Tooltip
+                  key={size}
+                  content={remaining > 0 ? `Quedan ${remaining} unidades` : "Sin stock"}
                 >
-                  {size.toUpperCase()}
-                </Text>
-              </Tooltip>
-            );
-          })}
-        </HStack>
-      </motion.div>
-    </Box>
+                  <Text
+                    color={isDark ? '#d0d0d0' : remaining > 0 ? '#555454' : '#555454'}
+                    cursor={remaining > 0 ? 'pointer' : 'not-allowed'}
+                    fontSize="xl"
+                    opacity={remaining > 0 ? 1 : 0.6}
+                    onClick={() => remaining > 0 && handleAddToCart(size)}
+                    _hover={{ textDecoration: remaining > 0 ? 'underline' : 'none' }}
+                    textDecoration={remaining === 0 ? 'line-through' : 'none'}
+                  >
+                    {size.toUpperCase()}
+                  </Text>
+                </Tooltip>
+              );
+            })}
+          </HStack>
+        </motion.div>
+      </Box>
     </VStack >
   );
 };

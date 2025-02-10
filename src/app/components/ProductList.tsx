@@ -42,7 +42,7 @@ const ProductList: React.FC<ProductListProps> = ({
   }
 
   return (
-    <Flex px={20} pt={20} pb={20} justifyContent="center">
+    <Flex px={{base: 0, md:20} }py={20} justifyContent="center">
       <MotionGrid
         variants={container}
         initial="hidden"
