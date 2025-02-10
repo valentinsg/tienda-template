@@ -87,7 +87,7 @@ const Header = () => {
                   </Link>
                 </li>
               ))}
-              <Text mt={10} mb={2} px={4} color={inactiveColor} fontWeight="light" fontSt fontSize="md">
+              <Text mt={10} mb={2} px={4} color={inactiveColor} fontWeight="light" fontSize="md">
                 Categorías
               </Text>
               {
