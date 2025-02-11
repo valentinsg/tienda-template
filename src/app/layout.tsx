@@ -13,12 +13,6 @@ import { FB_PIXEL_ID, pixelInitScript } from './utils/pixel'
 import Image from 'next/image';
 import { Archivo_Black } from "next/font/google";
 
-const archivoBlack = Archivo_Black({
-  weight: "400",
-  subsets: ["latin"],
-  display: "swap",
-});
-
 export const metadata: Metadata = {
   metadataBase: new URL('https://busy.com.ar'),
   title: {
@@ -129,7 +123,7 @@ export default function RootLayout({
         <meta name="geo.placename" content="Mar del Plata, Buenos Aires, Argentina" />
         <meta name="geo.region" content="AR-B" />
       </head>
-      <body className={archivoBlack.className}>        
+      <body>        
         <ProductProvider>
           <LanguageProvider>
             <Provider>
