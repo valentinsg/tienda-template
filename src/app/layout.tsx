@@ -12,7 +12,13 @@ import { Toaster as ChakraToaster } from "./components/ui/toaster";
 import NewsletterPopover from "./components/NewsletterPopover";
 import { FB_PIXEL_ID, pixelInitScript } from './utils/pixel'
 import Image from 'next/image';
+import { Archivo_Black } from "next/font/google";
 
+const archivoBlack = Archivo_Black({
+  weight: "400",
+  subsets: ["latin"],
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://busy.com.ar'),
@@ -55,12 +61,6 @@ export const metadata: Metadata = {
       }
     ]
   },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'Busy Streetwear',
-    description: 'Tienda online de ropa urbana y streetwear en Argentina',
-    images: ['[URL de tu imagen principal]'],
-  },
   verification: {
     google: 'tu-codigo-de-verificacion',
     yandex: 'tu-codigo-de-verificacion',
@@ -83,7 +83,6 @@ export default function RootLayout({
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&display=swap" rel="stylesheet" />
 
         <Script
           id="structured-data"
@@ -131,7 +130,7 @@ export default function RootLayout({
         <meta name="geo.placename" content="Mar del Plata, Buenos Aires, Argentina" />
         <meta name="geo.region" content="AR-B" />
       </head>
-      <body>
+      <body className={archivoBlack.className}>        
         <ProductProvider>
           <LanguageProvider>
             <Provider>

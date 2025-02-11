@@ -1,4 +1,9 @@
+# *
 User-agent: *
 Allow: /
 
-Sitemap: https://www.busy.com.ar/sitemap.xml
+# Host
+Host: https://busy.com.ar
+
+# Sitemaps
+Sitemap: https://busy.com.ar/sitemap.xml
