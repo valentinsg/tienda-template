@@ -50,8 +50,8 @@ export const metadata: Metadata = {
     type: 'website',
     images: [
       {
-        url: '{/public/favicon.ico}',
-        alt: 'Busy Streetwear Logo'
+        url: 'https://tfufdiayyhcndcgncylf.supabase.co/storage/v1/object/sign/imagenes%20web/favicon.ico?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJpbWFnZW5lcyB3ZWIvZmF2aWNvbi5pY28iLCJpYXQiOjE3MzkzMDQwNzAsImV4cCI6MTc3MDg0MDA3MH0.f76P9Wi7s5oeYo2F6Yz_XKVhb_IcZS67rFv9CDfpPKo',
+        alt: 'Busy Streetwear - Moda Urbana en Argentina'      
       }
     ]
   },
@@ -128,7 +128,6 @@ export default function RootLayout({
           />
         </noscript>
         <link rel="canonical" href="https://busy.com.ar" />
-        <meta name="geo.position" content="-38.0023;-57.5575" />
         <meta name="geo.placename" content="Mar del Plata, Buenos Aires, Argentina" />
         <meta name="geo.region" content="AR-B" />
       </head>
