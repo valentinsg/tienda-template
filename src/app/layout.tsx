@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import localFont from "next/font/local";
 import Script from 'next/script';
 import ClientProviders from "./context/ClientProviders";
 import { LanguageProvider } from "./context/LanguageProvider";
