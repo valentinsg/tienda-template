@@ -13,17 +13,6 @@ import NewsletterPopover from "./components/NewsletterPopover";
 import { FB_PIXEL_ID, pixelInitScript } from './utils/pixel'
 import Image from 'next/image';
 
-const geistSans = localFont({
-  src: "./fonts/GeistVF.woff",
-  variable: "--font-geist-sans",
-  weight: "100 900",
-});
-
-const geistMono = localFont({
-  src: "./fonts/GeistMonoVF.woff",
-  variable: "--font-geist-mono",
-  weight: "100 900",
-});
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://busy.com.ar'),
@@ -143,9 +132,7 @@ export default function RootLayout({
         <meta name="geo.placename" content="Mar del Plata, Buenos Aires, Argentina" />
         <meta name="geo.region" content="AR-B" />
       </head>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased `}
-      >
+      <body>
         <ProductProvider>
           <LanguageProvider>
             <Provider>

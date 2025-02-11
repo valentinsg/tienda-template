@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { useProducts } from '../../../hooks/useProducts';
 import ProductList from '../../../components/ProductList';
 import { useRouter } from 'next/navigation';
-import { Flex, Spinner, Text, Heading, Box } from '@chakra-ui/react';
+import { Flex, Spinner, Text, Box } from '@chakra-ui/react';
 import { Product } from '@/types/Product';
 import { useColorMode, useColorModeValue } from '@/app/components/ui/color-mode';
 
@@ -67,9 +67,9 @@ export default function CategoryPage({ params }: { params: Promise<{ slug: strin
   if (filteredProducts.length === 0) {
     return (
       <Box bg={colorMode === 'dark' ? 'gray.800' : 'bg.muted'} py={12} color={textColor} as="section">
-        <Heading as="h1" mb={10} textAlign="center" fontFamily="Archivo Black" fontSize={{ base: "4xl", md: "4vw" }} letterSpacing="tighter" lineHeight={{ base: 1.2, md: "11vh" }} color={textColor}>
+        <Text mb={10} textAlign="center" fontFamily="Archivo Black" fontSize={{ base: "4xl", md: "4vw" }} letterSpacing="tighter" lineHeight={{ base: 1.2, md: "11vh" }} color={textColor}>
           {category.name}
-        </Heading>
+        </Text>
         <Flex justify="center" align="center" minH="40vh">
           <Text>No hay productos disponibles en esta categoría</Text>
         </Flex>
@@ -83,9 +83,9 @@ export default function CategoryPage({ params }: { params: Promise<{ slug: strin
 
   return (
     <Box bg={colorMode === 'dark' ? 'gray.800' : 'bg.muted'} py={12} color={textColor} as="section">
-      <Heading as="h1" mb={10} textAlign="center" fontFamily="Archivo Black" fontSize={{ base: "4xl", md: "4vw" }} letterSpacing="tighter" lineHeight={{ base: 1.2, md: "11vh" }} color={textColor}>
+      <Text as="h2" mb={10} textAlign="center" fontFamily="Archivo Black" fontSize={{ base: "4xl", md: "4vw" }} letterSpacing="tighter" lineHeight={{ base: 1.2, md: "11vh" }} color={textColor}>
         {category.name}
-      </Heading>
+      </Text>
       <ProductList
         products={filteredProducts}
         onSelectProduct={handleSelectProduct}
