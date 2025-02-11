@@ -11,7 +11,6 @@ import { Toaster as ChakraToaster } from "./components/ui/toaster";
 import NewsletterPopover from "./components/NewsletterPopover";
 import { FB_PIXEL_ID, pixelInitScript } from './utils/pixel'
 import Image from 'next/image';
-import { Archivo_Black } from "next/font/google";
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://busy.com.ar'),
