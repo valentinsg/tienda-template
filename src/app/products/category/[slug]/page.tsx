@@ -17,8 +17,26 @@ export default function CategoryPage({ params }: { params: Promise<{ slug: strin
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
 
   useEffect(() => {
-    setFilteredProducts(products);
-  }, [products]);
+    if (products.length > 0 && slug) {
+      // Find the category that matches the slug
+      const category = categories.find(cat => cat.slug === slug);
+      
+      if (category) {
+        // Filter products that belong to this category
+        const productsInCategory = products.filter(product => {
+          // Check if product.category matches either the category id or slug
+          return (
+            product.category.id === category.id || 
+            product.category.slug === category.slug
+          );
+        });
+        setFilteredProducts(productsInCategory);
+      } else {
+        // If category not found, set empty array
+        setFilteredProducts([]);
+      }
+    }
+  }, [products, slug, categories]);
 
   if (isLoading) {
     return (
@@ -37,7 +55,7 @@ export default function CategoryPage({ params }: { params: Promise<{ slug: strin
   }
 
   const category = categories.find(cat => cat.slug === slug);
-
+  
   if (!category) {
     return (
       <Flex justify="center" align="center" minH="60vh">
@@ -46,13 +64,26 @@ export default function CategoryPage({ params }: { params: Promise<{ slug: strin
     );
   }
 
+  if (filteredProducts.length === 0) {
+    return (
+      <Box bg={colorMode === 'dark' ? 'gray.800' : 'bg.muted'} py={12} color={textColor} as="section">
+        <Heading as="h1" mb={10} textAlign="center" fontFamily="Archivo Black" fontSize={{ base: "4xl", md: "4vw" }} letterSpacing="tighter" lineHeight={{ base: 1.2, md: "11vh" }} color={textColor}>
+          {category.name}
+        </Heading>
+        <Flex justify="center" align="center" minH="40vh">
+          <Text>No hay productos disponibles en esta categoría</Text>
+        </Flex>
+      </Box>
+    );
+  }
+
   const handleSelectProduct = (product: Product) => {
     router.push(`/products/${product.id}`);
   };
 
   return (
-    <Box bg={colorMode === 'dark' ? 'gray.800' : 'bg.muted'} py={12} color={textColor} as={"section"}>
-      <Heading as="h1" mb={10} textAlign="center" fontFamily={"Archivo Black"} fontSize={{ base: "4xl", md: "4vw" }} letterSpacing={"tighter"} lineHeight={{ base: 1.2, md: "11vh" }} color={textColor}>
+    <Box bg={colorMode === 'dark' ? 'gray.800' : 'bg.muted'} py={12} color={textColor} as="section">
+      <Heading as="h1" mb={10} textAlign="center" fontFamily="Archivo Black" fontSize={{ base: "4xl", md: "4vw" }} letterSpacing="tighter" lineHeight={{ base: 1.2, md: "11vh" }} color={textColor}>
         {category.name}
       </Heading>
       <ProductList

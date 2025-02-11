@@ -1,3 +1,4 @@
+import { Category } from "./Category";
 import { ProductImage } from "./ProductImage";
 
 export interface Product {
@@ -7,7 +8,7 @@ export interface Product {
   sku: string;
   description: string;
   price: number;
-  category: number;
+  category: Category;
   color?: string;
   meta_title?: string;
   meta_description?: string;

@@ -50,7 +50,7 @@ export default function Product() {
 
   // Color mode values
   const textColor = useColorModeValue('gray.800', 'white');
-  const secondaryBg = useColorModeValue('gray.50', 'gray.700');
+  const secondaryBg = useColorModeValue('gray.200', 'gray.900');
   const mutedTextColor = useColorModeValue('gray.600', 'gray.400');
 
   const isSizeSelected = selectedSize && selectedSize.length > 0;
@@ -215,14 +215,14 @@ export default function Product() {
                 h={{ base: "400px", md: "750px" }}
                 bg={secondaryBg}
                 borderRadius="lg"
+                
                 overflow="hidden"
               >
                 <Image
                   src={mainImage}
                   alt={product.name}
-                  objectFit="cover"
-                  w="100%"
-                  h="100%"
+                  justifyContent={"center"}
+                  alignItems={"center"}
                   as={"img"}
                 />
               </Box>
