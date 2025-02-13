@@ -88,8 +88,7 @@ export const ProductContainer: React.FC<ProductContainerProps> = ({
   return (
     <VStack
       position="relative"
-      minW={{ base: "160px", sm: "220px", md: "300px", lg: "400px" }}
-      maxW={{ base: "200px", sm: "260px", md: "400px", lg: "500px" }}
+      minW={{ base: "160px", sm: "220px", md: "300px", lg: "25vw" }}
       w="full"
       gap={0}
       onMouseEnter={() => setIsHovering(true)}
@@ -110,7 +109,7 @@ export const ProductContainer: React.FC<ProductContainerProps> = ({
           onClick={handleProductClick}
           onMouseEnter={() => setCurrentImageIndex(1)}
           onMouseLeave={() => setCurrentImageIndex(0)}
-          h={{ base: "240px", sm: "400px", md: "425px", lg: "500px" }}
+          h={{ base: "240px", sm: "400px", md: "425px", lg: "50vh" }}
         >
           {product.images && product.images.length > 0 && (
             <AnimatePresence mode="wait">
@@ -128,7 +127,7 @@ export const ProductContainer: React.FC<ProductContainerProps> = ({
                   left: 0,
                   width: "100%",
                   height: "100%",
-                  objectFit: "cover",
+                  padding: 12,
                 }}
               />
             </AnimatePresence>
