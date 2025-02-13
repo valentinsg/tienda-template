@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Script from 'next/script';
+import { Archivo_Black } from 'next/font/google';
 import ClientProviders from "./context/ClientProviders";
 import { LanguageProvider } from "./context/LanguageProvider";
 import { ProductProvider } from './context/ProductContext';
@@ -12,6 +13,12 @@ import NewsletterPopover from "./components/NewsletterPopover";
 import { FB_PIXEL_ID, pixelInitScript } from './utils/pixel'
 import Image from 'next/image';
 
+const archiveBlack = Archivo_Black({
+  weight: '400', // Archive Black only comes in regular weight
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-archive-black', // This allows us to use it as a CSS variable
+});
 export const metadata: Metadata = {
   metadataBase: new URL('https://busy.com.ar'),
   title: {
@@ -71,8 +78,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="es-AR" suppressHydrationWarning>
-      <head>
+    <html lang="es-AR" suppressHydrationWarning className={`${archiveBlack.variable}`}>     
+    <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
 
