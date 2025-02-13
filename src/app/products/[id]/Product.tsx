@@ -146,6 +146,7 @@ export default function Product() {
   };
 
   const mainImage = product.images?.[selectedImage]?.image_url || '/placeholder.jpg';
+  const MAX_IMAGES = 5;
 
   return (
     <Box bg={colorMode === 'dark' ? 'gray.800' : 'bg.muted'} color={textColor} h={{ base: "auto", md: "100%" }} w={"100%"} as={"section"}>
@@ -182,7 +183,7 @@ export default function Product() {
               {/* Thumbnails on the side */}
               {product.images && product.images.length > 1 && (
                 <VStack gap={4}>
-                  {product.images.map((img, idx) => (
+                  {product.images.slice(0, MAX_IMAGES).map((img, idx) => (
                     <Box
                       key={idx}
                       borderRadius="md"
@@ -205,6 +206,11 @@ export default function Product() {
                       />
                     </Box>
                   ))}
+                  {product.images.length > MAX_IMAGES && (
+                    <Box textAlign="center" color="gray.500">
+                      +{product.images.length - MAX_IMAGES} more
+                    </Box>
+                  )}
                 </VStack>
               )}
 
@@ -212,10 +218,8 @@ export default function Product() {
               <Box
                 position="relative"
                 flex="1"
-                h={{ base: "400px", md: "750px" }}
                 bg={secondaryBg}
                 borderRadius="lg"
-                
                 overflow="hidden"
               >
                 <Image

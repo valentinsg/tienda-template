@@ -147,19 +147,54 @@ const Checkout: React.FC = () => {
     }
   };
 
+  const isShippingFreeForLocation = (location: any) => {
+    const normalizedCity = location.city?.toLowerCase().trim();
+    const normalizedProvince = location.province?.toLowerCase().trim();
+    const normalizedPostalCode = location.postal_code?.trim();
+
+    // All conditions must be met exactly for free shipping
+    return (
+      normalizedCity === 'mar del plata' &&
+      normalizedProvince === 'buenos aires' &&
+      normalizedPostalCode === '7600' &&
+      // Validate that all required fields are present
+      Boolean(location.city && location.province && location.postal_code)
+    );
+  };
+
+  const calculateShippingCost = () => {
+    // Validate all required fields are present before checking for free shipping
+    const shippingDetails = shippingMethod === 'home' ? homeShippingDetails : branchShippingDetails;
+
+    // Early return if required fields are missing
+    if (!shippingDetails.city || !shippingDetails.province || !shippingDetails.postal_code) {
+      return shippingMethod === 'home' ? 9500 : 8000;
+    }
+
+    const isFreeShipping = isShippingFreeForLocation(shippingDetails);
+    return isFreeShipping ? 0 : (shippingMethod === 'home' ? 9500 : 8000);
+  };
+
   const calculateTotalPrice = () => {
     const productTotal = cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
-
-    // Verificar si el envío es gratis (Mar del Plata)
-    const isShippingFree =
-      (shippingMethod === 'home' && homeShippingDetails.city?.toLowerCase().trim() === 'mar del plata') ||
-      (shippingMethod === 'branch' && branchShippingDetails.city?.toLowerCase().trim() === 'mar del plata');
-
-    const shippingCost = isShippingFree ? 0 : (shippingMethod === 'home' ? 9500 : 8000);
+    const shippingCost = calculateShippingCost();
     const subtotal = productTotal + shippingCost;
-
     return discountApplied ? subtotal * 0.9 : subtotal;
   };
+
+  // Update the display of shipping cost in the cart summary
+  const getShippingCostDisplay = () => {
+    const shippingDetails = shippingMethod === 'home' ? homeShippingDetails : branchShippingDetails;
+    const isFreeShipping = isShippingFreeForLocation(shippingDetails);
+
+    // Only show free shipping message if ALL required conditions are met
+    if (isFreeShipping) {
+      return `Envío ${shippingMethod === 'home' ? 'a domicilio' : 'a sucursal (Andreani)'}: ¡GRATIS!`;
+    }
+
+    return `Envío ${shippingMethod === 'home' ? 'a domicilio: $9500' : 'a sucursal (Andreani): $8000'}`;
+  };
+
 
   // Fetch Branches
   useEffect(() => {
@@ -700,35 +735,18 @@ const Checkout: React.FC = () => {
               <Text fontSize="lg" fontWeight="bold" mb={2}>
                 Resumen:
               </Text>
-              <Text>Subtotal: ${calculateTotalPrice() - (
-                (shippingMethod === 'home' && homeShippingDetails.city?.toLowerCase().trim() === 'mar del plata') ||
-                  (shippingMethod === 'branch' && branchShippingDetails.city?.toLowerCase().trim() === 'mar del plata')
-                  ? 0
-                  : (shippingMethod === 'home' ? 9500 : 8000)
-              )}</Text>
-
-              <Text>
-                {shippingMethod === 'home'
-                  ? homeShippingDetails.city?.toLowerCase().trim() === 'mar del plata'
-                    ? 'Envío a domicilio: ¡GRATIS!'
-                    : 'Envío a domicilio: $9500'
-                  : shippingMethod === 'branch'
-                    ? branchShippingDetails.city?.toLowerCase().trim() === 'mar del plata'
-                      ? 'Envío a sucursal (Andreani): ¡GRATIS!'
-                      : 'Envío a sucursal (Andreani): $8000'
-                    : 'Selecciona un método de envío'}
-              </Text>
-
-              {((shippingMethod === 'home' && homeShippingDetails.city?.toLowerCase().trim() === 'mar del plata') ||
-                (shippingMethod === 'branch' && branchShippingDetails.city?.toLowerCase().trim() === 'mar del plata')) && (
-                  <Text color="green.500" fontWeight="bold" fontSize="sm" mt={1}>
-                    ¡Envío gratis para Mar del Plata!
-                  </Text>
-                )}
+              <Text>Subtotal: ${calculateTotalPrice() - calculateShippingCost()}</Text>
+              <Text>{getShippingCostDisplay()}</Text>
 
               <Text fontWeight="bold" mt={2}>
                 Total: ${calculateTotalPrice()}
               </Text>
+
+              {isShippingFreeForLocation(shippingMethod === 'home' ? homeShippingDetails : branchShippingDetails) && (
+                <Text color="green.500" fontWeight="bold" fontSize="sm" mt={1}>
+                  ¡Envío gratis para Mar del Plata!
+                </Text>
+              )}
             </Box>
 
             <Box as="hr" my={6} borderColor={useColorModeValue('gray.400', 'gray.600')} />
