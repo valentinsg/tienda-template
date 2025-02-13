@@ -19,6 +19,7 @@ const archiveBlack = Archivo_Black({
   display: 'swap',
   variable: '--font-archive-black', // This allows us to use it as a CSS variable
 });
+
 export const metadata: Metadata = {
   metadataBase: new URL('https://busy.com.ar'),
   title: {
