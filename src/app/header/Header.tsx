@@ -14,7 +14,6 @@ import {
 import { MenuRoot, MenuContent, MenuTrigger, MenuItem } from '../components/ui/menu';
 import {
   DrawerContent,
-  DrawerHeader,
   DrawerRoot,
   DrawerTrigger,
 } from "../components/ui/drawer";
@@ -25,6 +24,7 @@ import BusyLightMode from '../../../public/busy-logo-light-mode.png';
 import Image from 'next/image';
 import CartDialog from '../components/CartDialog';
 import { usePathname } from 'next/navigation';
+import { useScroll, motion, AnimatePresence } from 'framer-motion';
 
 const Header = () => {
   const { categories } = useProducts();
@@ -53,21 +53,12 @@ const Header = () => {
   const MobileNav = () => (
     <DrawerRoot>
       <DrawerTrigger asChild>
-        <Button aria-label="Abrir menú de navegación" variant="ghost">
+        <Button aria-label="Abrir menú de navegación" variant="ghost" bg={colorMode === 'dark' ? 'gray.700' : 'gray.200'}>
           <MenuIcon size={24} />
         </Button>
       </DrawerTrigger>
-      <DrawerContent >
-        <DrawerHeader>
-
-          <Image
-            src={colorMode === 'dark' ? BusyDarkMode : BusyLightMode}
-            alt="Busy - Ropa urbana y streetwear en Mar del Plata"
-            width={150}
-            height={150}
-          />
-        </DrawerHeader>
-        <VStack align="stretch" gap={4} mt={6}>
+      <DrawerContent>
+        <VStack align="stretch" gap={8} mt={2}>
           <nav>
             <ul>
               {navigation.map((item) => (
@@ -87,38 +78,30 @@ const Header = () => {
                   </Link>
                 </li>
               ))}
-              <Text mt={10} mb={2} px={4} color={inactiveColor} fontWeight="light" fontSize="md">
-                Categorías
-              </Text>
-              {
-                categories.map((category) => (
-                  <Link
-                    key={category.slug}
-                    href={`/products/category/${category.slug}`}
-                    passHref
-                    data-category={category.slug}
-                    title={`Ver productos de la categoría ${category.name}`}
+              {categories.map((category) => (
+                <Link
+                  key={category.slug}
+                  href={`/products/category/${category.slug}`}
+                  passHref
+                  data-category={category.slug}
+                  title={`Ver productos de la categoría ${category.name}`}
+                >
+                  <Text
+                    title={`Ir a ${category.name}`}
+                    px={4}
+                    py={2}
+                    fontSize="lg"
+                    color={isActive(`/products/category/${category.slug}`) ? activeColor : inactiveColor}
+                    borderRadius="md"
                   >
-                    <Text
-                      title={`Ir a ${category.name}`}
-                      px={4}
-                      py={2}
-                      fontSize="md"
-                      color={inactiveColor}
-                      borderRadius="md"
-                    >
-                      {category.name}
-                    </Text>
-                  </Link>
-                ))
-              }
-
+                    {category.name}
+                  </Text>
+                </Link>
+              ))}
             </ul>
           </nav>
 
-          < Box my={2} />
-
-          <HStack px={4} justify="space-between">
+          <HStack px={10} justify="center" gap={2}>
             <Button
               aria-label="Cambiar tema"
               onClick={toggleColorMode}
@@ -131,7 +114,7 @@ const Header = () => {
           </HStack>
         </VStack>
       </DrawerContent>
-    </DrawerRoot >
+    </DrawerRoot>
   );
 
   return (
@@ -146,13 +129,7 @@ const Header = () => {
       zIndex="1000"
       letterSpacing={"tighter"}
     >
-      <Flex align="center" justify="space-between">
-        {/* Mobile Menu */}
-        <Box display={{ base: 'block', md: 'none' }}>
-          <MobileNav />
-        </Box>
-
-        {/* Logo */}
+      <Flex align="center" justify={{ base: "space-between", md: "space-between" }}>
         <Box ml={{ base: 0, md: "2vw" }}>
           <Link href="/" passHref>
             <Image
@@ -163,7 +140,10 @@ const Header = () => {
             />
           </Link>
         </Box>
-
+        {/* Mobile Menu */}
+        <Box display={{ base: 'flex', md: 'none' }} mr={{ base: "2vw", md: 0 }}>
+          <MobileNav />
+        </Box>
         {/* Desktop Menu */}
         <Flex display={{ base: 'none', md: 'flex' }} fontSize={"md"}>
           <Flex mr="5vw" alignItems="center">
@@ -185,7 +165,7 @@ const Header = () => {
                     </MenuTrigger>
                     <MenuContent>
                       <Link href="/products" passHref>
-                        <MenuItem value="all-products" fontSize={"md"} >
+                        <MenuItem value="all-products" fontSize={"md"}>
                           Todos los productos
                         </MenuItem>
                       </Link>
@@ -230,24 +210,15 @@ const Header = () => {
               aria-label="Cambiar tema"
               onClick={toggleColorMode}
               variant="ghost"
-              _hover={
-                {
-                  bg: colorMode === 'dark' ? 'gray.600' : 'gray.50',
-                }
-              }
+              _hover={{
+                bg: colorMode === 'dark' ? 'gray.600' : 'gray.50',
+              }}
             >
               {colorMode === 'dark' ? <Sun /> : <Moon />}
             </Button>
           </HStack>
-
-          {/* Mobile Cart (when not in desktop view) */}
-          <Box display={{ base: 'block', md: 'none' }}>
-            {pathname !== '/checkout' && <CartDialog />}
-          </Box>
         </Flex>
-
       </Flex>
-
     </Box>
   );
 };

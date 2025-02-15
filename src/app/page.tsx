@@ -35,7 +35,6 @@ export default function Home() {
     </Box>
   );
 
-
   return (
     <Box bg={colorMode === 'dark' ? 'gray.800' : 'bg.muted'} w={"100%"} as={"main"}>
       <Logo />
@@ -48,24 +47,15 @@ export default function Home() {
 
       <Box
         textAlign={"center"}
-        background={`
-          linear-gradient(to bottom, 
-            transparent, 
-            rgba(128, 128, 128, 0.08) 25%, 
-            rgba(128, 128, 128, 0.12) 50%, 
-            rgba(128, 128, 128, 0.06) 75%),
-          radial-gradient(
-            circle at bottom right, 
-            ${colorMode === 'dark'
-            ? 'rgba(100, 100, 100, 0.1)'
-            : 'rgba(180, 180, 180, 0.07)'} 0%, 
-            transparent 60%
-          )
-        `}
+        background={
+          colorMode === 'dark'
+            ? 'linear-gradient(to bottom, rgba(32, 32, 32, 0.8), rgba(64, 64, 64, 0.5))'
+            : 'linear-gradient(to bottom, rgba(240, 240, 240, 0.8), rgba(200, 200, 200, 0.5))'
+        }
       >
 
         <LazyLoadComponent>
-          <Flex mt={10} direction="column" gap={20} p={2} py={{ base: 20, md: "" }} textAlign={"center"} align={"center"}>
+          <Flex pt={10} direction="column" gap={20} p={2} py={{ base: 20, md: "" }} textAlign={"center"} align={"center"}>
             <Text
               fontFamily={"Archivo Black"}
               w={{ base: "100%", md: "80%" }}
@@ -79,24 +69,6 @@ export default function Home() {
                   ? "0 0 10px rgba(255,255,255,0.2), 0 0 20px rgba(255,255,255,0.1)"
                   : "0 0 8px rgba(0,0,0,0.2)"
               }
-              position="relative"
-              _after={{
-                content: '""',
-                position: "absolute",
-                top: 0,
-                left: 0,
-                right: 0,
-                bottom: 0,
-                background: "linear-gradient(90deg, transparent, rgba(255,255,255,0), transparent)",
-                animation: "shimmer 2s infinite",
-                pointerEvents: "none"
-              }}
-              css={{
-                "@keyframes shimmer": {
-                  "0%": { transform: "translateX(-100%)" },
-                  "100%": { transform: "translateX(100%)" }
-                }
-              }}
             >
               Ya disponible nuestra primer cápsula
             </Text>
@@ -121,24 +93,6 @@ export default function Home() {
                   ? "0 0 10px rgba(255,255,255,0.2), 0 0 20px rgba(255,255,255,0.1)"
                   : "0 0 8px rgba(0,0,0,0.2)"
               }
-              position="relative"
-              _after={{
-                content: '""',
-                position: "absolute",
-                top: 0,
-                left: 0,
-                right: 0,
-                bottom: 0,
-                background: "linear-gradient(90deg, transparent, rgba(255,255,255,0), transparent)",
-                animation: "shimmer 2s infinite",
-                pointerEvents: "none"
-              }}
-              css={{
-                "@keyframes shimmer": {
-                  "0%": { transform: "translateX(-100%)" },
-                  "100%": { transform: "translateX(100%)" }
-                }
-              }}
             >
               Nuevos productos
             </Text>
