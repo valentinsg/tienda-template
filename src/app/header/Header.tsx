@@ -24,7 +24,6 @@ import BusyLightMode from '../../../public/busy-logo-light-mode.png';
 import Image from 'next/image';
 import CartDialog from '../components/CartDialog';
 import { usePathname } from 'next/navigation';
-import { useScroll, motion, AnimatePresence } from 'framer-motion';
 
 const Header = () => {
   const { categories } = useProducts();

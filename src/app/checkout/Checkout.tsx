@@ -147,7 +147,7 @@ const Checkout: React.FC = () => {
     }
   };
 
-  const isShippingFreeForLocation = (location: any) => {
+  const isShippingFreeForLocation = (location: HomeShippingDetails | AndreaniBranch) => {
     const normalizedCity = location.city?.toLowerCase().trim();
     const normalizedProvince = location.province?.toLowerCase().trim();
     const normalizedPostalCode = location.postal_code?.trim();

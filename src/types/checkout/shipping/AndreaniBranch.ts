@@ -35,7 +35,7 @@ export interface AndreaniBranch {
   /**
    * The postal code of the branch.
    */
-  postal_code: number | string;
+  postal_code: string;
   /**
    * The address of the branch.
    */
