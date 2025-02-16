@@ -31,33 +31,13 @@ const Products = () => {
 
 
   return (
-    <Box bg={colorMode === 'dark' ? 'gray.800' : 'bg.muted'} color={textColor} as={"section"}>
-      <Box
-        textAlign={"center"}
-        background={`
-          linear-gradient(to bottom, 
-            transparent, 
-            rgba(128, 128, 128, 0.08) 25%, 
-            rgba(128, 128, 128, 0.12) 50%, 
-            rgba(128, 128, 128, 0.06) 75%),
-          radial-gradient(
-            circle at bottom right, 
-            ${colorMode === 'dark'
-            ? 'rgba(100, 100, 100, 0.1)'
-            : 'rgba(180, 180, 180, 0.07)'} 0%, 
-            transparent 60%
-          )
-        `}
-        py={12}
-      >
+    <Box bg={colorMode === 'dark' ? 'gray.800' : 'bg.muted'} color={textColor} as={"section"} py={12}>
 
         {/* Primera sección */}
         <Heading as="h1" mb={10} textAlign="center" fontFamily={"Archivo Black"} fontSize={{ base: "4xl", md: "4vw" }} letterSpacing={"tighter"} lineHeight={{ base: 1.2, md: "11vh" }} color={textColor}>
           Nuestros productos.
         </Heading>
         <ProductList products={filteredProducts} onSelectProduct={handleSelectProduct} />
-      </Box>
-
     </Box>
   );
 };

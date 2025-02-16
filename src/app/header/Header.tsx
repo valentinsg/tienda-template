@@ -57,7 +57,7 @@ const Header = () => {
         </Button>
       </DrawerTrigger>
       <DrawerContent>
-        <VStack align="stretch" gap={8} mt={2}>
+        <VStack align="stretch" gap={8} mt={2} p={4}>
           <nav>
             <ul>
               {navigation.map((item) => (

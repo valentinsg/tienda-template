@@ -61,20 +61,15 @@ export const ProductContainer: React.FC<ProductContainerProps> = ({
     }
   };
 
+  // Limitar la navegación a las primeras 3 imágenes
   const handlePrevImage = (e: React.MouseEvent) => {
     e.stopPropagation();
-    if (product.images && product.images.length > 0) {
-      setCurrentImageIndex((prev) =>
-        prev === 0 ? product.images.length - 1 : prev - 1
-      );
-    }
+    setCurrentImageIndex((prev) => (prev === 0 ? 2 : prev - 1));
   };
 
   const handleNextImage = (e: React.MouseEvent) => {
     e.stopPropagation();
-    if (product.images && product.images.length > 0) {
-      setCurrentImageIndex((prev) => (prev + 1) % product.images.length);
-    }
+    setCurrentImageIndex((prev) => (prev + 1) % 3); // Solo permite navegar hasta la tercera imagen
   };
 
   const handleProductClick = (e: React.MouseEvent) => {
@@ -88,7 +83,7 @@ export const ProductContainer: React.FC<ProductContainerProps> = ({
   return (
     <VStack
       position="relative"
-      minW={{ base: "160px", sm: "20vw", md: "300px", lg: "25vw" }}
+      minW={{ base: "160px", sm: "20vw", md: "300px", lg: "26vw" }}
       w="full"
       gap={0}
       onMouseEnter={() => setIsHovering(true)}
@@ -96,7 +91,7 @@ export const ProductContainer: React.FC<ProductContainerProps> = ({
       className="group"
     >
       <Box
-        bg={isDark ? 'gray.800' : 'white'}
+        bg={isDark ? 'transparent' : 'transparent'}
         borderRadius="md"
         position="relative"
         width="100%"
@@ -248,6 +243,6 @@ export const ProductContainer: React.FC<ProductContainerProps> = ({
           </HStack>
         </motion.div>
       </Box>
-    </VStack >
+    </VStack>
   );
 };

@@ -49,8 +49,8 @@ export default function Home() {
         textAlign={"center"}
         background={
           colorMode === 'dark'
-            ? 'linear-gradient(to bottom, rgba(32, 32, 32, 0.8), rgba(64, 64, 64, 0.5))'
-            : 'linear-gradient(to bottom, rgba(240, 240, 240, 0.8), rgba(200, 200, 200, 0.5))'
+            ? 'linear-gradient(to bottom, rgba(22, 21, 21, 0.84), rgba(64, 64, 64, 0.5))'
+            : 'linear-gradient(to bottom, rgba(200, 200, 200, 0.7), rgba(200, 200, 200, 0.5))'
         }
       >
 

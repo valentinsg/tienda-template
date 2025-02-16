@@ -146,26 +146,17 @@ export default function Product() {
   };
 
   const mainImage = product.images?.[selectedImage]?.image_url || '/placeholder.jpg';
-  const MAX_IMAGES = 5;
-
+  const MAX_IMAGES = 10;
   return (
     <Box bg={colorMode === 'dark' ? 'gray.800' : 'bg.muted'} color={textColor} h={{ base: "auto", md: "100%" }} w={"100%"} as={"section"}>
       <Box
-        background={`
-                linear-gradient(to bottom, 
-                  transparent, 
-                  rgba(128, 128, 128, 0.08) 25%, 
-                  rgba(128, 128, 128, 0.12) 50%, 
-                  rgba(128, 128, 128, 0.06) 75%),
-                radial-gradient(
-                  circle at bottom right, 
-                  ${colorMode === 'dark'
-            ? 'rgba(100, 100, 100, 0.1)'
-            : 'rgba(180, 180, 180, 0.07)'} 0%, 
-                  transparent 60%
-                )
-              `}
-        py={10}
+        textAlign={"center"}
+        background={
+          colorMode === 'dark'
+            ? 'linear-gradient(to bottom, rgba(22, 21, 21, 0.84), rgba(64, 64, 64, 0.5))'
+            : 'linear-gradient(to bottom, rgba(200, 200, 200, 0.7), rgba(200, 200, 200, 0.5))'
+        }
+        pt={10}
       >
         <Container py={14} w={"100%"}>
           {/* Breadcrumb */}

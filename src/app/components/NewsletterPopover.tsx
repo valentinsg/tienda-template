@@ -35,7 +35,7 @@ export default function NewsletterDialog() {
   });
   const padding = useBreakpointValue({ base: "1rem", md: "2rem" });
   const imageDisplay = useBreakpointValue({ base: "none", sm: "block" });
-  const dialogMaxWidth = useBreakpointValue({ base: "95vw", sm: "600px", md: "700px" });
+  const dialogMaxWidth = useBreakpointValue({ base: "50vw", sm: "600px", md: "700px" });
 
   // Theme values
   const borderColor = useColorModeValue("gray.100", "gray.700");
