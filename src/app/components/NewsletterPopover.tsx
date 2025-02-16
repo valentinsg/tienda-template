@@ -33,9 +33,8 @@ export default function NewsletterDialog() {
     sm: "1fr",
     md: "1fr 1.2fr"
   });
-  const padding = useBreakpointValue({ base: "1rem", md: "2rem" });
-  const imageDisplay = useBreakpointValue({ base: "none", sm: "block" });
-  const dialogMaxWidth = useBreakpointValue({ base: "50vw", sm: "600px", md: "700px" });
+  const padding = useBreakpointValue({ base: "0.5rem", md: "2rem" });
+  const dialogMaxWidth = useBreakpointValue({ base: "90vw", sm: "600px", md: "700px" });
 
   // Theme values
   const borderColor = useColorModeValue("gray.100", "gray.700");
@@ -73,33 +72,31 @@ export default function NewsletterDialog() {
       <DialogContent
         style={{
           border: `1px solid ${borderColor}`,
-          borderRadius: "1rem",
           padding,
+          borderRadius: "1rem",
           boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)",
           maxWidth: dialogMaxWidth,
           width: "100%",
-          margin: "auto",
           backgroundColor: inputBg,
         }}
       >
-        <Grid templateColumns={gridTemplateColumns} gap={6}>
-          <GridItem display={imageDisplay}>
+        <Grid templateColumns={gridTemplateColumns} gap={{base: 2, md:6}}>
+          <GridItem >
             <Box 
               borderRadius="lg" 
               overflow="hidden" 
-              position="relative"
-              height={{ base: "200px", md: "auto" }}
+              height={{ base: "400px", md: "auto" }}
             >
               <Image 
                 src={lucas} 
                 alt="Lucas" 
-                style={{ objectFit: "cover", width: "100%", height: "100%" }}
+                style={{ objectFit: "contain", width: "100%", height: "100%" }}
               />
             </Box>
           </GridItem>
 
           <GridItem>
-            <VStack gap={4} align="stretch">
+            <VStack  align="stretch">
               <DialogHeader>
                 <DialogTitle
                   fontSize={{ base: "xl", md: "2xl" }}

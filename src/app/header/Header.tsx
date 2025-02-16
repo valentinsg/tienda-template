@@ -24,12 +24,13 @@ import BusyLightMode from '../../../public/busy-logo-light-mode.png';
 import Image from 'next/image';
 import CartDialog from '../components/CartDialog';
 import { usePathname } from 'next/navigation';
+import { useScrollDirection } from '../hooks/useScrollDirection';
 
 const Header = () => {
   const { categories } = useProducts();
   const { colorMode, toggleColorMode } = useColorMode();
   const pathname = usePathname();
-
+  const isVisible = useScrollDirection();
   const activeColor = useColorModeValue('#000000', '#FFFFFF');
   const inactiveColor = useColorModeValue('#555454', "#D0D0D0");
 
@@ -109,7 +110,6 @@ const Header = () => {
             >
               {colorMode === 'dark' ? <Sun /> : <Moon />}
             </Button>
-            <CartDialog />
           </HStack>
         </VStack>
       </DrawerContent>
@@ -127,9 +127,11 @@ const Header = () => {
       top="0"
       zIndex="1000"
       letterSpacing={"tighter"}
+      transform={{ base: isVisible ? 'translateY(0)' : 'translateY(-100%)', md: 'none' }}
+      transition="transform 0.3s ease-in-out"
     >
       <Flex align="center" justify={{ base: "space-between", md: "space-between" }}>
-        <Box ml={{ base: 0, md: "2vw" }}>
+        <Box ml={{ base: 0, md: "2vw" }} display={{ base: "none", md: "flex" }}>
           <Link href="/" passHref>
             <Image
               src={colorMode === 'dark' ? BusyDarkMode : BusyLightMode}
@@ -140,7 +142,14 @@ const Header = () => {
           </Link>
         </Box>
         {/* Mobile Menu */}
-        <Box display={{ base: 'flex', md: 'none' }} mr={{ base: "2vw", md: 0 }}>
+        <Box
+          display={{ base: 'flex', md: 'none' }}
+          width="100%"
+          px={{ base: "2.5w", md: 0 }}
+          alignItems="center"
+          justifyContent="space-between"
+        >
+          <CartDialog />
           <MobileNav />
         </Box>
         {/* Desktop Menu */}
