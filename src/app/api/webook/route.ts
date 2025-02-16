@@ -3,6 +3,7 @@ import { MercadoPagoConfig, Payment } from 'mercadopago';
 import { supabase } from "../../supabase";
 import { generateTrackingCode } from '@/app/utils/tracking';
 import nodemailer from 'nodemailer';
+import { CartItem } from '@/types/CartItem';
 
 // Configuración del transportador SMTP
 const transporter = nodemailer.createTransport({
@@ -23,7 +24,7 @@ async function sendOrderConfirmationEmail(orderDetails: {
   trackingCode: string;
   shippingMethod: 'home' | 'branch';
   totalAmount: number;
-  items: any[];
+  items: CartItem[];
 }) {
   const { customerEmail, customerName, orderId, trackingCode, shippingMethod, totalAmount, items } = orderDetails;
   

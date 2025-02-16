@@ -1,6 +1,6 @@
 'use client';
 import { useState } from 'react';
-import { Flex, Heading, Input, Text, Box, Link, HStack, useBreakpointValue, Icon } from '@chakra-ui/react';
+import { Flex, Input, Text, Box, Link, HStack, useBreakpointValue, Icon } from '@chakra-ui/react';
 import Image from 'next/image';
 import { useColorMode, useColorModeValue } from '../components/ui/color-mode';
 import { Button } from "../components/ui/button";
