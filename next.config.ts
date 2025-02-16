@@ -2,7 +2,7 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   images: {
-    domains: ['127.0.0.1', "https://busy.com.ar", 'www.facebook.com'],
+    domains: ['127.0.0.1', "https://www.busy.com.ar", 'www.facebook.com'],
   },
   async headers() {
     return [
@@ -20,7 +20,19 @@ const nextConfig: NextConfig = {
           {
             key: 'X-Content-Type-Options',
             value: 'nosniff'
-          }
+          },
+          {
+            key: 'X-Frame-Options',
+            value: 'SAMEORIGIN'
+          },
+          {
+            key: 'X-XSS-Protection',
+            value: '1; mode=block'
+          },
+          {
+            key: 'Referrer-Policy',
+            value: 'origin-when-cross-origin'
+          },
         ]
       }
     ]

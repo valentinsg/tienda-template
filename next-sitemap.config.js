@@ -14,11 +14,29 @@ const config = {
     '/checkout/success',
     '/privacy',
     '/terms'
-  ], // Excluye estas rutas
+  ],
   robotsTxtOptions: {
     policies: [
       { userAgent: '*', allow: '/' }, // Permite a todos los bots
     ],
+  },
+  additionalPaths: async (config) => {
+    try {
+      const { fetchCategories } = await import('./app/hooks/useProducts');
+      const categories = await fetchCategories();
+
+      return categories
+        .filter((category) => category.slug) 
+        .map((category) => ({
+          loc: `/products/category/${category.slug}`,
+          changefreq: 'daily',
+          priority: 0.7,
+          lastmod: new Date().toISOString(), 
+        }));
+    } catch (error) {
+      console.error('Error generating additional paths:', error);
+      return []; 
+    }
   },
 };
 
