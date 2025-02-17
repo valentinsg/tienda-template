@@ -149,7 +149,6 @@ export default function Product() {
   const handleCloseModal = () => setIsModalOpen(false);
 
   const mainImage = product.images?.[selectedImage]?.image_url || '/placeholder.jpg';
-  const MAX_IMAGES = 10;
   return (
     <Box color={textColor} h={{ base: "auto", md: "1200px" }} w={"100%"} as={"section"} background={
       colorMode === 'dark'
@@ -164,7 +163,7 @@ export default function Product() {
         <Container
           py={{ base: 4, md: 4 }} // Reducido en mobile
           w="100%"
-          px={{ base: 2, md: 4 }} // Ajuste del padding horizontal
+          px={{ base: 4, md: 4 }} // Ajuste del padding horizontal
         >
           {/* Breadcrumb */}
           <BreadcrumbRoot mb={4} fontSize="md" color={mutedTextColor} letterSpacing={"normal"} fontWeight={"bold"} as={"nav"}>

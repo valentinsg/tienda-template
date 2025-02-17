@@ -19,7 +19,7 @@ interface ImageModalProps {
   onOpen: () => void;
 }
 
-export const ImageModal = ({ images, isOpen, onClose, onOpen }: ImageModalProps) => {
+export const ImageModal = ({ images, isOpen, onClose }: ImageModalProps) => {
   const textColor = useColorModeValue('gray.800', 'white');
   const bgColor = useColorModeValue('white', 'gray.800');
 
