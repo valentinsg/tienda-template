@@ -47,7 +47,7 @@ const MotionBox = chakra(motion.div);
 const MotionFlex = chakra(motion.div);
 // #endregion
 
-const CartDialog = forwardRef(( _props, ref) => {  
+const CartDialog = forwardRef((_props, ref) => {
   const dispatch = useDispatch();
   const cartItems = useSelector((state: { cart: { items: CartItem[] } }) => state.cart.items);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -89,10 +89,10 @@ const CartDialog = forwardRef(( _props, ref) => {
   const renderCartIcon = () => (
     <Box position="relative">
       <IconButton aria-label="Shopping Cart" variant="ghost" colorScheme="gray" _hover={{ bg: theme.hover }} h="48px" w="48px">
-        <FaShoppingCart/>
+        <FaShoppingCart />
       </IconButton>
       {cartItems.length > 0 && (
-        <MotionBox initial={{ scale: 0.5 }} animate={{ scale: 1 }} position="absolute" top="-1" right="-1" bg={"red.500"} color="white" borderRadius="full" w="5" h="5" display="flex" alignItems="center" justifyContent="center" fontSize="sm" fontWeight="bold">
+        <MotionBox initial={{ scale: 0.5 }} animate={{ scale: 1 }} position="absolute" top="-1" right="-1" bg={"red.500"} color="white" borderRadius="full" w="4" h="4" display="flex" alignItems="center" justifyContent="center" fontSize="sm" fontWeight="bold">
           {cartItems.length}
         </MotionBox>
       )}
@@ -119,15 +119,19 @@ const CartDialog = forwardRef(( _props, ref) => {
 
   const renderCartItem = (item: CartItem) => (
     <MotionFlex key={item.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} w="100%" p="4" bg={theme.card} borderWidth="2px" borderColor={theme.border} borderRadius="lg" transition="all 0.2s" _hover={{ shadow: 'md', transform: 'translateY(-2px)' }}>
-      <HStack gap="4" width="100%">
-        <Box overflow="hidden" borderRadius="lg" w="80px" h="80px">
-          <Image src={item.imageUrl || '/placeholder.jpg'} alt={item.name} w="full" h="full" objectFit="cover" transition="transform 0.2s" _hover={{ transform: 'scale(1.05)' }} />
+      <Flex gap="4" width="100%" flexDir={{ base: "column", md: "row" }} alignItems="center">
+        
+        <Box display="flex" gap="4" alignItems={"center"}>
+          <Box overflow="hidden" borderRadius="lg" w={{ base: "80px", md: "95px" }} h={{ base: "70px", md: "80px" }}>
+            <Image src={item.imageUrl || '/placeholder.jpg'} alt={item.name} w="full" h="full" objectFit={{ base: "fill", md: "cover" }} transition="transform 0.2s" _hover={{ transform: 'scale(1.05)' }} />
+          </Box>
+          <VStack align="start" flex="1" gap="2">
+            <Text fontWeight="medium" color={theme.text} fontSize={{ base: "sm", md: "md" }}>{item.name}</Text>
+            <Text fontWeight="bold" color={theme.text} fontSize="lg">${(item.price * item.quantity).toLocaleString()}</Text>
+          </VStack>
         </Box>
-        <VStack align="start" flex="1" gap="2">
-          <Text fontWeight="medium" color={theme.text} fontSize="md">{item.name}</Text>
-          <Text fontWeight="bold" color={theme.text} fontSize="lg">${(item.price * item.quantity).toLocaleString()}</Text>
-        </VStack>
-        <HStack bg={theme.hover} p="2" borderRadius="lg" gap="3">
+
+        <HStack bg={theme.hover} p="2" borderRadius="lg" gap="3" justifyContent={"center"}>
           <IconButton aria-label="Decrease quantity" size="sm" variant="ghost" onClick={() => handleDecrement(item.id)}>
             <FaMinus />
           </IconButton>
@@ -136,14 +140,14 @@ const CartDialog = forwardRef(( _props, ref) => {
             <FaPlus />
           </IconButton>
         </HStack>
-      </HStack>
+      </Flex>
     </MotionFlex>
   );
 
   // #endregion
 
   return (
-    <DialogRoot open={isDialogOpen} onOpenChange={(details) => setIsDialogOpen(details.open)} size={'lg'}>
+    <DialogRoot open={isDialogOpen} onOpenChange={(details) => setIsDialogOpen(details.open)} size={{ base: "xs", md: 'lg' }}>
       <DialogTrigger asChild>{renderCartIcon()}</DialogTrigger>
       <DialogContent >
         <DialogHeader>
@@ -157,7 +161,7 @@ const CartDialog = forwardRef(( _props, ref) => {
 
         <DialogBody >
           {cartItems.length === 0 ? (
-            <VStack gap='10' py='20' align='center'>
+            <VStack gap={{ base: "6", md: '10' }} py='20' align='center'>
               <MotionBox userSelect={"none"} initial={{ scale: .5 }} animate={{ scale: 1 }} fontSize='7xl' >🛒</MotionBox>
               <Text color={theme.mutedText} mt={4} fontSize={"md"}>Tú BusyCarrito está vacío, ocúpate de él</Text>
               <DialogCloseTrigger asChild>
@@ -203,6 +207,6 @@ const CartDialog = forwardRef(( _props, ref) => {
   );
 });
 
-CartDialog.displayName = 'CartDialog'; 
+CartDialog.displayName = 'CartDialog';
 
 export default CartDialog;

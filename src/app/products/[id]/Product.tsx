@@ -31,6 +31,7 @@ import { Tooltip } from '../../components/ui/tooltip';
 import RequestSizeDialog from '../../components/RequestSizeDialog';
 import { HiCreditCard } from 'react-icons/hi';
 import { toaster } from '../../components/ui/toaster';
+import { ImageModal } from '../../components/ImagesModal';
 
 interface StockInfo {
   stock: number;
@@ -46,7 +47,7 @@ export default function Product() {
   const [selectedImage, setSelectedImage] = useState(0);
   const [, setLoading] = useState(false);
   const { colorMode } = useColorMode();
-
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   // Color mode values
   const textColor = useColorModeValue('gray.800', 'white');
@@ -144,21 +145,27 @@ export default function Product() {
         .catch(() => toast.error("No se pudo copiar el enlace"));
     }
   };
+  const handleOpenModal = () => setIsModalOpen(true);
+  const handleCloseModal = () => setIsModalOpen(false);
 
   const mainImage = product.images?.[selectedImage]?.image_url || '/placeholder.jpg';
   const MAX_IMAGES = 10;
   return (
-    <Box bg={colorMode === 'dark' ? 'gray.800' : 'bg.muted'} color={textColor} h={{ base: "auto", md: "100%" }} w={"100%"} as={"section"}>
+    <Box color={textColor} h={{ base: "auto", md: "1200px" }} w={"100%"} as={"section"} background={
+      colorMode === 'dark'
+        ? 'linear-gradient(to bottom, rgba(22, 21, 21, 0.84), rgba(64, 64, 64, 0.5))'
+        : 'linear-gradient(to bottom, rgba(200, 200, 200, 0.7), rgba(200, 200, 200, 0.5))'
+    }
+    >
       <Box
         textAlign={"center"}
-        background={
-          colorMode === 'dark'
-            ? 'linear-gradient(to bottom, rgba(22, 21, 21, 0.84), rgba(64, 64, 64, 0.5))'
-            : 'linear-gradient(to bottom, rgba(200, 200, 200, 0.7), rgba(200, 200, 200, 0.5))'
-        }
-        pt={10}
+        pt={{ base: 2, md: 10 }}
       >
-        <Container py={14} w={"100%"}>
+        <Container
+          py={{ base: 4, md: 4 }} // Reducido en mobile
+          w="100%"
+          px={{ base: 2, md: 4 }} // Ajuste del padding horizontal
+        >
           {/* Breadcrumb */}
           <BreadcrumbRoot mb={4} fontSize="md" color={mutedTextColor} letterSpacing={"normal"} fontWeight={"bold"} as={"nav"}>
             <BreadcrumbLink href="/">Home</BreadcrumbLink>
@@ -167,67 +174,161 @@ export default function Product() {
           </BreadcrumbRoot>
 
           {/* Main Product Section */}
-          <Grid templateColumns={{ base: '1fr', lg: '1.5fr 1fr' }} gap={14}>
-
+          <Grid
+            templateColumns={{ base: '1fr', lg: '1.5fr 1fr' }}
+            gap={{ base: 4, md: 14 }}
+            maxW="1400px"
+            mx="auto"
+          >
             {/* Image Section */}
-            <HStack gap={4} align="start">
-              {/* Thumbnails on the side */}
-              {product.images && product.images.length > 1 && (
-                <VStack gap={4}>
-                  {product.images.slice(0, MAX_IMAGES).map((img, idx) => (
-                    <Box
-                      key={idx}
-                      borderRadius="md"
-                      overflow="hidden"
-                      borderWidth="2px"
-                      borderColor={selectedImage === idx ? 'blue.500' : 'transparent'}
-                      cursor="pointer"
-                      onClick={() => setSelectedImage(idx)}
-                      as={"button"}
-                    >
-                      <Image
+            <Box w="100%">
+              {/* Desktop Layout */}
+              <HStack gap={4} align="start" display={{ base: 'none', md: 'flex' }}>
+                {/* Thumbnails */}
+                {product.images && product.images.length > 1 && (
+                  <VStack gap={4} minW="120px">
+                    {product.images.slice(0, 4).map((img, idx) => (
+                      <Box
+                        key={idx}
+                        borderRadius="md"
+                        overflow="hidden"
+                        borderWidth="2px"
+                        borderColor={selectedImage === idx ? 'blue.500' : 'transparent'}
+                        cursor="pointer"
+                        onClick={() => setSelectedImage(idx)}
+                        as="button"
                         w="120px"
-                        as={"img"}
-                        h="80px"
-                        src={img.image_url}
-                        alt={`${product.name} view ${idx + 1}`}
-                        objectFit="cover"
-                        transition="opacity 0.2s"
-                        _hover={{ opacity: 0.8 }}
-                      />
-                    </Box>
-                  ))}
-                  {product.images.length > MAX_IMAGES && (
-                    <Box textAlign="center" color="gray.500">
-                      +{product.images.length - MAX_IMAGES} more
-                    </Box>
-                  )}
-                </VStack>
+                        h="120px"
+                        position="relative"
+                        bg={secondaryBg}
+                      >
+                        <Image
+                          w="100%"
+                          h="100%"
+                          src={img.image_url}
+                          alt={`${product.name} view ${idx + 1}`}
+                          objectFit="contain"
+                          transition="opacity 0.2s"
+                          _hover={{ opacity: 0.8 }}
+                        />
+                      </Box>
+                    ))}
+                    {product.images.length > 4 && (
+                      <Button onClick={handleOpenModal} variant="ghost" size="sm">
+                        +{product.images.length - 4}
+                      </Button>
+                    )}
+                  </VStack>
+                )}
+
+                {/* Main Image - Desktop */}
+                <Box
+                  position="relative"
+                  bg={secondaryBg}
+                  borderRadius="lg"
+                  overflow="hidden"
+                  width="100%"
+                  h={{ md: "600px", lg: "700px" }}
+                  display="flex"
+                  alignItems="center"
+                  justifyContent="center"
+                >
+                  <Image
+                    src={mainImage}
+                    alt={product.name}
+                    w="100%"
+                    maxH="100%"
+                    objectPosition="center"
+                    as="img"
+                  />
+                </Box>
+              </HStack>
+
+              {/* Image Modal */}
+              {product.images.length > 4 && (
+                <ImageModal
+                  images={product.images}
+                  isOpen={isModalOpen}
+                  onOpen={handleOpenModal}
+                  onClose={handleCloseModal}
+                />
               )}
 
-              {/* Main Image */}
-              <Box
-                position="relative"
-                flex="1"
-                bg={secondaryBg}
-                borderRadius="lg"
-                overflow="hidden"
-              >
-                <Image
-                  src={mainImage}
-                  alt={product.name}
-                  justifyContent={"center"}
-                  alignItems={"center"}
-                  as={"img"}
-                />
-              </Box>
-            </HStack>
+              {/* Mobile Layout */}
+              <VStack gap={4} display={{ base: 'flex', md: 'none' }}>
+                {/* Main Image - Mobile */}
+                <Box
+                  position="relative"
+                  w="100%"
+                  bg={secondaryBg}
+                  borderRadius="lg"
+                  overflow="hidden"
+                  h="500px"
+                  display="flex"
+                  alignItems="center"
+                  justifyContent="center"
+                >
+                  <Image
+                    src={mainImage}
+                    alt={product.name}
+                    maxW="100%"
+                    maxH="100%"
+                    objectFit="contain"
+                    objectPosition="center"
+                    as="img"
+                    p={4}
+                  />
+                </Box>
+
+                {/* Horizontal Scroll for Thumbnails on Mobile */}
+                {product.images && product.images.length > 1 && (
+                  <Box w="100%" overflowX="auto" py={4}>
+                    <HStack gap={4} px={2}>
+                      {product.images.slice(0, 3).map((img, idx) => (
+                        <Box
+                          key={idx}
+                          borderRadius="md"
+                          overflow="hidden"
+                          borderWidth="2px"
+                          borderColor={selectedImage === idx ? 'blue.500' : 'transparent'}
+                          cursor="pointer"
+                          onClick={() => setSelectedImage(idx)}
+                          as="button"
+                          flexShrink={0}
+                          w="100px"
+                          h="100px"
+                          bg={secondaryBg}
+                        >
+                          <Image
+                            w="100%"
+                            h="100%"
+                            src={img.image_url}
+                            alt={`${product.name} view ${idx + 1}`}
+                            objectFit="contain"
+                            transition="opacity 0.2s"
+                            _hover={{ opacity: 0.8 }}
+                          />
+                        </Box>
+                      ))}
+                      {product.images.length > 3 && (
+                        <ImageModal
+                          images={product.images.slice(3)}
+                          isOpen={isModalOpen}
+                          onOpen={handleOpenModal}
+                          onClose={handleCloseModal}
+                        />
+                      )}
+                    </HStack>
+                  </Box>
+                )}
+              </VStack>
+            </Box>
 
             {/* Product Details */}
-            <VStack align="stretch" gap={6} color={textColor}>
+            <VStack align="stretch" gap={6} p={{ base: 2, md: "" }} color={textColor}>
               <Box>
                 <HStack justify="space-between">
-                  <Heading letterSpacing={"tighter"} as="h1" size="2xl" color={textColor}>
+                  <Heading letterSpacing={"tighter"} as="h1" size={{ base: "xl", md: "2xl" }} color={textColor}>
                     {product.name}
                   </Heading>
                   <Button
@@ -243,7 +344,7 @@ export default function Product() {
 
                 <HStack>
                   <Text
-                    fontSize="4xl"
+                    fontSize={{ base: "2xl", md: "4xl" }}
                     fontWeight="bold"
                     color={textColor}
                     letterSpacing={"tighter"}
@@ -275,7 +376,7 @@ export default function Product() {
                   </Text>
                 </HStack>
 
-                <HStack gap={6} justify="center" w="full" mt={6}>
+                <HStack gap={{ base: 2, md: 6 }} justify="center" w="full" mt={6}>
                   {Object.entries(product.stock).map(([size, data]) => {
                     const stockInfo = data as StockInfo;
                     const inCart =
@@ -388,7 +489,7 @@ export default function Product() {
                   {product.description}
                 </Text>
 
-                <VStack mt={6} gap={4} as="section" w="full">
+                <VStack mt={6} gap={4} m={"auto"} as="section" w={{base: "95%", md:"full"}}>
                   <Accordion.Root collapsible>
                     {[
                       { value: "measures", title: "Medidas", content: "Imagen de medidas" },

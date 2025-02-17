@@ -34,7 +34,7 @@ export default function NewsletterDialog() {
     md: "1fr 1.2fr"
   });
   const padding = useBreakpointValue({ base: "0.5rem", md: "2rem" });
-  const dialogMaxWidth = useBreakpointValue({ base: "90vw", sm: "600px", md: "700px" });
+  const dialogMaxWidth = useBreakpointValue({ base: "90vw", sm: "600px", md: "800px" });
 
   // Theme values
   const borderColor = useColorModeValue("gray.100", "gray.700");
@@ -78,6 +78,7 @@ export default function NewsletterDialog() {
           maxWidth: dialogMaxWidth,
           width: "100%",
           backgroundColor: inputBg,
+          overflow: "hidden",
         }}
       >
         <Grid templateColumns={gridTemplateColumns} gap={{base: 2, md:6}}>
@@ -177,6 +178,7 @@ export default function NewsletterDialog() {
                           boxShadow: "0 0 0 1px blue.500",
                         }}
                         disabled={isLoading}
+                        mt={1}
                       />
 
                       <Button
@@ -185,6 +187,7 @@ export default function NewsletterDialog() {
                         size={{ base: "md", md: "lg" }}
                         type="submit"
                         loading={isLoading}
+                        mt={4}
                       >
                         Obtener descuento
                       </Button>
