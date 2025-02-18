@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { MercadoPagoConfig, Payment } from 'mercadopago';
 import { supabase } from "../../supabase";
 import { generateTrackingCode } from '@/app/utils/tracking';
+import { sendPaymentConfirmationEmail } from '../payments/sendPaymentConfirmationMail';
 
 export async function POST(request: NextRequest) {
   try {
@@ -32,7 +33,7 @@ export async function POST(request: NextRequest) {
 
     if (payment.status === 'approved') {
       const cartItems = paymentRecord.cart_items;
-      
+         
       // Update stock for each item
       for (const item of cartItems) {
         // Fetch current stock
@@ -42,37 +43,42 @@ export async function POST(request: NextRequest) {
           .eq('product_id', item.id)
           .eq('size', item.size)
           .single();
-
         if (stockError || !stockData) {
           throw new Error(`Stock not found for product ${item.id} size ${item.size}`);
         }
-
         // Verify sufficient stock
         if (stockData.quantity < item.quantity) {
           throw new Error(`Insufficient stock for product ${item.id} size ${item.size}`);
         }
-
         // Update stock
         const { error: updateError } = await supabase
           .from('stock')
-          .update({ 
+          .update({
             quantity: stockData.quantity - item.quantity,
             updated_at: new Date().toISOString()
           })
           .eq('product_id', item.id)
           .eq('size', item.size);
-
         if (updateError) {
           throw new Error(`Failed to update stock for product ${item.id}: ${updateError.message}`);
         }
       }
+
+      if (!payment.id) {
+        throw new Error('Payment ID is missing');
+      }
+      
+      await sendPaymentConfirmationEmail(
+        paymentRecord, 
+        payment.status, 
+        payment.id.toString() 
+      );    
 
       // Update payment record
       await supabase
         .from('payment_records')
         .update({
           status: 'success',
-          tracking_code: generateTrackingCode(),
           payment_id: payment.id,
           payment_status: payment.status,
           notes: `Payment approved - ID: ${payment.id}`
