@@ -51,7 +51,7 @@ export async function generateMetadata({ params: paramsPromise, }: GenerateMetad
     openGraph: {
       title: `${product.name} | Busy Streetwear`,
       description: `Compra ${product.name} en Busy Streetwear. Envíos a toda Argentina.`,
-      url: `https://busy.com.ar/productos/${product.id}`,
+      url: `https://busy.com.ar/products/${product.id}`,
       images: product.product_images?.map((img: { image_url: string }) => ({
         url: img.image_url || '/placeholder.jpg',
         alt: `${product.name} - Busy Streetwear`,

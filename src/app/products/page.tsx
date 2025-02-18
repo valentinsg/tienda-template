@@ -19,7 +19,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Productos Busy Streetwear | Ropa Urbana Argentina",
     description: "Descubre los mejores productos de streetwear en Argentina. Moda urbana con envío a todo el país.",
-    url: 'https://busy.com.ar/productos',
+    url: 'https://busy.com.ar/products',
     images: [
       {
         url: '{/public/favicon.ico}',
