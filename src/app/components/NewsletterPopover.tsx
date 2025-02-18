@@ -33,8 +33,8 @@ export default function NewsletterDialog() {
     sm: "1fr",
     md: "1fr 1.2fr"
   });
-  const padding = useBreakpointValue({ base: "0.5rem", md: "2rem" });
-  const dialogMaxWidth = useBreakpointValue({ base: "90vw", sm: "600px", md: "800px" });
+  const padding = useBreakpointValue({ base: "0rem", md: "2rem" });
+  const dialogMaxWidth = useBreakpointValue({ base: "85vw", sm: "600px", md: "800px" });
 
   // Theme values
   const borderColor = useColorModeValue("gray.100", "gray.700");
@@ -73,6 +73,7 @@ export default function NewsletterDialog() {
         style={{
           border: `1px solid ${borderColor}`,
           padding,
+          alignItems: "center",
           borderRadius: "1rem",
           boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)",
           maxWidth: dialogMaxWidth,
@@ -81,12 +82,12 @@ export default function NewsletterDialog() {
           overflow: "hidden",
         }}
       >
-        <Grid templateColumns={gridTemplateColumns} gap={{base: 2, md:6}}>
+        <Grid templateColumns={gridTemplateColumns} gap={{base: 0, md:6}}>
           <GridItem >
             <Box 
               borderRadius="lg" 
               overflow="hidden" 
-              height={{ base: "400px", md: "auto" }}
+              height={{ base: "350px", md: "auto" }}
             >
               <Image 
                 src={lucas} 
@@ -169,6 +170,7 @@ export default function NewsletterDialog() {
                         size={{ base: "md", md: "lg" }}
                         type="email"
                         required
+                        color={textColor}
                         bg={inputBg}
                         border="1px solid"
                         borderColor={borderColor}

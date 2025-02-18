@@ -8,9 +8,10 @@ import {
   DialogBody,
   DialogActionTrigger,
 } from '../components/ui/dialog';
-import { Box, Image, VStack, Button } from '@chakra-ui/react';
-import { FiX } from 'react-icons/fi';
+import { Box, Image, VStack, Button, HStack, IconButton } from '@chakra-ui/react';
+import { FiX, FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 import { useColorModeValue } from '../components/ui/color-mode';
+import { useState } from 'react';
 
 interface ImageModalProps {
   images: ProductImage[];
@@ -19,9 +20,22 @@ interface ImageModalProps {
   onOpen: () => void;
 }
 
-export const ImageModal = ({ images, isOpen, onClose }: ImageModalProps) => {
+export const ImageModal = ({ images, isOpen, onClose, onOpen }: ImageModalProps) => {
   const textColor = useColorModeValue('gray.800', 'white');
   const bgColor = useColorModeValue('white', 'gray.800');
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
+  const handleNext = () => {
+    setCurrentImageIndex((prevIndex) => (prevIndex + 1) % images.length);
+  };
+
+  const handlePrevious = () => {
+    setCurrentImageIndex((prevIndex) => (prevIndex - 1 + images.length) % images.length);
+  };
+
+  const handleThumbnailClick = (index: number) => {
+    setCurrentImageIndex(index);
+  };
 
   return (
     <DialogRoot open={isOpen} onOpenChange={(details) => {
@@ -33,16 +47,12 @@ export const ImageModal = ({ images, isOpen, onClose }: ImageModalProps) => {
         style={{
           backgroundColor: bgColor,
           borderRadius: '1rem',
-          padding: '0.5rem',
-          maxWidth: '35vw',
+          maxWidth: '40vw',
           maxHeight: '80vh',
           overflow: 'hidden',
         }}
       >
         <DialogHeader>
-          <DialogTitle fontSize="xl" color={textColor} fontWeight="bold">
-            Todas las imágenes
-          </DialogTitle>
           <DialogActionTrigger asChild>
             <Button variant="ghost" size="sm" onClick={onClose}>
               <FiX />
@@ -51,11 +61,67 @@ export const ImageModal = ({ images, isOpen, onClose }: ImageModalProps) => {
         </DialogHeader>
         <DialogBody>
           <VStack gap={4}>
-            {images.map((img, idx) => (
-              <Box key={idx} w="100%" h="auto">
-                <Image src={img.image_url} alt={`Product image ${idx + 1}`} objectFit="contain" />
-              </Box>
-            ))}
+            {/* Main Image with Navigation Arrows */}
+            <Box position="relative" w="100%" h="auto">
+              <IconButton
+                aria-label="Previous image"
+                onClick={handlePrevious}
+                position="absolute"
+                left="0"
+                top="50%"
+                transform="translateY(-50%)"
+                zIndex={1}
+              >
+                <FiChevronLeft />
+              </IconButton>
+
+              <Image
+                src={images[currentImageIndex].image_url}
+                alt={`Product image ${currentImageIndex + 1}`}
+                objectFit="contain"
+                w="100%"
+                h="auto"
+              />
+              <IconButton
+                aria-label="Next image"
+                onClick={handleNext}
+                position="absolute"
+                right="0"
+                top="50%"
+                transform="translateY(-50%)"
+                zIndex={1}
+              >
+                <FiChevronRight />
+              </IconButton>
+            </Box>
+
+            {/* Thumbnails */}
+            <HStack overflowX="auto" w="100%" gap={2} py={2}>
+              {images.map((img, idx) => (
+                <Box
+                  key={idx}
+                  borderRadius="md"
+                  overflow="hidden"
+                  borderWidth="2px"
+                  borderColor={currentImageIndex === idx ? 'blue.500' : 'transparent'}
+                  cursor="pointer"
+                  onClick={() => handleThumbnailClick(idx)}
+                  as="button"
+                  flexShrink={0}
+                  w="60px"
+                  h="60px"
+                  bg={bgColor}
+                >
+                  <Image
+                    w="100%"
+                    h="100%"
+                    src={img.image_url}
+                    alt={`Product image ${idx + 1}`}
+                    objectFit="cover"
+                  />
+                </Box>
+              ))}
+            </HStack>
           </VStack>
         </DialogBody>
       </DialogContent>
