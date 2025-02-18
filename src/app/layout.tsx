@@ -25,7 +25,7 @@ export const metadata: Metadata = {
   title: {
     default: "Busy | Streetwear - Ropa Urbana y en Tendencia en Mar del Plata, Argentina",
     template: "%s | Busy Streetwear - Mar del Plata",
-  },  
+  },
   description: "Busy Streetwear, tu tienda online de moda y ropa urbana en Mar del Plata. Descubrí las últimas tendencias de ropa urbana y streetwear en Argentina.",
   keywords: [
     "ropa urbana en Mar del Plata",
@@ -57,7 +57,7 @@ export const metadata: Metadata = {
     images: [
       {
         url: 'https://tfufdiayyhcndcgncylf.supabase.co/storage/v1/object/sign/imagenes%20web/favicon.ico?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJpbWFnZW5lcyB3ZWIvZmF2aWNvbi5pY28iLCJpYXQiOjE3MzkzMDQwNzAsImV4cCI6MTc3MDg0MDA3MH0.f76P9Wi7s5oeYo2F6Yz_XKVhb_IcZS67rFv9CDfpPKo',
-        alt: 'Busy Streetwear - Moda Urbana en Argentina'      
+        alt: 'Busy Streetwear - Moda Urbana en Argentina'
       }
     ]
   },
@@ -79,8 +79,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="es-AR" suppressHydrationWarning className={`${archiveBlack.variable}`}>     
-    <head>
+    <html lang="es-AR" suppressHydrationWarning className={`${archiveBlack.variable}`}>
+      <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
 
@@ -130,16 +130,17 @@ export default function RootLayout({
         <meta name="geo.placename" content="Mar del Plata, Buenos Aires, Argentina" />
         <meta name="geo.region" content="AR-B" />
       </head>
-      <body>        
+      <body>
         <ProductProvider>
           <LanguageProvider>
             <Provider>
               <ClientProviders>
                 <Header />
+                <NewsletterPopover />
+
                 <main>
                   {children}
                   <ChakraToaster />
-                  <NewsletterPopover />
                 </main>
                 <Footer />
               </ClientProviders>

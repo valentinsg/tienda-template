@@ -162,11 +162,11 @@ export default function Product() {
       >
         <Container
           py={{ base: 4, md: 4 }} // Reducido en mobile
-          w="100%"
-          px={{ base: 4, md: 4 }} // Ajuste del padding horizontal
+          w={"100%"}
+          px={{ base: 2, md: 4 }} // Ajuste del padding horizontal
         >
           {/* Breadcrumb */}
-          <BreadcrumbRoot mb={4} fontSize="md" color={mutedTextColor} letterSpacing={"normal"} fontWeight={"bold"} as={"nav"}>
+          <BreadcrumbRoot mb={4} fontSize={{base: "sm", md:"md"}}  color={mutedTextColor} letterSpacing={"tighter"} fontWeight={"bold"} as={"nav"}>
             <BreadcrumbLink href="/">Home</BreadcrumbLink>
             <BreadcrumbLink href="/products">Products</BreadcrumbLink>
             <BreadcrumbCurrentLink>{product.name}</BreadcrumbCurrentLink>
@@ -227,7 +227,7 @@ export default function Product() {
                   borderRadius="lg"
                   overflow="hidden"
                   width="100%"
-                  h={{ md: "600px", lg: "700px" }}
+                  h={{ base: "600px", md: "700px" }}
                   display="flex"
                   alignItems="center"
                   justifyContent="center"
@@ -281,7 +281,7 @@ export default function Product() {
 
                 {/* Horizontal Scroll for Thumbnails on Mobile */}
                 {product.images && product.images.length > 1 && (
-                  <Box w="100%" overflowX="auto" py={4}>
+                  <Box w="100%" overflowX="auto" py={4} m={{ base: 0, md: 4 }}>
                     <HStack gap={4} px={2}>
                       {product.images.slice(0, 3).map((img, idx) => (
                         <Box
@@ -294,8 +294,8 @@ export default function Product() {
                           onClick={() => setSelectedImage(idx)}
                           as="button"
                           flexShrink={0}
-                          w="100px"
-                          h="100px"
+                          w={{ base: "20vw", md: "100px" }}
+                          h={{ base: "10vh", md: "100px" }}
                           bg={secondaryBg}
                         >
                           <Image
@@ -309,14 +309,11 @@ export default function Product() {
                           />
                         </Box>
                       ))}
-                      {product.images.length > 3 && (
-                        <ImageModal
-                          images={product.images.slice(3)}
-                          isOpen={isModalOpen}
-                          onOpen={handleOpenModal}
-                          onClose={handleCloseModal}
-                        />
-                      )}
+                      {product.images.length > 4 && (
+                      <Button onClick={handleOpenModal} variant="ghost" size="sm">
+                        +{product.images.length - 4}
+                      </Button>
+                    )}
                     </HStack>
                   </Box>
                 )}
@@ -397,7 +394,7 @@ export default function Product() {
                         <Button
                           disabled={isOutOfStock}
                           size="lg"
-                          p={5}
+                          p={{ base: 2, md: 5 }}
                           as={"button"}
                           bg={isSelected ? (colorMode === "dark" ? "white" : "black") : (colorMode === "dark" ? "transparent" : "white")}
                           color={isSelected ? (colorMode === "dark" ? "black" : "white") : (colorMode === "dark" ? "white" : "black")}
@@ -435,7 +432,7 @@ export default function Product() {
                   width="100%"
                   disabled={!isSizeSelected || remainingStock <= 0 || isLoading}
                   onClick={handleAddToCart}
-                  size="xl"
+                  size={{ base: "lg", md: "xl" }}
                   mt={1}
                   p={6}
                   fontWeight={"600"}
@@ -457,7 +454,7 @@ export default function Product() {
                   )}
                 </Button>
                 <Badge
-                  fontSize="md"
+                  fontSize={{ base: "sm", md: "md" }}
                   borderRadius="2xl"
                   bg={colorMode === 'dark' ? 'gray.900' : 'gray.200'}
                   color={colorMode === 'dark' ? 'white' : 'gray.800'}
@@ -488,7 +485,7 @@ export default function Product() {
                   {product.description}
                 </Text>
 
-                <VStack mt={6} gap={4} m={"auto"} as="section" w={{base: "95%", md:"full"}}>
+                <VStack mt={6} gap={4} m={"auto"} as="section" w={{ base: "95%", md: "full" }}>
                   <Accordion.Root collapsible>
                     {[
                       { value: "measures", title: "Medidas", content: "Imagen de medidas" },
