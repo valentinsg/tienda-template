@@ -1,18 +1,30 @@
-import axios from 'axios';
-import { PaymentRecord } from '../../../types/checkout/payment/PaymentRecord';
+// src/utils/email.ts
+import { PaymentRecord } from '@/types/checkout/payment/PaymentRecord';
+import nodemailer from 'nodemailer';
 
-async function sendPaymentConfirmationEmail(
+const transporter = nodemailer.createTransport({
+  host: 'smtp.zoho.com',
+  port: 465,
+  secure: true,
+  auth: {
+    user: process.env.ZOHO_EMAIL,
+    pass: process.env.ZOHO_PASSWORD,
+  },
+});
+
+export async function sendPaymentConfirmationEmail(
   paymentRecord: PaymentRecord,
-  paymentStatus: string,
+  paymentStatus: string | undefined,
   paymentId: string
 ) {
   try {
+    // Calculate the total amount
     const totalAmount = paymentRecord.cart_items.reduce(
       (sum, item) => sum + item.price * item.quantity,
       0
     );
 
-    // Generar el listado de productos HTML
+    // Generate items list HTML
     const itemsList = paymentRecord.cart_items
       .map(
         (item) => `
@@ -43,6 +55,7 @@ async function sendPaymentConfirmationEmail(
 
     const statusColor = paymentStatus === 'approved' ? '#28a745' : '#dc3545';
 
+    // Complete email HTML that uses both totalAmount and itemsList
     const emailHtml = `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
         <h1 style="color: ${statusColor}; text-align: center;">${statusMessage}</h1>
@@ -53,7 +66,7 @@ async function sendPaymentConfirmationEmail(
           <h3 style="margin-top: 0;">Información del cliente:</h3>
           <p>Nombre: ${paymentRecord.customer_name}</p>
           <p>Email: ${paymentRecord.customer_email}</p>
-          <p>Teléfono: ${paymentRecord.customer_phone}</p>
+          <p>Teléfono: ${paymentRecord.customer_phone || 'No disponible'}</p>
         </div>
 
         <h2>Detalles del pedido:</h2>
@@ -81,12 +94,12 @@ async function sendPaymentConfirmationEmail(
         <div style="margin-top: 20px; padding: 15px; background-color: #f8f9fa; border-radius: 5px;">
           <h3 style="margin-top: 0;">Dirección de envío:</h3>
           <p>
-            ${paymentRecord.shipping_address.address}<br>
-            ${paymentRecord.shipping_address.city}, ${
-      paymentRecord.shipping_address.province
-    }<br>
-            ${paymentRecord.shipping_address.postal_code}<br>
-            ${paymentRecord.shipping_address.country}
+            ${paymentRecord.shipping_address?.address || 'No disponible'}<br>
+            ${paymentRecord.shipping_address?.city || ''}, ${
+              paymentRecord.shipping_address?.province || ''
+            }<br>
+            ${paymentRecord.shipping_address?.postal_code || ''}<br>
+            ${paymentRecord.shipping_address?.country || ''}
           </p>
           <p>Método de envío: ${
             paymentRecord.shipping_method === 'home'
@@ -117,29 +130,19 @@ async function sendPaymentConfirmationEmail(
         }
       </div>
     `;
-
-    // Enviar el email usando Sender
-    await axios.post(
-      'https://api.sender.net/v2/emails',
-      {
-        to: [paymentRecord.customer_email],
-        subject: `Estado de tu compra - Orden #${paymentRecord.id}`,
-        html_body: emailHtml,
-        from_name: 'BUSY STORE',
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${process.env.SENDER_API_KEY}`,
-          'Content-Type': 'application/json',
-        },
-      }
-    );
-
+   
+    // Send using Zoho
+    const result = await transporter.sendMail({
+      from: `"BUSY STORE" <${process.env.ZOHO_EMAIL}>`,
+      to: paymentRecord.customer_email,
+      subject: `Estado de tu compra - Orden #${paymentRecord.id}`,
+      html: emailHtml,
+    });
+   
+    console.log('Email sent successfully:', result);
     return true;
   } catch (error) {
-    console.error('Error sending payment confirmation email:', error);
+    console.error('Error sending email with Zoho:', error);
     return false;
   }
 }
-
-export { sendPaymentConfirmationEmail };
