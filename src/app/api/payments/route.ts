@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { MercadoPagoConfig, Preference } from 'mercadopago';
 import { CartItem } from '@/types/CartItem';
 import { PaymentRecord } from '@/types/checkout/payment/PaymentRecord';
+import nodemailer from 'nodemailer';
 
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
@@ -76,8 +77,6 @@ async function sendConfirmationEmail(orderData: PaymentRequestBody) {
       </div>
     `;
 
-    // Usar el mismo transportador de nodemailer desde utils/email
-    const nodemailer = require('nodemailer');
     const transporter = nodemailer.createTransport({
       host: 'smtp.zoho.com',
       port: 465,
@@ -87,7 +86,7 @@ async function sendConfirmationEmail(orderData: PaymentRequestBody) {
         pass: process.env.ZOHO_PASSWORD,
       },
     });
-
+    
     await transporter.sendMail({
       from: `"BUSY STORE" <${process.env.ZOHO_EMAIL}>`,
       to: orderData.personalData.customer_email || process.env.RECIPIENT_EMAIL,
