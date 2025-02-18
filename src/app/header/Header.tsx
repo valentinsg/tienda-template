@@ -42,7 +42,7 @@ const Header = () => {
   };
 
   const navigation = [
-    { name: 'Casita', href: '/' },
+    { name: 'Inicio', href: '/' },
     { name: 'Productos', href: '/products', hasDropdown: true },
     { name: 'Sobre nosotros', href: '/about' },
     { name: 'Contacto', href: '/contact' },
