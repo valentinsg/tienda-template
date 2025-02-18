@@ -3,6 +3,8 @@ import { MercadoPagoConfig, Payment } from 'mercadopago';
 import { supabase } from "../../supabase";
 import { generateTrackingCode } from '@/app/utils/tracking';
 import nodemailer from 'nodemailer';
+import { PaymentRecord } from '@/types/checkout/payment/PaymentRecord';
+import { CartItem } from '@/types/CartItem';
 
 // Create email transporter for Zoho Mail
 const transporter = nodemailer.createTransport({
@@ -16,7 +18,7 @@ const transporter = nodemailer.createTransport({
 });
 
 // Function to send order confirmation email
-async function sendOrderConfirmationEmail(paymentRecord: any, trackingCode: string) {
+async function sendOrderConfirmationEmail(paymentRecord: PaymentRecord, trackingCode: string) {
   try {
     const customerEmail = paymentRecord.customer_email;
     const customerName = paymentRecord.customer_name;
@@ -35,7 +37,7 @@ async function sendOrderConfirmationEmail(paymentRecord: any, trackingCode: stri
 
     // Create HTML for items in the order
     let itemsHtml = '';
-    orderItems.forEach((item: any) => {
+    orderItems.forEach((item: CartItem) => {
       itemsHtml += `
         <tr>
           <td style="padding: 10px; border-bottom: 1px solid #eee;">${item.name} (Talle: ${item.size})</td>

@@ -1,3 +1,4 @@
+import { CartItem } from "@/types/CartItem";
 
 export interface PaymentRecord {
   id: string;
@@ -19,12 +20,7 @@ export interface PaymentRecord {
     country: string;
   };
   tracking_code?: string;
-  cart_items: {
-    product_id: string;
-    product_name: string;
-    quantity: number;
-    price: number;
-  }[];
+  cart_items: CartItem[];
   payment_provider: string;
   notes?: string;
   customer_document?: string;
