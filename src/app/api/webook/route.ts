@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { MercadoPagoConfig, Payment } from 'mercadopago';
 import { supabase } from "../../supabase";
-import { generateTrackingCode } from '@/app/utils/tracking';
 import { sendPaymentConfirmationEmail } from '../payments/sendPaymentConfirmationMail';
 
 export async function POST(request: NextRequest) {
