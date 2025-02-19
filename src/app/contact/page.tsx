@@ -100,7 +100,7 @@ const Contact = () => {
     <Box bg={colorMode === 'dark' ? 'gray.800' : 'bg.muted'} py={12} h={{ base: "auto", md: "100%" }} color={textColor} as={"section"}>
       <Container maxW={{ base: "90%", md: "65%" }} >
         <VStack gap={8} >
-          <Heading textAlign="center" mb={10} fontFamily={"Archivo Black"} as="h2" fontSize={{ base: "4xl", md: "4vw" }} letterSpacing={"tighter"} lineHeight={{ base: 1.2, md: "11vh" }} color={textColor}>
+          <Heading textAlign="center" mb={6} fontFamily={"Archivo Black"} as="h2" fontSize={{ base: "4xl", md: "4vw" }} letterSpacing={"tighter"} lineHeight={{ base: 1.2, md: "11vh" }} color={textColor}>
             Contáctanos.
           </Heading>
           <SimpleGrid columns={{ base: 1, md: 2 }} w="full" as={"section"} >
@@ -141,9 +141,9 @@ const Contact = () => {
             </Box>
 
             {/* Formulario de Contacto */}
-            <Box mt={{ base: 20, md: "0" }}>
+            <Box mt={{ base: 20, md: 0 }}>
               <form onSubmit={handleSubmit}>
-                <VStack gap={6}>
+                <VStack gap={5}>
                   <Text fontFamily="Archivo Black" fontWeight={500} fontSize={"2xl"} as={"h2"}>
                     Nombre
                   </Text>

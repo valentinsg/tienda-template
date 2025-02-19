@@ -385,6 +385,7 @@ const Checkout: React.FC = () => {
                         items: ["DNI", "Pasaporte", "CUIL", "CUIT"],
                       })}
                       value={personalInfo.documentType ? [personalInfo.documentType] : []}
+                      borderRadius="md"
                       onValueChange={(details: { value: string[] }) => setPersonalInfo({ ...personalInfo, documentType: details.value[0] })}
                     >
                       <SelectTrigger>
@@ -398,6 +399,7 @@ const Checkout: React.FC = () => {
                             key={type}
                             item={type}
                             className={colorMode === 'dark' ? 'text-white' : 'text-gray-800'}
+                            color={textColor}
                           >
                             {type}
                           </SelectItem>
@@ -467,10 +469,6 @@ const Checkout: React.FC = () => {
                       borderRadius='md'
                       value={personalInfo.gender ? [personalInfo.gender] : []}
                       onValueChange={(details: { value: string[] }) => setPersonalInfo({ ...personalInfo, gender: details.value[0] })}
-                      style={{
-                        border: '1px solid',
-                        transition: 'border-color 0.2s',
-                      }}
                     >
                       <SelectTrigger>
                         <SelectValueText>

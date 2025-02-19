@@ -1,6 +1,7 @@
 'use client';
 import React, { Suspense, useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
+import { useDispatch } from 'react-redux';
 import {
   Box,
   Container,
@@ -12,9 +13,10 @@ import {
 import { useColorModeValue } from '../../components/ui/color-mode';
 import { supabase } from '@/app/supabase';
 import { PaymentRecord } from '@/types/checkout/payment/PaymentRecord';
-
+import { clearCart } from '../../store/slices/cartSlice';
 
 function CheckoutSuccessContent() {
+  const dispatch = useDispatch();
   const searchParams = useSearchParams();
   const [paymentDetails, setPaymentDetails] = useState<PaymentRecord | null>(null);
   const orderId = searchParams.get('order');
@@ -34,11 +36,13 @@ function CheckoutSuccessContent() {
 
       if (!error && data) {
         setPaymentDetails(data);
+        // Clear the cart when payment details are successfully fetched
+        dispatch(clearCart());
       }
     }
 
     fetchPaymentDetails();
-  }, [orderId]);
+  }, [orderId, dispatch]);
 
   const bgColor = useColorModeValue('white', 'gray.800');
   const borderColor = useColorModeValue('gray.200', 'gray.700');

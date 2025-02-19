@@ -1,95 +1,104 @@
-'use client';
-import React, { useEffect, useState } from 'react';
-import { useProducts } from '../../../hooks/useProducts';
-import ProductList from '../../../components/ProductList';
-import { useRouter } from 'next/navigation';
-import { Flex, Spinner, Text, Box } from '@chakra-ui/react';
-import { Product } from '@/types/Product';
-import { useColorMode, useColorModeValue } from '@/app/components/ui/color-mode';
+// app/category/[slug]/page.tsx
+import React from 'react';
+import CategoryPage from './Category';
+import { Metadata } from 'next';
+import { supabase } from "../../../supabase";
 
-export default function CategoryPage({ params }: { params: Promise<{ slug: string }> }) {
-  const resolvedParams = React.use(params);
-  const { slug } = resolvedParams;
-  const { products, categories, isLoading, error } = useProducts();
-  const router = useRouter();
-  const textColor = useColorModeValue('#555454', '#D0D0D0');
-  const { colorMode } = useColorMode();
-  const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
+type GenerateMetadataProps = {
+  params: Promise<{ slug: string }>,
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
+}
 
-  useEffect(() => {
-    if (products.length > 0 && slug) {
-      // Find the category that matches the slug
-      const category = categories.find(cat => cat.slug === slug);
-      
-      if (category) {
-        // Filter products that belong to this category
-        const productsInCategory = products.filter(product => {
-          // Check if product.category matches either the category id or slug
-          return (
-            product.category.id === category.id || 
-            product.category.slug === category.slug
-          );
-        });
-        setFilteredProducts(productsInCategory);
-      } else {
-        // If category not found, set empty array
-        setFilteredProducts([]);
-      }
-    }
-  }, [products, slug, categories]);
+async function getCategoryBySlug(slug: string) {
+  const { data: category, error } = await supabase
+    .from('categories')
+    .select(`
+      id,
+      name,
+      slug,
+      description,
+      image_url
+    `)
+    .eq('slug', slug)
+    .single();
+  
+  if (error || !category) return null;
+  return category;
+}
 
-  if (isLoading) {
-    return (
-      <Flex justify="center" align="center" minH="60vh">
-        <Spinner size="xl" />
-      </Flex>
-    );
-  }
+async function getProductsByCategory(categoryId: number) {
+  const { data: products, error } = await supabase
+    .from('products')
+    .select(`
+      id,
+      name,
+      images:product_images(image_url)
+    `)
+    .eq('category_id', categoryId)
+    .limit(5);
+  
+  if (error || !products) return [];
+  return products;
+}
 
-  if (error) {
-    return (
-      <Flex justify="center" align="center" minH="60vh">
-        <Text>Error al cargar los productos: {error}</Text>
-      </Flex>
-    );
-  }
-
-  const category = categories.find(cat => cat.slug === slug);
+export async function generateMetadata({ params: paramsPromise }: GenerateMetadataProps): Promise<Metadata> {
+  const params = await paramsPromise;
+  const category = await getCategoryBySlug(params.slug);
   
   if (!category) {
-    return (
-      <Flex justify="center" align="center" minH="60vh">
-        <Text>Categoría no encontrada</Text>
-      </Flex>
-    );
+    return {
+      title: 'Categoría No Encontrada | Busy Streetwear',
+      description: 'La categoría solicitada no se pudo encontrar.',
+    };
   }
 
-  if (filteredProducts.length === 0) {
-    return (
-      <Box bg={colorMode === 'dark' ? 'gray.800' : 'bg.muted'} py={12} color={textColor} as="section">
-        <Text mb={10} textAlign="center" fontFamily="Archivo Black" fontSize={{ base: "4xl", md: "4vw" }} letterSpacing="tighter" lineHeight={{ base: 1.2, md: "11vh" }} color={textColor}>
-          {category.name}
-        </Text>
-        <Flex justify="center" align="center" minH="40vh">
-          <Text>No hay productos disponibles en esta categoría</Text>
-        </Flex>
-      </Box>
-    );
-  }
-
-  const handleSelectProduct = (product: Product) => {
-    router.push(`/products/${product.id}`);
+  // Get some products from this category for enhanced SEO
+  const categoryProducts = await getProductsByCategory(category.id);
+  const productNames = categoryProducts.map(p => p.name).join(', ');
+  
+  return {
+    title: `${category.name} | Colección de Ropa Urbana | Busy Streetwear Argentina`,
+    description: `Explora nuestros ${category.name.toLowerCase()} en Busy Streetwear. ${category.description || 'Estilo urbano con envíos a toda Argentina. ¡Descubre nuestro catálogo!'}`,
+    keywords: [
+      `${category.name} urbano`,
+      `${category.name} streetwear`,
+      "ropa urbana Mar del Plata",
+      "ropa Mar Del Plata",
+      "Busy ropa",
+      "comprar streetwear Argentina",
+      "moda urbana argentina",
+      "streetwear online",
+      "streetwear en Mar del Plata",
+      category.slug,
+    ],
+    openGraph: {
+      title: `${category.name} | Busy Streetwear Argentina`,
+      description: `Explora nuestra colección de ${category.name.toLowerCase()}. ${productNames.length > 0 ? `Productos destacados: ${productNames}` : 'Envíos a toda Argentina.'}`,
+      url: `https://busy.com.ar/products/category/${category.slug}`,
+      images: [
+        {
+          url: category.image_url || '/category-placeholder.jpg',
+          alt: `${category.name} - Colección Busy Streetwear`,
+          width: 1200,
+          height: 630,
+        }
+      ],
+      type: 'website',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: `${category.name} | Busy Streetwear`,
+      description: `Explora nuestra colección de ${category.name.toLowerCase()} en Busy Streetwear. Envíos a toda Argentina.`,
+      images: [category.image_url || '/category-placeholder.jpg'],
+    },
+    alternates: {
+      canonical: `https://busy.com.ar/category/${category.slug}`,
+    }
   };
-
-  return (
-    <Box bg={colorMode === 'dark' ? 'gray.800' : 'bg.muted'} py={12} color={textColor} as="section">
-      <Text as="h2" mb={{base: 0, md:10}} textAlign="center" fontFamily="Archivo Black" fontSize={{ base: "4xl", md: "4vw" }} letterSpacing="tighter" lineHeight={{ base: 1.2, md: "11vh" }} color={textColor}>
-        {category.name}
-      </Text>
-      <ProductList
-        products={filteredProducts}
-        onSelectProduct={handleSelectProduct}
-      />
-    </Box>
-  );
 }
+
+const CategoryPageWrapper = ({ params }: { params: Promise<{ slug: string }> }) => {
+  return <CategoryPage params={params} />;
+};
+
+export default CategoryPageWrapper;

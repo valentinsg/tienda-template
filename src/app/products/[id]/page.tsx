@@ -23,8 +23,6 @@ async function getProductById(id: string) {
   return product;
 }
 
-
-
 export async function generateMetadata({ params: paramsPromise, }: GenerateMetadataProps): Promise<Metadata> {
   const params = await paramsPromise;
   const product = await getProductById(params.id);
