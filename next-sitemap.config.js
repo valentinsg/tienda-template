@@ -1,10 +1,10 @@
 /** @type {import('next-sitemap').IConfig} */
 const config = {
-  siteUrl: 'https://busy.com.ar', // Dominio principal
-  generateRobotsTxt: true, // Genera también el robots.txt
-  changefreq: 'daily', // Frecuencia de actualización
-  priority: 0.7, // Prioridad de URLs
-  sitemapSize: 5000, // Límite de URLs por sitemap
+  siteUrl: 'https://busy.com.ar',
+  generateRobotsTxt: true,
+  changefreq: 'daily',
+  priority: 0.7,
+  sitemapSize: 5000,
   exclude: [
     '/admin',
     '/cart',
@@ -17,26 +17,8 @@ const config = {
   ],
   robotsTxtOptions: {
     policies: [
-      { userAgent: '*', allow: '/' }, // Permite a todos los bots
+      { userAgent: '*', allow: '/' },
     ],
-  },
-  additionalPaths: async (config) => {
-    try {
-      const { fetchCategories } = await import('./app/hooks/useProducts');
-      const categories = await fetchCategories();
-
-      return categories
-        .filter((category) => category.slug) 
-        .map((category) => ({
-          loc: `/products/category/${category.slug}`,
-          changefreq: 'daily',
-          priority: 0.7,
-          lastmod: new Date().toISOString(), 
-        }));
-    } catch (error) {
-      console.error('Error generating additional paths:', error);
-      return []; 
-    }
   },
 };
 
