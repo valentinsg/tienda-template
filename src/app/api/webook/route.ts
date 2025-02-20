@@ -2,11 +2,12 @@ import { NextRequest, NextResponse } from 'next/server';
 import { MercadoPagoConfig, Payment } from 'mercadopago';
 import { supabase } from "../../supabase";
 import { generateTrackingCode } from '@/app/utils/tracking';
+import { sendOrderConfirmation } from '@/lib/sendEmail';
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    
+
     if (body.type !== 'payment') {
       return NextResponse.json({ message: 'Non-payment webhook received' });
     }
@@ -18,7 +19,6 @@ export async function POST(request: NextRequest) {
     const payment = await new Payment(mercadopago).get({ id: body.data.id });
     const orderId = payment.external_reference;
 
-    // Fetch payment record
     const { data: paymentRecord, error: recordError } = await supabase
       .from('payment_records')
       .select('*')
@@ -32,10 +32,13 @@ export async function POST(request: NextRequest) {
 
     if (payment.status === 'approved') {
       const cartItems = paymentRecord.cart_items;
-      
-      // Update stock for each item
+      const totalPrice = paymentRecord.total_price;
+
+      // Enviar email de confirmación
+      await sendOrderConfirmation(orderId, cartItems, totalPrice);
+
+      // Actualizar stock
       for (const item of cartItems) {
-        // Fetch current stock
         const { data: stockData, error: stockError } = await supabase
           .from('stock')
           .select('*')
@@ -47,12 +50,10 @@ export async function POST(request: NextRequest) {
           throw new Error(`Stock not found for product ${item.id} size ${item.size}`);
         }
 
-        // Verify sufficient stock
         if (stockData.quantity < item.quantity) {
           throw new Error(`Insufficient stock for product ${item.id} size ${item.size}`);
         }
 
-        // Update stock
         const { error: updateError } = await supabase
           .from('stock')
           .update({ 
@@ -67,7 +68,7 @@ export async function POST(request: NextRequest) {
         }
       }
 
-      // Update payment record
+      // Actualizar registro de pago
       await supabase
         .from('payment_records')
         .update({
@@ -76,18 +77,6 @@ export async function POST(request: NextRequest) {
           payment_id: payment.id,
           payment_status: payment.status,
           notes: `Payment approved - ID: ${payment.id}`
-        })
-        .eq('id', orderId);
-
-    } else {
-      // Handle failed payment
-      await supabase
-        .from('payment_records')
-        .update({
-          status: 'failure',
-          payment_id: payment.id,
-          payment_status: payment.status,
-          notes: `Payment not approved - Status: ${payment.status}`
         })
         .eq('id', orderId);
     }

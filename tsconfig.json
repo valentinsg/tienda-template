@@ -32,8 +32,9 @@
       "@/types/*": [
         "./src/types/*"
       ],
+      "@/lib/*": ["./src/app/lib/*"],
       "@/context/*": [
-        "./src/context/*"
+        "./src/app/context/*"
       ]
     }
   },
