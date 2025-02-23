@@ -55,10 +55,19 @@ export async function sendOrderConfirmation(
       throw new Error('Email sender configuration is missing');
     }
 
+    // Send email to both customer and admin
+    const customerEmail = await resend.emails.send({
+      from: process.env.EMAIL_SENDER,
+      to: customer.email,
+      subject: `🛍️ Tu pedido ha sido confirmado - Orden #${orderId}`,
+      html: emailContent,
+    });
+
+    // Send notification to admin if configured
     if (process.env.EMAIL_RECIPIENT) {
       await resend.emails.send({
         from: process.env.EMAIL_SENDER,
-        to: process.env.EMAIL_RECIPIENT,
+        to: customerEmail,
         subject: `🛍️ Nueva venta - Orden #${orderId}`,
         html: emailContent,
       });
