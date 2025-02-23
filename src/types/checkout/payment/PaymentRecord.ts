@@ -4,7 +4,7 @@ export interface PaymentRecord {
   id: string;
   transaction_id: string;
   status: string;
-  total_amount: number;
+  total_price: number;
   discount_applied: boolean;
   discount_code?: string;
   created_at: string;
@@ -22,6 +22,7 @@ export interface PaymentRecord {
   tracking_code?: string;
   cart_items: CartItem[];
   payment_provider: string;
+  payment_status: string;
   notes?: string;
   customer_document?: string;
 }

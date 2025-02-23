@@ -101,13 +101,34 @@ async function handleApprovedPayment(orderId: string, paymentRecord: PaymentReco
   const cartItems = paymentRecord.cart_items;
   const totalPrice = paymentRecord.total_price;
 
-  // Enviar email de confirmación
-  const emailResult = await sendOrderConfirmation(orderId, cartItems, totalPrice);
+  // Get customer data from payment record
+  const { data: customerData, error: customerError } = await supabase
+    .from('payment_records')
+    .select('customer_name, customer_email')
+    .eq('id', orderId)
+    .single();
+
+  if (customerError || !customerData) {
+    console.error('Failed to fetch customer data:', customerError);
+    throw new Error('Customer data not found');
+  }
+
+  // Send confirmation email
+  const emailResult = await sendOrderConfirmation(
+    orderId,
+    cartItems,
+    totalPrice,
+    {
+      email: customerData.customer_email,
+      name: customerData.customer_name
+    }
+  );
+
   if (!emailResult.success) {
     console.error('Failed to send confirmation email:', emailResult.error);
   }
 
-  // Actualizar stock
+  // Update stock
   try {
     for (const item of cartItems) {
       await updateProductStock(item);
@@ -117,7 +138,7 @@ async function handleApprovedPayment(orderId: string, paymentRecord: PaymentReco
     throw error;
   }
 
-  // Actualizar registro de pago
+  // Update payment record
   const { error: updateError } = await supabase
     .from('payment_records')
     .update({
