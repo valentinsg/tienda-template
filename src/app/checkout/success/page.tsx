@@ -36,21 +36,26 @@ const CheckoutSuccessContent = () => {
         setIsLoading(false);
         return;
       }
-
       try {
+        console.log("📡 Buscando en Supabase el pago con ID:", orderId);
+        
         const { data, error: supabaseError } = await supabase
           .from('payment_records')
           .select('*')
           .eq('id', orderId)
           .single();
-
+      
+        console.log("📄 Respuesta de Supabase:", data, supabaseError);
+      
         if (supabaseError) {
           throw supabaseError;
         }
-
+      
         if (data) {
           setPaymentDetails(data);
           dispatch(clearCart());
+          
+          console.log("📩 Enviando email de confirmación...");
           
           // Send confirmation email
           try {
@@ -61,7 +66,9 @@ const CheckoutSuccessContent = () => {
               },
               body: JSON.stringify({ orderId }),
             });
-
+      
+            console.log("📧 Respuesta de email:", response.status, await response.json());
+      
             if (!response.ok) {
               console.error('Error sending confirmation email');
             }
@@ -75,7 +82,7 @@ const CheckoutSuccessContent = () => {
       } finally {
         setIsLoading(false);
       }
-    }
+    }      
 
     fetchPaymentDetails();
   }, [orderId, dispatch]);
