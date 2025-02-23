@@ -23,18 +23,19 @@ export async function sendOrderConfirmation(
   if (!orderId) return { success: false, error: "Order ID is required" };
   if (!cartItems.length) return { success: false, error: "Cart items are required" };
   if (!customer.email) return { success: false, error: "Customer email is required" };
+  const formattedTotalPrice = (typeof totalPrice === "number" ? totalPrice : 0).toLocaleString("es-AR");
 
-  // Plantilla del correo
   const emailContent = `
     <h1>¡Gracias por tu compra, ${customer.name}!</h1>
     <p><strong>Número de orden:</strong> ${orderId}</p>
-    <p><strong>Total:</strong> $${totalPrice.toLocaleString("es-AR")} ARS</p>
+    <p><strong>Total:</strong> $${formattedTotalPrice} ARS</p>
     <h2>Detalle de productos:</h2>
     <ul>
       ${cartItems
-        .map(
-          (item) => `<li>${item.name} (x${item.quantity}) - $${item.price.toLocaleString("es-AR")} ARS</li>`
-        )
+        .map((item) => {
+          const formattedPrice = (typeof item.price === "number" ? item.price : 0).toLocaleString("es-AR");
+          return `<li>${item.name} (x${item.quantity}) - $${formattedPrice} ARS</li>`;
+        })
         .join("")}
     </ul>
     <p>Te mantendremos informado sobre el estado de tu pedido.</p>
