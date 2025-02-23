@@ -14,36 +14,70 @@ import { useColorModeValue } from '../../components/ui/color-mode';
 import { supabase } from '@/app/supabase';
 import { PaymentRecord } from '@/types/checkout/payment/PaymentRecord';
 import { clearCart } from '../../store/slices/cartSlice';
+import { toaster } from '../../components/ui/toaster';
 
 function CheckoutSuccessContent() {
   const dispatch = useDispatch();
   const searchParams = useSearchParams();
   const [paymentDetails, setPaymentDetails] = useState<PaymentRecord | null>(null);
   const orderId = searchParams.get('order');
-  const [isLoading] = useState(true);
-  const [error] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const toast = useToast();
   const textColor = useColorModeValue('#555454', 'white');
 
   useEffect(() => {
-    async function fetchPaymentDetails() {
+    async function handleCheckoutSuccess() {
       if (!orderId) return;
 
-      const { data, error } = await supabase
-        .from('payment_records')
-        .select('*')
-        .eq('id', orderId)
-        .single();
+      try {
+        // Fetch payment details
+        const { data, error } = await supabase
+          .from('payment_records')
+          .select('*')
+          .eq('id', orderId)
+          .single();
 
-      if (!error && data) {
+        if (error) throw error;
+        if (!data) throw new Error('Payment record not found');
+
         setPaymentDetails(data);
-        // Clear the cart when payment details are successfully fetched
         dispatch(clearCart());
+
+        // Send confirmation email
+        const response = await fetch('/api/send-confirmation', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ orderId })
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || 'Failed to send confirmation email');
+        }
+
+      toaster.create({
+          title: 'Confirmación enviada',
+          description: 'Te hemos enviado un email con los detalles de tu compra',
+          duration: 5000,
+        });
+      } catch (err) {
+        console.error('Error in checkout success:', err);
+        setError(err instanceof Error ? err.message : 'An error occurred');
+        
+      toaster.create({
+          title: 'Error',
+          description: 'Hubo un problema al procesar tu orden. Por favor, contacta a soporte.',
+          duration: 5000,
+        });
+      } finally {
+        setIsLoading(false);
       }
     }
 
-    fetchPaymentDetails();
-  }, [orderId, dispatch]);
-
+    handleCheckoutSuccess();
+  }, [orderId, dispatch, toast]);
+  
   const bgColor = useColorModeValue('white', 'gray.800');
   const borderColor = useColorModeValue('gray.200', 'gray.700');
 
@@ -141,4 +175,8 @@ export default function CheckoutSuccess() {
       <CheckoutSuccessContent />
     </Suspense>
   );
+}
+
+function useToast() {
+  throw new Error('Function not implemented.');
 }
