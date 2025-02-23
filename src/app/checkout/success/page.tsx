@@ -24,7 +24,7 @@ const CheckoutSuccessContent = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   
-  const orderId = searchParams.get('order');
+  const orderId = searchParams.get('orderId');
   const bgColor = useColorModeValue('white', 'gray.800');
   const borderColor = useColorModeValue('gray.200', 'gray.700');
   const textColor = useColorModeValue('#555454', 'white');
