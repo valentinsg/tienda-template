@@ -4,11 +4,23 @@ import { supabase } from "../../supabase";
 import { generateTrackingCode } from '@/app/utils/tracking';
 import { sendOrderConfirmation } from '@/lib/sendEmail';
 
-// Tipos para mejor tipado
-interface StockRecord {
-  product_id: string;
-  size: string;
+// Definimos las interfaces necesarias
+interface CartItem {
+  id: string;
+  name: string;
+  price: number;
   quantity: number;
+  size: string;
+}
+
+interface PaymentRecord {
+  id: string;
+  cart_items: CartItem[];
+  total_price: number;
+  status: string;
+  payment_status: string;
+  tracking_code?: string;
+  updated_at: string;
 }
 
 export async function POST(request: NextRequest) {
@@ -61,7 +73,7 @@ export async function POST(request: NextRequest) {
     // Procesar según el estado del pago
     switch (payment.status) {
       case 'approved':
-        await handleApprovedPayment(orderId, paymentRecord);
+        await handleApprovedPayment(orderId, paymentRecord as PaymentRecord);
         break;
       case 'rejected':
         await handleRejectedPayment(orderId);
@@ -83,7 +95,7 @@ export async function POST(request: NextRequest) {
   }
 }
 
-async function handleApprovedPayment(orderId: string, paymentRecord: any) {
+async function handleApprovedPayment(orderId: string, paymentRecord: PaymentRecord) {
   console.log(`✅ Processing approved payment for order: ${orderId}`);
   
   const cartItems = paymentRecord.cart_items;
@@ -121,7 +133,7 @@ async function handleApprovedPayment(orderId: string, paymentRecord: any) {
   }
 }
 
-async function updateProductStock(item: any) {
+async function updateProductStock(item: CartItem) {
   const { data: stockData, error: stockError } = await supabase
     .from('stock')
     .select('*')

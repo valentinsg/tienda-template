@@ -44,7 +44,7 @@ export async function sendOrderConfirmation(
       throw new Error('Email configuration is missing');
     }
 
-    const response = await resend.emails.send({
+    await resend.emails.send({
       from: process.env.EMAIL_SENDER,
       to: process.env.EMAIL_RECIPIENT,
       subject: `🛍️ Nueva compra - Orden #${orderId}`,
