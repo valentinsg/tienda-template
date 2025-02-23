@@ -4,69 +4,109 @@ import { CartItem } from '@/types/CartItem';
 
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
+interface ShippingAddress {
+  street: string;
+  city: string;
+  state: string;
+  postalCode: string;
+  country: string;
+}
+
 interface PaymentRequestBody {
   cartItems: CartItem[];
   totalPrice: number;
   shippingMethod: 'home' | 'branch';
-  shippingAddress: {
-    street: string;
-    city: string;
-    state: string;
-    postalCode: string;
-    country: string;
-  };
+  shippingAddress: ShippingAddress;
   orderId: string;
 }
 
-/*************  ✨ Codeium Command ⭐  *************/
-/******  806202b3-219e-43b5-bf18-a09eb6d22d78  *******/export async function POST(request: NextRequest) {
+export async function POST(request: NextRequest) {
+  console.log('💰 Processing payment request');
+
   try {
-    const { cartItems, shippingMethod, orderId }: PaymentRequestBody = await request.json();
+    const body: PaymentRequestBody = await request.json();
     
-    if (!cartItems || !cartItems.length) {
+    // Validaciones
+    if (!body.orderId?.trim()) {
+      return NextResponse.json({
+        error: 'Order ID is required'
+      }, { status: 400 });
+    }
+
+    if (!body.cartItems?.length) {
       return NextResponse.json({
         error: 'Cart items are required'
       }, { status: 400 });
     }
 
-    // Calculate shipping cost based on method
-    const shippingCost = shippingMethod === 'home' ? 0 : 0;
+    if (!['home', 'branch'].includes(body.shippingMethod)) {
+      return NextResponse.json({
+        error: 'Invalid shipping method'
+      }, { status: 400 });
+    }
+
+    // Validar dirección si es envío a domicilio
+    if (body.shippingMethod === 'home') {
+      const requiredFields = ['street', 'city', 'state', 'postalCode', 'country'];
+      const missingFields = requiredFields.filter(field => !body.shippingAddress?.[field as keyof ShippingAddress]);
+      
+      if (missingFields.length > 0) {
+        return NextResponse.json({
+          error: `Missing shipping address fields: ${missingFields.join(', ')}`
+        }, { status: 400 });
+      }
+    }
+
+    // Calcular costo de envío
+    const shippingCost = calculateShippingCost(body.shippingMethod, body.cartItems);
+
+    // Configurar Mercado Pago
+    if (!process.env.MP_ACCESS_TOKEN) {
+      throw new Error('MP_ACCESS_TOKEN is not configured');
+    }
 
     const mercadopago = new MercadoPagoConfig({
-      accessToken: process.env.MP_ACCESS_TOKEN!
+      accessToken: process.env.MP_ACCESS_TOKEN
     });
 
-    // Create array of items including products and shipping
+    // Crear items para la preferencia
     const items = [
-      ...cartItems.map(item => ({
+      ...body.cartItems.map(item => ({
         id: item.id,
         title: item.name,
         unit_price: item.price,
         quantity: item.quantity,
         currency_id: 'ARS',
-        size: item.size,
+        description: `Talle: ${item.size}`,
+        category_id: 'fashion',
       })),
       {
         id: 'shipping',
-        title: `Envío ${shippingMethod === 'home' ? 'a domicilio' : 'a sucursal'}`,
+        title: `Envío ${body.shippingMethod === 'home' ? 'a domicilio' : 'a sucursal'}`,
         unit_price: shippingCost,
         quantity: 1,
-        currency_id: 'ARS'
+        currency_id: 'ARS',
+        description: body.shippingMethod === 'home' 
+          ? `Envío a: ${body.shippingAddress.street}, ${body.shippingAddress.city}`
+          : 'Retiro en sucursal',
       }
     ];
 
+    // Crear preferencia de pago
     const preference = await new Preference(mercadopago).create({
       body: {
         items,
         back_urls: {
-          success: `${baseUrl}/checkout/success?order=${orderId}`,
-          failure: `${baseUrl}/checkout/failure?order=${orderId}`,
-          pending: `${baseUrl}/checkout/pending?order=${orderId}`,
+          success: `${baseUrl}/checkout/success?order=${body.orderId}`,
+          failure: `${baseUrl}/checkout/failure?order=${body.orderId}`,
+          pending: `${baseUrl}/checkout/pending?order=${body.orderId}`,
         },
         auto_return: 'approved',
         notification_url: `${baseUrl}/api/webhook`,
         statement_descriptor: 'BUSY STORE',
-        external_reference: orderId,
+        external_reference: body.orderId,
+        expires: true,
+        expiration_date_to: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(), // 24 horas
       },
     });
 
@@ -76,8 +116,9 @@ interface PaymentRequestBody {
 
     return NextResponse.json({
       initPoint: preference.init_point,
-      external_reference: orderId
+      external_reference: body.orderId
     });
+
   } catch (error) {
     console.error('Payment Preference Error:', error);
     return NextResponse.json(
@@ -88,4 +129,22 @@ interface PaymentRequestBody {
       { status: 500 }
     );
   }
+}
+
+function calculateShippingCost(
+  method: 'home' | 'branch',
+  items: CartItem[]
+): number {
+  // Aquí puedes implementar tu lógica de cálculo de envío
+  // Por ejemplo, basado en la cantidad de items, peso, distancia, etc.
+  if (method === 'branch') {
+    return 0;
+  }
+
+  // Ejemplo simple para envío a domicilio
+  const basePrice = 0; // Precio base
+  const itemCount = items.reduce((sum, item) => sum + item.quantity, 0);
+  const additionalCost = Math.max(0, itemCount - 3) * 200; // $200 adicional por cada item después de 3
+
+  return basePrice + additionalCost;
 }
