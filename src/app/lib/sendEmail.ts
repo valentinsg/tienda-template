@@ -1,5 +1,5 @@
-import { CartItem } from '@/types/CartItem';
-import { Resend } from 'resend';
+import { CartItem } from "@/types/CartItem";
+import { Resend } from "resend";
 
 interface CustomerInfo {
   email: string;
@@ -21,13 +21,13 @@ export async function sendOrderConfirmation(
 ): Promise<EmailResponse> {
   // Validate required inputs
   if (!orderId) {
-    return { success: false, error: 'Order ID is required' };
+    return { success: false, error: "Order ID is required" };
   }
   if (!cartItems.length) {
-    return { success: false, error: 'Cart items are required' };
+    return { success: false, error: "Cart items are required" };
   }
   if (!customer.email) {
-    return { success: false, error: 'Customer email is required' };
+    return { success: false, error: "Customer email is required" };
   }
 
   // Create email content with customer name
@@ -36,13 +36,17 @@ export async function sendOrderConfirmation(
     
     <p><strong>Número de orden:</strong> ${orderId}</p>
     
-    <p><strong>Total:</strong> $${totalPrice.toLocaleString('es-AR')} ARS</p>
+    <p><strong>Total:</strong> $${totalPrice.toLocaleString("es-AR")} ARS</p>
     
     <h2>Detalle de productos:</h2>
     <ul>
-      ${cartItems.map(item => `
-        <li>${item.name} (x${item.quantity}) - $${item.price.toLocaleString('es-AR')} ARS</li>
-      `).join('')}
+      ${cartItems
+        .map(
+          (item) => `
+        <li>${item.name} (x${item.quantity}) - $${item.price.toLocaleString("es-AR")} ARS</li>
+      `
+        )
+        .join("")}
     </ul>
     
     <p>Te mantendremos informado sobre el estado de tu pedido.</p>
@@ -52,22 +56,14 @@ export async function sendOrderConfirmation(
 
   try {
     if (!process.env.EMAIL_SENDER) {
-      throw new Error('Email sender configuration is missing');
+      throw new Error("Email sender configuration is missing");
     }
-
-    // Send email to both customer and admin
-    const customerEmail = await resend.emails.send({
-      from: process.env.EMAIL_SENDER,
-      to: customer.email,
-      subject: `🛍️ Tu pedido ha sido confirmado - Orden #${orderId}`,
-      html: emailContent,
-    });
 
     // Send notification to admin if configured
     if (process.env.EMAIL_RECIPIENT) {
       await resend.emails.send({
         from: process.env.EMAIL_SENDER,
-        to: customerEmail,
+        to: customer.email,
         subject: `🛍️ Nueva venta - Orden #${orderId}`,
         html: emailContent,
       });
@@ -75,10 +71,10 @@ export async function sendOrderConfirmation(
 
     return { success: true };
   } catch (error) {
-    console.error('Error enviando el email:', error);
+    console.error("Error enviando el email:", error);
     return {
       success: false,
-      error: error instanceof Error ? error.message : 'Unknown error occurred'
+      error: error instanceof Error ? error.message : "Unknown error occurred",
     };
   }
 }

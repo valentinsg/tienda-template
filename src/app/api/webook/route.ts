@@ -119,8 +119,8 @@ async function handleApprovedPayment(orderId: string, paymentRecord: PaymentReco
     cartItems,
     totalPrice,
     {
-      email: customerData.customer_email,
-      name: customerData.customer_name
+      name: customerData.customer_name,
+      email: customerData.customer_email
     }
   );
 
