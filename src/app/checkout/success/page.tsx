@@ -19,7 +19,7 @@ function CheckoutSuccessContent() {
   const dispatch = useDispatch();
   const searchParams = useSearchParams();
   const [paymentDetails, setPaymentDetails] = useState<PaymentRecord | null>(null);
-  const orderId = searchParams.get('order');
+  const orderId = searchParams.get('id');
   const [isLoading] = useState(true);
   const [error] = useState<string | null>(null);
   const textColor = useColorModeValue('#555454', 'white');
@@ -36,7 +36,6 @@ function CheckoutSuccessContent() {
 
       if (!error && data) {
         setPaymentDetails(data);
-        // Clear the cart when payment details are successfully fetched
         dispatch(clearCart());
       }
     }

@@ -17,9 +17,7 @@ interface PaymentRequestBody {
   };
   orderId: string;
 }
-
-/*************  ✨ Codeium Command ⭐  *************/
-/******  806202b3-219e-43b5-bf18-a09eb6d22d78  *******/export async function POST(request: NextRequest) {
+export async function POST(request: NextRequest) {
   try {
     const { cartItems, shippingMethod, orderId }: PaymentRequestBody = await request.json();
     
