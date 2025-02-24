@@ -39,7 +39,7 @@ function CheckoutSuccessContent() {
         dispatch(clearCart());
       }
     }
-
+    dispatch(clearCart());
     fetchPaymentDetails();
   }, [orderId, dispatch]);
 
@@ -53,32 +53,13 @@ function CheckoutSuccessContent() {
           ¡Gracias por tu compra!
         </Text>
         <Text textAlign="center" color={textColor}>
-          Pronto vas a recibir un correo con los detalles de tu compra.
-        </Text>
-        <Text>
-          <Text>
-            Recibimos estos datos:
-          </Text>
-          {paymentDetails && (<>
-            <Box>
-              <Text fontSize="lg" fontWeight="bold">Número de orden:</Text>
-              <Text>{orderId}</Text>
-            </Box>
-
-            <Box my={4} color="green.500" />
-
-            <Box>
-              <Text fontSize="lg" fontWeight="bold" mb={2}>Detalles del envío:</Text>
-              <Text>{paymentDetails.shipping_address.address}</Text>
-              <Text>
-                {paymentDetails.shipping_address.city}, {paymentDetails.shipping_address.province}
-              </Text>
-              <Text>CP: {paymentDetails.shipping_address.postal_code}</Text>
-            </Box>
-          </>
-          )}
+          Si recibiste un correo de Mercado Pago quiere decir que ya estamos procesando tu orden.
+          Pronto te enviamos un correo con los detalles de tu compra.
+          Si no lo ves en tu bandeja de entrada, probá en tu bandeja de spam para confirmar los datos de envío.
         </Text>
         <Button
+          alignSelf={'center'}
+          m={"auto"}
           colorScheme="blue"
           onClick={() => window.location.href = '/'}
         >
