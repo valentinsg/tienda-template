@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { VStack, Box, Text, HStack, Button, useBreakpointValue } from '@chakra-ui/react';
+import { VStack, Box, Text, HStack, Button, useBreakpointValue, Image } from '@chakra-ui/react';
 import { toaster } from './ui/toaster';
 import { Tooltip } from './ui/tooltip';
 import { useColorMode } from '../components/ui/color-mode';
@@ -9,6 +9,8 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 import type { Product } from '../../types/Product';
 import type { RootState } from '../store/store';
 import { motion, AnimatePresence } from 'framer-motion';
+import BusyDarkMode from '../../../public/busy-logo-dark-mode.png';
+import BusyLightMode from '../../../public/busy-logo-light-mode.png';
 
 interface ProductContainerProps {
   product: Product;
@@ -69,7 +71,7 @@ export const ProductContainer: React.FC<ProductContainerProps> = ({
 
   const handleNextImage = (e: React.MouseEvent) => {
     e.stopPropagation();
-    setCurrentImageIndex((prev) => (prev + 1) % 3); // Solo permite navegar hasta la tercera imagen
+    setCurrentImageIndex((prev) => (prev + 1) % 2); // Solo permite navegar hasta la tercera imagen
   };
 
   const handleProductClick = (e: React.MouseEvent) => {
@@ -83,13 +85,24 @@ export const ProductContainer: React.FC<ProductContainerProps> = ({
   return (
     <VStack
       position="relative"
-      minW={{ base: "160px", sm: "20vw", md: "300px", lg: "28vw" }}
+      minW={{ base: "160px", sm: "20vw", md: "300px", lg: "24vw" }}
       w="full"
       gap={0}
       onMouseEnter={() => setIsHovering(true)}
       onMouseLeave={() => setIsHovering(false)}
       className="group"
     >
+      <Box
+        position="absolute"
+        top={"35%"}
+        zIndex={0}
+        display={{base: "none", md: "block"}}
+        opacity={isHovering ? 0.3 : 0.5}
+        transition="opacity 0.1s ease-in-out"
+      >
+        <Image src={colorMode === 'light' ? BusyLightMode.src : BusyDarkMode.src} alt={'Busy Since 2024'} width={600} />
+      </Box>
+      
       <Box
         bg={isDark ? 'transparent' : 'transparent'}
         borderRadius="md"
@@ -101,10 +114,13 @@ export const ProductContainer: React.FC<ProductContainerProps> = ({
           borderRadius="xl"
           overflow="hidden"
           cursor="pointer"
+          border={colorMode === 'dark' ? '2px solid #555454' : '2px solid #D0D0D0'}
+          boxShadow={"md"}
           onClick={handleProductClick}
           onMouseEnter={() => setCurrentImageIndex(1)}
           onMouseLeave={() => setCurrentImageIndex(0)}
-          h={{ base: "160px", sm: "40vh", md: "305px", lg: "25vw" }}
+          h={{ base: "160px", sm: "40vh", md: "305px", lg: "70vh" }}
+
         >
           {product.images && product.images.length > 0 && (
             <AnimatePresence mode="wait">
@@ -122,7 +138,6 @@ export const ProductContainer: React.FC<ProductContainerProps> = ({
                   left: 0,
                   width: "100%",
                   height: "100%",
-                  padding: 12,
                 }}
               />
             </AnimatePresence>

@@ -168,11 +168,14 @@ export default function Product() {
 
   const mainImage = product.images?.[selectedImage]?.image_url || '/placeholder.jpg';
   return (
-    <Box color={textColor} h={{ base: "auto", md: "100%" }} w={"100%"} as={"section"} background={
-      colorMode === 'dark'
-        ? 'linear-gradient(to bottom, rgba(22, 21, 21, 0.84), rgba(64, 64, 64, 0.5))'
-        : 'linear-gradient(to bottom, rgba(200, 200, 200, 0.7), rgba(200, 200, 200, 0.5))'
-    }
+    <Box color={textColor} h={{ base: "auto", md: "100%" }} w={"100%"} as={"section"}
+      bgGradient={
+        colorMode === 'dark'
+          ? 'linear(to-b, gray.900, gray.800, gray.700)'
+          : 'linear(to-b, #f5f5f5, #e0e0e0, #d6d6d6)'
+      }
+      backdropFilter="blur(10px)"
+
     >
       <Box
         textAlign={"center"}

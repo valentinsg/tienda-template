@@ -8,7 +8,7 @@ import { useColorMode } from './components/ui/color-mode';
 import Logo from './components/Logo';
 import "./styles/globals.css";
 import LazyLoadComponent from './components/LazyLoadComponent';
-import ProductList from './components/ProductList';
+import {ProductList} from './components/ProductList';
 
 const Carrousell = lazy(() => import('./components/Carrousell'));
 const PromoCarousel = lazy(() => import('./components/PromoCarrousell'));
@@ -46,14 +46,13 @@ export default function Home() {
       </LazyLoadComponent >
 
       <Box
-        textAlign={"center"}
-        background={
+        bgGradient={
           colorMode === 'dark'
-            ? 'linear-gradient(to bottom, rgba(22, 21, 21, 0.84), rgba(64, 64, 64, 0.5))'
-            : 'linear-gradient(to bottom, rgba(200, 200, 200, 0.7), rgba(200, 200, 200, 0.5))'
+            ? 'linear(to-b, gray.900, gray.800, gray.700)'
+            : 'linear(to-b, #f5f5f5, #e0e0e0, #d6d6d6)'
         }
+        backdropFilter="blur(10px)"
       >
-
         <LazyLoadComponent>
           <Flex pt={10} direction="column" gap={20} p={2} py={{ base: 20, md: "" }} textAlign={"center"} align={"center"}>
             <Text

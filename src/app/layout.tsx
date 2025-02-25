@@ -23,10 +23,10 @@ const archiveBlack = Archivo_Black({
 export const metadata: Metadata = {
   metadataBase: new URL('https://busy.com.ar'),
   title: {
-    default: "Busy | Streetwear - Ropa Urbana y en Tendencia en Mar del Plata, Argentina",
+    default: "Busy Since 2024 | Ropa Streetwear en Argentina",
     template: "%s | Busy Streetwear - Mar del Plata",
   },
-  description: "Busy Streetwear, tu tienda online de moda y ropa urbana en Mar del Plata. Descubrí las últimas tendencias de ropa urbana y streetwear en Argentina.",
+  description: "Busy Streetwear es una marca de ropa nacida en Mar Del Plata, Argentina. Creada en 2024 por dos amigos que pretenden formar una comunidad que refleje sus valores",
   keywords: [
     "ropa urbana en Mar del Plata",
     "moda urbana en la costa atlántica",
@@ -56,7 +56,7 @@ export const metadata: Metadata = {
     type: 'website',
     images: [
       {
-        url: 'https://tfufdiayyhcndcgncylf.supabase.co/storage/v1/object/sign/imagenes%20web/favicon.ico?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJpbWFnZW5lcyB3ZWIvZmF2aWNvbi5pY28iLCJpYXQiOjE3MzkzMDQwNzAsImV4cCI6MTc3MDg0MDA3MH0.f76P9Wi7s5oeYo2F6Yz_XKVhb_IcZS67rFv9CDfpPKo',
+        url: 'https://tfufdiayyhcndcgncylf.supabase.co/storage/v1/object/sign/imagenes%20web/favicon.ico.png?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJpbWFnZW5lcyB3ZWIvZmF2aWNvbi5pY28ucG5nIiwiaWF0IjoxNzQwNTA1OTk0LCJleHAiOjE3NzIwNDE5OTR9.ut723u_o65eK_ksHo8tMknzpMgRsvcg1_6Z-W42-DTY',
         alt: 'Busy Streetwear - Moda Urbana en Argentina'
       }
     ]

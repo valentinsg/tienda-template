@@ -2,9 +2,8 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Flex, IconButton, Image, Text } from '@chakra-ui/react';
 import { FaArrowLeft, FaArrowRight } from 'react-icons/fa';
-import Chicos1 from '../../../public/chicos 1.png';
-import Chicos2 from '../../../public/chicos 2.png';
-import Chicas2 from '../../../public/chicas 2.png';
+import Chicos1 from '../../../public/chicos 1.webp';
+import Chicos2 from '../../../public/chicos 2.webp';
 import { useColorMode, useColorModeValue } from './ui/color-mode';
 import BackgroundPattern from './BackgroundPattern';
 
@@ -27,13 +26,6 @@ const Carrousell = () => {
       objectFit: "contain",
       objectPosition: "center"
     },
-    {
-      id: 3,
-      image: Chicas2.src,
-      alt: 'Slide 3',
-      objectFit: "contain",
-      objectPosition: "center"
-    }
   ];
 
   useEffect(() => {

@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Product } from '../../types/Product';
-import ProductList from '../components/ProductList';
+import {ProductList} from '../components/ProductList';
 import { useProducts } from '../hooks/useProducts';
 import { Box, Heading, Spinner, } from '@chakra-ui/react';
 import { useColorMode, useColorModeValue } from '../components/ui/color-mode';
@@ -32,11 +32,11 @@ const Products = () => {
 
   return (
     <Box bg={colorMode === 'dark' ? 'gray.800' : 'bg.muted'} color={textColor} as={"section"} py={12}>
-        {/* Primera sección */}
-        <Heading as="h1" mb={10} textAlign="center" fontFamily={"Archivo Black"} fontSize={{ base: "4xl", md: "4vw" }} letterSpacing={"tighter"} lineHeight={{ base: 1.2, md: "11vh" }} color={textColor}>
-          Nuestros productos.
-        </Heading>
-        <ProductList products={filteredProducts} onSelectProduct={handleSelectProduct} />
+      {/* Primera sección */}
+      <Heading as="h1" mb={10} textAlign="center" fontFamily={"Archivo Black"} fontSize={{ base: "4xl", md: "4vw" }} letterSpacing={"tighter"} lineHeight={{ base: 1.2, md: "11vh" }} color={textColor}>
+        Nuestros productos.
+      </Heading>
+      <ProductList products={filteredProducts} onSelectProduct={handleSelectProduct} />
     </Box>
   );
 };

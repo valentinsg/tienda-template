@@ -1,15 +1,14 @@
 'use client';
 import { Box, Container, Grid, Heading, Text, VStack, Image } from '@chakra-ui/react';
 import { useColorMode, useColorModeValue } from '../components/ui/color-mode';
-import Ciro from "../../../public/ciro.png";
+import Ciro from "../../../public/ciro.jpg";
 import { useEffect, useState } from 'react';
 
 const AboutUs = () => {
   const textColor = useColorModeValue('#555454', '#D0D0D0');
   const { colorMode } = useColorMode();
   const dosAmigos = "https://tfufdiayyhcndcgncylf.supabase.co/storage/v1/object/sign/imagenes%20web/creadores.jpg?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJpbWFnZW5lcyB3ZWIvY3JlYWRvcmVzLmpwZyIsImlhdCI6MTczNTk1OTc4MSwiZXhwIjoxNzY3NDk1NzgxfQ.eMCVXQ1yX0dunuQkdmV0eBeVBF5RVwbKVa9ft3I3hLw&t=2025-01-04T03%3A03%3A01.629Z"
-  const community = "https://tfufdiayyhcndcgncylf.supabase.co/storage/v1/object/sign/imagenes%20web/cosas-enelpiso.jpg?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJpbWFnZW5lcyB3ZWIvY29zYXMtZW5lbHBpc28uanBnIiwiaWF0IjoxNzM2MDQwNjg5LCJleHAiOjE3Njc1NzY2ODl9.e4lqOJtoC87dXUTsdHaedz_vKv_SWHEaqBtdZJC7xDI&t=2025-01-05T01%3A31%3A32.108Z"
-  const community2 = "https://tfufdiayyhcndcgncylf.supabase.co/storage/v1/object/sign/imagenes%20web/sobre-nosotros_6.jpg?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJpbWFnZW5lcyB3ZWIvc29icmUtbm9zb3Ryb3NfNi5qcGciLCJpYXQiOjE3MzYwNDA2NzEsImV4cCI6MTc2NzU3NjY3MX0.umAfXeFc0-z7t54MqJr79q2amTMEUCo05yLrOfeSyac&t=2025-01-05T01%3A31%3A13.358Z"
+  const community = "https://tfufdiayyhcndcgncylf.supabase.co/storage/v1/object/sign/imagenes%20web/cosas-enelpiso_1__11zon.webp?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJpbWFnZW5lcyB3ZWIvY29zYXMtZW5lbHBpc29fMV9fMTF6b24ud2VicCIsImlhdCI6MTc0MDUwNjE5MCwiZXhwIjoxNzcyMDQyMTkwfQ.JhTcIkKlLR8xPQYocvJIp4Mqqu6imhqL8mbB3oMhY6o"
   const community3 = "https://tfufdiayyhcndcgncylf.supabase.co/storage/v1/object/sign/imagenes%20web/sobre-nosotros_5.jpg?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJpbWFnZW5lcyB3ZWIvc29icmUtbm9zb3Ryb3NfNS5qcGciLCJpYXQiOjE3MzYwNDA2NDIsImV4cCI6MTc2NzU3NjY0Mn0.rFFZkbFYzD7yHZMfIgTtP-S16OLMP9UU98FxbGnMc0A&t=2025-01-05T01%3A30%3A44.177Z"
   const [currentSlide, setCurrentSlide] = useState(1);
 
@@ -20,13 +19,6 @@ const AboutUs = () => {
       alt: "Comunidad Busy - Eventos y actividades",
       objectFit: "contain",
       objectPosition: "top"
-    },
-    {
-      id: 2,
-      image: community2,
-      alt: "Comunidad Busy - Momentos compartidos",
-      objectFit: "contain",
-      objectPosition: "center"
     },
     {
       id: 3,

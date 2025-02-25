@@ -44,7 +44,7 @@ export default function NewsletterDialog() {
   const successBorder = useColorModeValue("green.200", "green.700");
   const successText = useColorModeValue("green.800", "green.100");
 
-  const lucas = "https://tfufdiayyhcndcgncylf.supabase.co/storage/v1/object/sign/imagenes%20web/DSC06719(2).png?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJpbWFnZW5lcyB3ZWIvRFNDMDY3MTkoMikucG5nIiwiaWF0IjoxNzM1OTU1MDY1LCJleHAiOjE3Njc0OTEwNjV9.PtjZT7MChCXucfFuPbubX8HtiP4IQxE-z_cyrY7E2OY&t=2025-01-04T01%3A44%3A25.739Z";
+  const lucas = "https://tfufdiayyhcndcgncylf.supabase.co/storage/v1/object/sign/imagenes%20web/DSC06719_2__2__11zon.webp?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJpbWFnZW5lcyB3ZWIvRFNDMDY3MTlfMl9fMl9fMTF6b24ud2VicCIsImlhdCI6MTc0MDUwNjE1MCwiZXhwIjoxNzcyMDQyMTUwfQ.hlS8Toj-f8Q_vDKpElP45biOpvtX_Wyt1j27K8RvBUg";
 
   useEffect(() => {
     if (!isSubscribed && hasCheckedSubscription) {

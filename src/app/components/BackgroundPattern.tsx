@@ -39,7 +39,6 @@ const BackgroundPattern = () => {
           zIndex={0}
         >
           <Image src={colorMode === 'light' ? BusyLightMode : BusyDarkMode} alt={'Busy Since 2024'} width={700} />
-        
         </Box>
         <Box
           position="absolute"

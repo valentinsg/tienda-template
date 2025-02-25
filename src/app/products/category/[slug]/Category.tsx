@@ -2,7 +2,7 @@
 'use client';
 import React, { useEffect, useState } from 'react';
 import { useProducts } from '../../../hooks/useProducts';
-import ProductList from '../../../components/ProductList';
+import {ProductList} from '../../../components/ProductList';
 import { useRouter } from 'next/navigation';
 import { Flex, Spinner, Text, Box } from '@chakra-ui/react';
 import { Product } from '@/types/Product';
@@ -21,7 +21,7 @@ export default function CategoryPage({ params }: { params: Promise<{ slug: strin
     if (products.length > 0 && slug) {
       // Find the category that matches the slug
       const category = categories.find(cat => cat.slug === slug);
-     
+
       if (category) {
         // Filter products that belong to this category
         const productsInCategory = products.filter(product => {
@@ -56,7 +56,7 @@ export default function CategoryPage({ params }: { params: Promise<{ slug: strin
   }
 
   const category = categories.find(cat => cat.slug === slug);
- 
+
   if (!category) {
     return (
       <Flex justify="center" align="center" minH="60vh">
@@ -67,7 +67,11 @@ export default function CategoryPage({ params }: { params: Promise<{ slug: strin
 
   if (filteredProducts.length === 0) {
     return (
-      <Box bg={colorMode === 'dark' ? 'gray.800' : 'bg.muted'} py={12} color={textColor} as="section">
+      <Box bgGradient={
+        colorMode === 'dark'
+          ? 'linear(to-b, gray.900, gray.800, gray.700)'
+          : 'linear(to-b, #f5f5f5, #e0e0e0, #d6d6d6)'
+      } py={12} color={textColor} as="section">
         <Text mb={10} textAlign="center" fontFamily="Archivo Black" fontSize={{ base: "4xl", md: "4vw" }} letterSpacing="tighter" lineHeight={{ base: 1.2, md: "11vh" }} color={textColor}>
           {category.name}
         </Text>
@@ -84,7 +88,7 @@ export default function CategoryPage({ params }: { params: Promise<{ slug: strin
 
   return (
     <Box bg={colorMode === 'dark' ? 'gray.800' : 'bg.muted'} py={12} color={textColor} as="section">
-      <Text as="h1" mb={{base: 0, md:10}} textAlign="center" fontFamily="Archivo Black" fontSize={{ base: "4xl", md: "4vw" }} letterSpacing="tighter" lineHeight={{ base: 1.2, md: "11vh" }} color={textColor}>
+      <Text as="h1" mb={{ base: 0, md: 10 }} textAlign="center" fontFamily="Archivo Black" fontSize={{ base: "4xl", md: "4vw" }} letterSpacing="tighter" lineHeight={{ base: 1.2, md: "11vh" }} color={textColor}>
         {category.name}
       </Text>
       <ProductList

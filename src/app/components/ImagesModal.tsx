@@ -45,10 +45,10 @@ export const ImageModal = ({ images, isOpen, onClose }: ImageModalProps) => {
         style={{
           backgroundColor: bgColor,
           borderRadius: '1rem',
-          maxWidth: '40vw',
-          maxHeight: '90vh',
           overflow: 'hidden',
         }}
+        maxHeight={{base: '100%', md:'90vh'}}
+        maxWidth={{base: '100%', md:'40vw'}}
         overflowY={'auto'}
       >
         <DialogHeader >
@@ -59,16 +59,15 @@ export const ImageModal = ({ images, isOpen, onClose }: ImageModalProps) => {
           </DialogActionTrigger>
         </DialogHeader>
         <DialogBody>
-          <VStack gap={4}>
+          <VStack gap={{base: 0, md:4}}>
             {/* Main Image with Navigation Arrows */}
-            <Box position="relative" w="100%" h="auto">
+            <Box position="relative" w="100%" >
               <IconButton
                 aria-label="Previous image"
                 onClick={handlePrevious}
                 position="absolute"
                 left="0"
                 top="50%"
-                transform="translateY(-50%)"
                 zIndex={1}
               >
                 <FiChevronLeft />
@@ -79,8 +78,8 @@ export const ImageModal = ({ images, isOpen, onClose }: ImageModalProps) => {
                 alt={`Product image ${currentImageIndex + 1}`}
                 objectFit="contain"
                 w="100%"
-                h="70vh"
-              />
+                h={{base: "50vh", md:"70vh"}}
+                />
               <IconButton
                 aria-label="Next image"
                 onClick={handleNext}
@@ -95,7 +94,7 @@ export const ImageModal = ({ images, isOpen, onClose }: ImageModalProps) => {
             </Box>
 
             {/* Thumbnails */}
-            <HStack  w="100%" gap={2} py={4} justifyContent={"center"} overflowX={"auto"}>
+            <HStack h={"auto"}  w="100%" gap={2} py={4} justifyContent={"center"} overflowX={"auto"}>
               {images.map((img, idx) => (
                 <Box
                   key={idx}

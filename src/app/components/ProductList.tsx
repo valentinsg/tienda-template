@@ -12,7 +12,7 @@ interface ProductListProps {
   onSelectProduct: (product: Product) => void;
 }
 
-const ProductList: React.FC<ProductListProps> = ({
+export const ProductList: React.FC<ProductListProps> = ({
   products,
   onSelectProduct,
 }) => {
@@ -26,14 +26,12 @@ const ProductList: React.FC<ProductListProps> = ({
     },
   };
 
-  if (!products?.length) {
+  // Ordenar los productos por nombre antes de renderizar
+  const sortedProducts = [...products].sort((a, b) => a.name.localeCompare(b.name));
+
+  if (!sortedProducts.length) {
     return (
-      <Flex
-        justifyContent="center"
-        alignItems="center"
-        width="full"
-        py={10}
-      >
+      <Flex justifyContent="center" alignItems="center" width="full" py={10}>
         <Text fontSize="xl" color="gray.500">
           No hay productos disponibles.
         </Text>
@@ -42,7 +40,7 @@ const ProductList: React.FC<ProductListProps> = ({
   }
 
   return (
-    <Flex px={{base: 0, md:20} } py={20} justifyContent="center">
+    <Flex px={{ base: 0, md: 20 }} py={20} justifyContent="center">
       <MotionGrid
         variants={container}
         initial="hidden"
@@ -54,19 +52,14 @@ const ProductList: React.FC<ProductListProps> = ({
           lg: 'repeat(3, 1fr)',
           xl: 'repeat(3, 1fr)',
         }}
-        gap={{ base: 2, sm: 4, md: 6, lg: 8 }}
+        gap={{ base: 2, sm: 4, md: 6, lg: 12 }}
       >
-        {products.map((product) => (
+        {sortedProducts.map((product) => (
           <LazyLoadComponent key={product.id}>
-            <ProductContainer
-              product={product}
-              onSelectProduct={onSelectProduct}
-            />
+            <ProductContainer product={product} onSelectProduct={onSelectProduct} />
           </LazyLoadComponent>
         ))}
       </MotionGrid>
     </Flex>
   );
 };
-
-export default ProductList;
