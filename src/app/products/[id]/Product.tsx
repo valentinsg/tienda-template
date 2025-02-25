@@ -231,8 +231,8 @@ export default function Product() {
                       </Box>
                     ))}
                     {product.images.length > 4 && (
-                      <Button onClick={handleOpenModal} variant="ghost" size="sm">
-                        +{product.images.length - 8}
+                      <Button onClick={handleOpenModal} w="120px" h="120px" bg={secondaryBg} color={textColor} _hover={{ bg: useColorModeValue('gray.300', 'gray.800') }} >
+                        +{product.images.length - 4}
                       </Button>
                     )}
                   </VStack>
@@ -368,8 +368,8 @@ export default function Product() {
                           />
                         </Box>
                       ))}
-                      {product.images.length > 4 && (
-                        <Button onClick={handleOpenModal} variant="ghost" size="sm">
+                      {product.images.length > 5 && (
+                        <Button onClick={handleOpenModal} variant="ghost" size="lg">
                           +{product.images.length - 4}
                         </Button>
                       )}
