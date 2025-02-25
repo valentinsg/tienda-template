@@ -83,7 +83,7 @@ export const ProductContainer: React.FC<ProductContainerProps> = ({
   return (
     <VStack
       position="relative"
-      minW={{ base: "160px", sm: "20vw", md: "300px", lg: "26vw" }}
+      minW={{ base: "160px", sm: "20vw", md: "300px", lg: "28vw" }}
       w="full"
       gap={0}
       onMouseEnter={() => setIsHovering(true)}

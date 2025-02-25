@@ -46,13 +46,14 @@ export const ImageModal = ({ images, isOpen, onClose }: ImageModalProps) => {
           backgroundColor: bgColor,
           borderRadius: '1rem',
           maxWidth: '40vw',
-          maxHeight: '80vh',
+          maxHeight: '90vh',
           overflow: 'hidden',
         }}
+        overflowY={'auto'}
       >
-        <DialogHeader>
+        <DialogHeader >
           <DialogActionTrigger asChild>
-            <Button variant="ghost" size="sm" onClick={onClose}>
+            <Button variant="ghost" size="md" onClick={onClose}>
               <FiX />
             </Button>
           </DialogActionTrigger>
@@ -78,7 +79,7 @@ export const ImageModal = ({ images, isOpen, onClose }: ImageModalProps) => {
                 alt={`Product image ${currentImageIndex + 1}`}
                 objectFit="contain"
                 w="100%"
-                h="auto"
+                h="70vh"
               />
               <IconButton
                 aria-label="Next image"
@@ -94,7 +95,7 @@ export const ImageModal = ({ images, isOpen, onClose }: ImageModalProps) => {
             </Box>
 
             {/* Thumbnails */}
-            <HStack overflowX="auto" w="100%" gap={2} py={2}>
+            <HStack  w="100%" gap={2} py={4} justifyContent={"center"} overflowX={"auto"}>
               {images.map((img, idx) => (
                 <Box
                   key={idx}

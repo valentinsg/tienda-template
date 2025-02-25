@@ -25,13 +25,14 @@ import {
 } from "../../components/ui/breadcrumb";
 import { addItem } from '../../store/slices/cartSlice';
 import { toast } from 'react-toastify';
-import { FiShare2 } from 'react-icons/fi';
+import { FiShare2, FiX } from 'react-icons/fi';
 import { useColorMode, useColorModeValue } from '../../components/ui/color-mode';
 import { Tooltip } from '../../components/ui/tooltip';
 import RequestSizeDialog from '../../components/RequestSizeDialog';
 import { HiCreditCard } from 'react-icons/hi';
 import { toaster } from '../../components/ui/toaster';
 import { ImageModal } from '../../components/ImagesModal';
+import { DialogHeader, DialogRoot, DialogBody, DialogContent } from '@/app/components/ui/dialog';
 
 interface StockInfo {
   stock: number;
@@ -48,6 +49,7 @@ export default function Product() {
   const [, setLoading] = useState(false);
   const { colorMode } = useColorMode();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isSizeGuideOpen, setIsSizeGuideOpen] = useState(false);
 
   // Color mode values
   const textColor = useColorModeValue('gray.800', 'white');
@@ -91,6 +93,22 @@ export default function Product() {
   };
 
   const remainingStock = Math.max(0, getCurrentStock() - getCurrentCartQuantity());
+
+  // Get the size guide image (last image from the product images)
+  const getSizeGuideImage = () => {
+    if (product.images && product.images.length > 0) {
+      return product.images[product.images.length - 1].image_url;
+    }
+    return '/placeholder.jpg';
+  };
+
+  const handleOpenSizeGuide = () => {
+    setIsSizeGuideOpen(true);
+  };
+
+  const handleCloseSizeGuide = () => {
+    setIsSizeGuideOpen(false);
+  };
 
   const handleAddToCart = async () => {
     if (!isSizeSelected || remainingStock <= 0) return;
@@ -150,7 +168,7 @@ export default function Product() {
 
   const mainImage = product.images?.[selectedImage]?.image_url || '/placeholder.jpg';
   return (
-    <Box color={textColor} h={{ base: "auto", md: "1200px" }} w={"100%"} as={"section"} background={
+    <Box color={textColor} h={{ base: "auto", md: "100%" }} w={"100%"} as={"section"} background={
       colorMode === 'dark'
         ? 'linear-gradient(to bottom, rgba(22, 21, 21, 0.84), rgba(64, 64, 64, 0.5))'
         : 'linear-gradient(to bottom, rgba(200, 200, 200, 0.7), rgba(200, 200, 200, 0.5))'
@@ -166,7 +184,7 @@ export default function Product() {
           px={{ base: 2, md: 4 }} // Ajuste del padding horizontal
         >
           {/* Breadcrumb */}
-          <BreadcrumbRoot mb={4} fontSize={{base: "sm", md:"md"}}  color={mutedTextColor} letterSpacing={"tighter"} fontWeight={"bold"} as={"nav"}>
+          <BreadcrumbRoot mb={4} fontSize={{ base: "sm", md: "md" }} color={mutedTextColor} letterSpacing={"tighter"} fontWeight={"bold"} as={"nav"}>
             <BreadcrumbLink href="/">Home</BreadcrumbLink>
             <BreadcrumbLink href="/products">Products</BreadcrumbLink>
             <BreadcrumbCurrentLink>{product.name}</BreadcrumbCurrentLink>
@@ -214,7 +232,7 @@ export default function Product() {
                     ))}
                     {product.images.length > 4 && (
                       <Button onClick={handleOpenModal} variant="ghost" size="sm">
-                        +{product.images.length - 4}
+                        +{product.images.length - 8}
                       </Button>
                     )}
                   </VStack>
@@ -253,6 +271,47 @@ export default function Product() {
                 />
               )}
 
+              {/* Size Guide Modal */}
+              <DialogRoot open={isSizeGuideOpen} onOpenChange={(details) => {
+                if (!details.open) {
+                  handleCloseSizeGuide();
+                }
+              }}
+                size={{ base: "sm", md: "lg" }}
+              >
+                <DialogContent  >
+                  <DialogHeader>
+                    <Box display="flex" justifyContent="flex-end">
+                      <Button
+                        aria-label="Close modal"
+                        variant="ghost"
+                        onClick={handleCloseSizeGuide}
+                      >
+                        <FiX />
+                      </Button>
+
+                    </Box>
+                    <Text as="h3" fontSize="lg" fontFamily={"Archivo Black"} color={textColor} fontWeight={"100"}>Guía de talles</Text>
+                  </DialogHeader>
+                  <DialogBody
+                  >
+                    <Box
+                      display="flex"
+                      justifyContent="center"
+                      alignItems="center"
+                      maxH={{ base: "60vh", md: "100%" }}
+                    >
+                      <Image
+                        src={getSizeGuideImage()}
+                        alt="Guía de talles"
+                        maxW="100%"
+                        maxH="100%"
+                        borderRadius="md"
+                      />
+                    </Box>
+                  </DialogBody>
+                </DialogContent>
+              </DialogRoot>
               {/* Mobile Layout */}
               <VStack gap={4} display={{ base: 'flex', md: 'none' }}>
                 {/* Main Image - Mobile */}
@@ -310,10 +369,10 @@ export default function Product() {
                         </Box>
                       ))}
                       {product.images.length > 4 && (
-                      <Button onClick={handleOpenModal} variant="ghost" size="sm">
-                        +{product.images.length - 4}
-                      </Button>
-                    )}
+                        <Button onClick={handleOpenModal} variant="ghost" size="sm">
+                          +{product.images.length - 4}
+                        </Button>
+                      )}
                     </HStack>
                   </Box>
                 )}
@@ -367,6 +426,7 @@ export default function Product() {
                     cursor={"pointer"}
                     as={"button"}
                     aria-label={"Size guide"}
+                    onClick={handleOpenSizeGuide}
                   >
                     Guía de talles
                   </Text>
@@ -485,13 +545,24 @@ export default function Product() {
                   {product.description}
                 </Text>
 
-                <VStack mt={6} gap={4} m={"auto"} as="section" w={{ base: "95%", md: "full" }}>
+                <VStack mt={6} gap={4} m={"auto"} as="section" w={{ base: "95%", md: "full" }} >
                   <Accordion.Root collapsible>
                     {[
-                      { value: "measures", title: "Medidas", content: "Imagen de medidas" },
+                      {
+                        value: "measures",
+                        title: "Medidas",
+                        content:
+                          <Image
+                            src={getSizeGuideImage()}
+                            alt="Guía de talles"
+                            maxW="100%"
+                            maxH="100%"
+                            borderRadius="md"
+                          />
+                      },
                       { value: "shipping", title: "Envíos", content: "Realizamos envíos a todo el país. El costo depende de la ubicación." },
                       { value: "payment", title: "Métodos de pago", content: "Aceptamos tarjetas de débito, crédito y transferencias bancarias." },
-                      { value: "returns", title: "Devoluciones", content: "Devoluciones en menos de 14 dias." }
+                      { value: "returns", title: "Devoluciones", content: "Devoluciones en menos de 14 días." }
                     ].map((item) => (
                       <Accordion.Item
                         key={item.value}
@@ -513,6 +584,7 @@ export default function Product() {
                             fontWeight="600"
                             fontSize="md"
                             display="flex"
+                            px={2}
                             alignItems="center"
                             justifyContent="space-between"
                           >
@@ -529,6 +601,7 @@ export default function Product() {
                             lineHeight="tall"
                             opacity="0.9"
                             as="p"
+                            p={6}
                           >
                             {item.content}
                           </Text>
