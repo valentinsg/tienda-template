@@ -542,6 +542,7 @@ export default function Product() {
                   mt={5}
                   letterSpacing="tighter"
                   mb={8}
+                  textAlign={"left"}
                   lineHeight="tall"
                   as="p"
                 >

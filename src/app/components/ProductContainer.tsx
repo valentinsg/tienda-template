@@ -63,7 +63,6 @@ export const ProductContainer: React.FC<ProductContainerProps> = ({
     }
   };
 
-  // Limitar la navegación a las primeras 3 imágenes
   const handlePrevImage = (e: React.MouseEvent) => {
     e.stopPropagation();
     setCurrentImageIndex((prev) => (prev === 0 ? 2 : prev - 1));
@@ -97,7 +96,7 @@ export const ProductContainer: React.FC<ProductContainerProps> = ({
         top={"35%"}
         zIndex={0}
         display={{base: "none", md: "block"}}
-        opacity={isHovering ? 0.3 : 0.5}
+        opacity={isHovering ? 0.2 : 0.8}
         transition="opacity 0.1s ease-in-out"
       >
         <Image src={colorMode === 'light' ? BusyLightMode.src : BusyDarkMode.src} alt={'Busy Since 2024'} width={600} />
@@ -119,11 +118,11 @@ export const ProductContainer: React.FC<ProductContainerProps> = ({
           onClick={handleProductClick}
           onMouseEnter={() => setCurrentImageIndex(1)}
           onMouseLeave={() => setCurrentImageIndex(0)}
-          h={{ base: "160px", sm: "40vh", md: "305px", lg: "70vh" }}
+          h={{ base: "260px", sm: "40vh", md: "305px", lg: "70vh" }}
 
         >
           {product.images && product.images.length > 0 && (
-            <AnimatePresence mode="wait">
+            <AnimatePresence>
               <motion.img
                 key={currentImageIndex}
                 initial={{ opacity: 0 }}
