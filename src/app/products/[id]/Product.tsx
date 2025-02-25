@@ -234,7 +234,7 @@ export default function Product() {
                       </Box>
                     ))}
                     {product.images.length > 4 && (
-                      <Button onClick={handleOpenModal} w="120px" h="120px" bg={secondaryBg} color={textColor} _hover={{ bg: useColorModeValue('gray.300', 'gray.800') }} >
+                      <Button onClick={handleOpenModal} w="120px" h="120px" bg={secondaryBg} color={textColor} _hover={{ bg: colorMode === 'light' ? 'gray.300' :  'gray.800' }} >
                         +{product.images.length - 4}
                       </Button>
                     )}
