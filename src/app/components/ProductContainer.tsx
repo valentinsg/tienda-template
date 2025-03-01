@@ -70,7 +70,7 @@ export const ProductContainer: React.FC<ProductContainerProps> = ({
 
   const handleNextImage = (e: React.MouseEvent) => {
     e.stopPropagation();
-    setCurrentImageIndex((prev) => (prev + 1) % 2); // Solo permite navegar hasta la tercera imagen
+    setCurrentImageIndex((prev) => (prev + 1) % 2);
   };
 
   const handleProductClick = (e: React.MouseEvent) => {
