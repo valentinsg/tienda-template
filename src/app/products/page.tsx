@@ -3,8 +3,8 @@ import type { Metadata } from "next";
 import Products from './Products';
 
 export const metadata: Metadata = {
-  title: 'Productos Busy Streetwear | Remeras, Buzos y Más - Streetwear Argentina',
-  description: 'Explora nuestra colección de ropa urbana en Busy Streetwear. Buzos, remeras, pantalones y más. Envíos a toda Argentina.',
+  title: 'Productos',
+  description: 'Explora nuestra colección de ropa urbana en Busy Streetwear. Buzos, remeras. Envíos a toda Argentina.',
   keywords: [
     "ropa urbana Mar del Plata",
     "comprar streetwear Argentina",
@@ -17,17 +17,9 @@ export const metadata: Metadata = {
     "ropa de mujer streetwear"
   ],
   openGraph: {
-    title: "Productos Busy Streetwear | Ropa Urbana Argentina",
+    title: "Productos",
     description: "Descubre los mejores productos de streetwear en Argentina. Moda urbana con envío a todo el país.",
     url: 'https://busy.com.ar/products',
-    images: [
-      {
-        url: '{/public/favicon.ico}',
-        alt: 'Nueva colección de ropa urbana 2024 en Busy Streetwear',
-        width: 1200,
-        height: 630,
-      }
-    ]
   }
 };
 
